@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Detail</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/containers.css' %}"> <!-- Custom CSS file -->
+
+</head>
+
+<body>
+
+    {% include '_navbar.html' %}
+
+    <div class="container-reviewer">
+        <h1>User Detail</h1>
+
+        <div class="user-info">
+            <h2>User Information</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><strong>Name:</strong></td>
+                        <td>{{ reviewer.name }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Telegram ID:</strong></td>
+                        <td>{{ reviewer.telegram_id }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phone Number:</strong></td>
+                        <td>{{ reviewer.phone_number }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Organization:</strong></td>
+                        <td>{{ reviewer.organization }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Created At:</strong></td>
+                        <td>{{ reviewer.created_at }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Updated At:</strong></td>
+                        <td>{{ reviewer.updated_at }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Active:</strong></td>
+                        <td>{% if reviewer.is_active %}<i class="fas fa-check"></i>{% else %}<i
+                                class="fas fa-times"></i>{% endif %}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="statistics">
+            <h2>Review Statistics</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Total Reviews</th>
+                        <th>Excellent Reviews</th>
+                        <th>Medium Reviews</th>
+                        <th>Bad Reviews</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ reviewer_statistics.total_reviews }}</td>
+                        <td><i class="fas fa-thumbs-up"></i> {{ reviewer_statistics.excellent_reviews }}</td>
+                        <td><i class="fas fa-minus-circle"></i> {{ reviewer_statistics.medium_reviews }}</td>
+                        <td><i class="fas fa-thumbs-down"></i> {{ reviewer_statistics.bad_reviews }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="product-ratings">
+            <h2>Product Ratings</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Excellent</th>
+                        <th>Medium</th>
+                        <th>Bad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product, ratings in reviewer_statistics.product_ratings.items %}
+                    <tr>
+                        <td>{{ product }}</td>
+                        <td><i class="fas fa-thumbs-up"></i> {{ ratings.excellent }}</td>
+                        <td><i class="fas fa-minus-circle"></i> {{ ratings.medium }}</td>
+                        <td><i class="fas fa-thumbs-down"></i> {{ ratings.bad }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!-- your_app/templates/layout/news_detail.html -->
+{% extends 'layout/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="bg-gray-800 min-h-screen flex flex-col justify-center items-center">
+    <div class="max-w-screen-xl mx-auto px-4 pt-8 pb-4 text-center">
+
+        <!-- News Title -->
+        <div class="text-center text-white">
+            <h2 class="font-bold text-5xl mb-4 text-white">{{ news_item.title }}</h2>
+            <!-- Consider using a smaller font size for the date to differentiate it from the title -->
+            <p class="text-lg mb-6">{{ news_item.created_at|date:"F d, Y" }}</p>
+        </div>
+        <!-- Display Images -->
+        <div class="row mb-4">
+            {% for image in news_item.newsimage_set.all %}
+            <div class="col-md-6 mb-4">
+                <div class="image-container" style="height: 300px; overflow: hidden; position: relative;">
+                    <img src="{{ image.image.url }}" class="img-fluid rounded"
+                         style="object-fit: flex; width: 100%; height: 100%;" alt="News Image">
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Display Videos -->
+        <div class="row justify-content-center mb-4">
+            {% for video in news_item.newsvideo_set.all %}
+            <div class="col-md-8">
+                <div class="video-container rounded-lg overflow-hidden shadow-lg">
+                    <video width="100%" height="auto" controls>
+
+                        <source src="{{ video.video.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- News Description -->
+        <div class="text-gray-400 mt-4 text-white">
+            <p>{{ news_item.description }}</p>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

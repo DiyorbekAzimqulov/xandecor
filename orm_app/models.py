@@ -5,17 +5,24 @@ from django.db import models
 
 class User(models.Model):
     name = models.CharField(max_length=100)
-    telegram_id = models.IntegerField()
+    telegram_id = models.BigIntegerField()
     phone_number = models.CharField(max_length=100, null=False, blank=False)
     organization = models.ForeignKey(
         "Organization", on_delete=models.SET_NULL, null=True, blank=True
     )
+    organizations = models.ManyToManyField("Organization", related_name="users")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
+
+    @property
+    def get_organizations(self):
+        return ", ".join(
+            [str(organization) for organization in self.organizations.all()]
+        )
 
 
 class Organization(models.Model):
@@ -47,7 +54,8 @@ class Product(models.Model):
     organization = models.ForeignKey(
         "Organization", on_delete=models.SET_NULL, null=True, blank=True
     )
-    image = models.ImageField(upload_to="images/", null=True, blank=True)
+    image1 = models.ImageField(upload_to="images/")
+    image2 = models.ImageField(upload_to="images/")
     parent = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -83,7 +91,7 @@ class Sale(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.product.name
+        return str(self.purchase_date) if self.purchase_date else ""
 
 
 class Review(models.Model):
@@ -100,22 +108,26 @@ class Review(models.Model):
         "Product", on_delete=models.SET_NULL, null=True, blank=True
     )
     rating = models.CharField(max_length=100, choices=RATING_CHOICES)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.rating
-
-
-class SaleReview(models.Model):
     sale = models.ForeignKey("Sale", on_delete=models.SET_NULL, null=True, blank=True)
-    review = models.ForeignKey(
-        "Review", on_delete=models.SET_NULL, null=True, blank=True
-    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.sale.product.name + " " + self.review.rating
+        return (
+            str(self.product.name) + " " + str(self.rating) + " " + str(self.user.name)
+            if self.product and self.rating and self.user
+            else "No Review Name"
+        )
+
+
+class AskUser(models.Model):
+    first_name = models.CharField(max_length=100, null=False, blank=False, default='Mavjud emas')
+    last_name = models.CharField(max_length=100, null=False, blank=False)
+    telegram_id = models.BigIntegerField()
+    phone_number = models.CharField(max_length=100, null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.first_name + " " + self.last_name

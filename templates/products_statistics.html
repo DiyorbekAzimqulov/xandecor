@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Review Statistics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .product {
+            margin-bottom: 40px;
+        }
+
+        .product-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .review-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .review-stat,
+        .reviewer-info {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #ffffff;
+            margin-right: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .review-stat:last-child,
+        .reviewer-info:last-child {
+            margin-right: 0;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .reviewer-name {
+            font-weight: bold;
+        }
+
+        .rating-list {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .rating-list li {
+            padding: 2px 8px;
+            border-radius: 3px;
+            background-color: #ddd;
+        }
+
+        .rating-excellent {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .rating-medium {
+            background-color: #ffc107;
+            color: white;
+        }
+
+        .rating-bad {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #ddd;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Product Review Statistics</h1>
+        <div class="product">
+            <!-- Product 1 -->
+            <div class="product-name">Product 1</div>
+            <div class="review-section">
+                <div class="review-stat">
+                    <h3>Review Statistics</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rating</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="rating-medium">Medium</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td class="rating-excellent">Excellent</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td class="rating-bad">Bad</td>
+                                    <td>2</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="reviewer-info">
+                    <h3>Reviewers</h3>
+                    <ul>
+                        <li>
+                            <span class="reviewer-name">Abduraimov Nodirbek Valijonovich</span>
+                            <ul class="rating-list">
+                                <li class="rating-excellent">Excellent</li>
+                                <li class="rating-medium">Medium</li>
+                                <li class="rating-bad">Bad</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="reviewer-name">Azimqulov Diyorbek Zafarovich</span>
+                            <ul class="rating-list">
+                                <li class="rating-bad">Bad</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <!-- Product 2 -->
+            <div class="product-name">Product 2</div>
+            <div class="review-section">
+                <div class="review-stat">
+                    <h3>Review Statistics</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rating</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="rating-medium">Medium</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td class="rating-excellent">Excellent</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td class="rating-bad">Bad</td>
+                                    <td>1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="reviewer-info">
+                    <h3>Reviewers</h3>
+                    <ul>
+                        <li>
+                            <span class="reviewer-name">Abduraimov Nodirbek Valijonovich</span>
+                            <ul class="rating-list">
+                                <li class="rating-excellent">Excellent</li>
+                                <li class="rating-medium">Medium</li>
+                                <li class="rating-excellent">Excellent</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="reviewer-name">Azimqulov Diyorbek Zafarovich</span>
+                            <ul class="rating-list">
+                                <li class="rating-bad">Bad</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <!-- Product 6 -->
+            <div class="product-name">Product 6</div>
+            <div class="review-section">
+                <div class="review-stat">
+                    <h3>Review Statistics</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rating</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="rating-medium">Medium</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td class="rating-bad">Bad</td>
+                                    <td>1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="reviewer-info">
+                    <h3>Reviewers</h3>
+                    <ul>
+                        <li>
+                            <span class="reviewer-name">Abduraimov Nodirbek Valijonovich</span>
+                            <ul class="rating-list">
+                                <li class="rating-bad">Bad</li>
+                                <li class="rating-medium">Medium</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="reviewer-name">Azimqulov Diyorbek Zafarovich</span>
+                            <ul class="rating-list">
+                                <li class="rating-medium">Medium</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

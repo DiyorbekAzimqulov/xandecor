@@ -1,0 +1,125 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Wallpapers Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="section-title text-center">
+            <h1 class="display-5 mb-5"><a href="{% url 'wallpapers' %}">Wallpapers</a></h1>
+        </div>
+        <div class="row mt-n2 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="col-12 text-center">
+                <ul class="list-inline mb-5" id="portfolio-flters">
+                </ul>
+            </div>
+        </div>
+        <div class="row g-4 portfolio-container">
+            {% for wall in all_wallcovers %}
+            {% if wall.id|divisibleby:3 and wall.id|add:"-2" == "0" %}
+            <!-- Code for cases where remainder is 2 -->
+            <div class="col-lg-4 col-md-6 portfolio-item {{ wall.category.id }} wow fadeInUp" data-wow-delay="0.1s">
+                <div class="rounded overflow-hidden mt-5">
+                    <div class="position-relative overflow-hidden">
+                        <img class="img-fluid w-100" style="height: 510px; object-fit: cover" src="{{ wall.image.url }}"
+                             alt=""/>
+                        <div class="portfolio-overlay">
+                            <a class="btn btn-square btn-outline-light mx-1" href="{{ wall.image.url }}"
+                               data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
+                            <a class="btn btn-square btn-outline-light mx-1" href=""><i class="fa fa-link"></i></a>
+                        </div>
+                    </div>
+                    <div class="border border-5 border-light border-top-0 p-4" style="height: 145px">
+                        <p class="text-primary fw-medium mb-2">{{ wall.name }}</p>
+                        <h5 class="lh-base mb-0">{{ wall.description }}</h5>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Code for other cases -->
+            <div class="col-lg-4 col-md-6 portfolio-item {{ wall.category.id }} wow fadeInUp" data-wow-delay="0.1s">
+                <div class="rounded overflow-hidden">
+                    <div class="position-relative overflow-hidden">
+                        <img class="img-fluid w-100" style="height: 510px; object-fit: cover" src="{{ wall.image.url }}"
+                             alt=""/>
+                        <div class="portfolio-overlay">
+                            <a class="btn btn-square btn-outline-light mx-1" href="{{ wall.image.url }}"
+                               data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
+                            <a class="btn btn-square btn-outline-light mx-1" href=""><i class="fa fa-link"></i></a>
+                        </div>
+                    </div>
+                    <div class="border border-5 border-light border-top-0 p-4" style="height: 145px">
+                        <p class="text-primary fw-medium mb-2">{{ wall.name }}</p>
+                        <h5 class="lh-base mb-0">{{ wall.description }}</h5>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Wallpapers End -->
+
+<!-- Leds Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="section-title text-center">
+            <h1 class="display-5 mb-5"><a href="{% url 'leds' %}">Leds</a></h1>
+        </div>
+        <div class="row mt-n2 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="col-12 text-center">
+                <ul class="list-inline mb-5" id="portfolio-flters">
+                </ul>
+            </div>
+        </div>
+        <div class="row g-4 portfolio-container">
+            {% for led in all_leds %}
+            {% if led.id|divisibleby:3 and led.id|add:"-2" == "0" %}
+            <!-- Code for cases where remainder is 2 -->
+            <div class="col-lg-4 col-md-6 portfolio-item {{ led.category.id }} wow fadeInUp" data-wow-delay="0.1s">
+                <div class="rounded overflow-hidden mt-5">
+                    <div class="position-relative overflow-hidden">
+                        <img class="img-fluid w-100" style="height: 510px; object-fit: cover" src="{{ led.image.url }}"
+                             alt=""/>
+                        <div class="portfolio-overlay">
+                            <a class="btn btn-square btn-outline-light mx-1" href="{{ led.image.url }}"
+                               data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
+                            <a class="btn btn-square btn-outline-light mx-1" href=""><i class="fa fa-link"></i></a>
+                        </div>
+                    </div>
+                    <div class="border border-5 border-light border-top-0 p-4" style="height: 145px">
+                        <p class="text-primary fw-medium mb-2">{{ led.name }}</p>
+                        <h5 class="lh-base mb-0">{{ led.description }}</h5>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Code for other cases -->
+            <div class="col-lg-4 col-md-6 portfolio-item {{ led.category.id }} wow fadeInUp" data-wow-delay="0.1s">
+                <div class="rounded overflow-hidden">
+                    <div class="position-relative overflow-hidden">
+                        <img class="img-fluid w-100" style="height: 510px; object-fit: cover" src="{{ led.image.url }}"
+                             alt=""/>
+                        <div class="portfolio-overlay">
+                            <a class="btn btn-square btn-outline-light mx-1" href="{{ led.image.url }}"
+                               data-lightbox="portfolio"><i class="fa fa-eye"></i></a>
+                            <a class="btn btn-square btn-outline-light mx-1" href=""><i class="fa fa-link"></i></a>
+                        </div>
+                    </div>
+                    <div class="border border-5 border-light border-top-0 p-4" style="height: 145px">
+                        <p class="text-primary fw-medium mb-2">{{ led.name }}</p>
+                        <h5 class="lh-base mb-0">{{ led.description }}</h5>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Leds End -->
+
+
+{% endblock %}

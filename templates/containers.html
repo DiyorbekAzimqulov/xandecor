@@ -1,0 +1,98 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Container List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link rel="stylesheet" href="{% static 'css/containers.css' %}" />
+</head>
+
+<body>
+    
+    {% include '_navbar.html' %}
+
+    <!-- Date Range Picker -->
+    <div class="date-picker">
+        <label for="date-range">Select Date Range: </label>
+        <input type="text" id="date-range" />
+        <button id="filter-button">Filter</button>
+    </div>
+
+    <table id="container-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th><i class="fas fa-box"></i> Containers</th>
+                <th><i class="far fa-calendar-alt"></i> Arrival Date</th>
+                <th><i class="fas fa-info-circle"></i> Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for container in containers %}
+            <tr style="animation: fadeIn 0.5s ease forwards; animation-delay: {{ forloop.counter }}s;">
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <div class="container-details" data-container-id="{{ container.id }}">
+                        <i class="fas fa-truck icon"></i>
+                        <a href="{% url 'container-detail' container.id %}" class="container-number">{{ container.number }}</a>
+                    </div>
+                </td>
+                <td>
+                    <i class="fas fa-calendar-alt icon"></i>
+                    {{ container.arrival_date }}
+                </td>
+                <td>
+                    <div>
+                        <span class="small-text"><i class="fas fa-clock icon"></i> Created At: {{ container.created_at|date:"DATETIME_FORMAT" }}</span><br>
+                        <span class="small-text"><i class="fas fa-history icon"></i> Updated At: {{ container.updated_at|date:"DATETIME_FORMAT" }}</span>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination Links -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if containers.has_previous %}
+            <a href="?page=1">&laquo; First</a>
+            <a href="?page={{ containers.previous_page_number }}">Previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ containers.number }} of {{ containers.paginator.num_pages }}.
+            </span>
+
+            {% if containers.has_next %}
+            <a href="?page={{ containers.next_page_number }}">Next</a>
+            <a href="?page={{ containers.paginator.num_pages }}">Last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            flatpickr("#date-range", {
+                mode: "range",
+                dateFormat: "Y-m-d",
+            });
+
+            document.getElementById("filter-button").addEventListener("click", function () {
+                const dateRange = document.getElementById("date-range").value;
+                if (dateRange) {
+                    const [fromDate, toDate] = dateRange.split(" to ");
+                    window.location.href = `/containers/pdts-st/${fromDate}_${toDate}`;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
