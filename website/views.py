@@ -7,13 +7,14 @@ from django.utils.translation import gettext as _
 from django.http import HttpResponseRedirect
 from django.utils import translation
 from django.urls import reverse
+from orm_app.models import Product, Category
 
 
 def base(request):
     """Base view for the wallpaper app."""
-    categorywallpapers = models.CategoryWallPaper.objects.all()
+    categorywallpapers = Category.objects.all()
     categoryleds = models.CategoryLed.objects.all()
-    wallpapers = models.Wallcovers.objects.all()[:6]
+    wallpapers = Product.objects.all()[:6]
     last_news = models.News.objects.last()
     services = models.Service.objects.all()[:3]
     partners = models.Brands.objects.all()
@@ -39,7 +40,7 @@ def base(request):
 
 def category(request):
     all_leds = models.Leds.objects.all()
-    all_wallcovers = models.Wallcovers.objects.all()
+    all_wallcovers = Category.objects.all()
 
     # Combine wallpaper and LED categories into a single list
     context = {
@@ -52,15 +53,15 @@ def category(request):
 
 
 def wallpapers(request):
-    wallcovers = models.Wallcovers.objects.all()
-    categories_wallpaper = models.CategoryWallPaper.objects.all()
+    wallcovers = Product.objects.all()
+    categories_wallpaper = Category.objects.all()
     context = {'wallcovers': wallcovers, 'categories_wallpaper': categories_wallpaper}
     return render(request, 'wallpapers.html', context)
 
 def select_category_wallpaper(request, category_id):
-    category = models.CategoryWallPaper.objects.get(id=category_id)
-    wallcovers = models.Wallcovers.objects.filter(category=category)
-    categories_wallpaper = models.CategoryWallPaper.objects.all()
+    category = Category.objects.get(id=category_id)
+    wallcovers = Product.objects.filter(category=category)
+    categories_wallpaper = Category.objects.all()
     context = {'category': category, 'wallcovers': wallcovers, 'categories_wallpaper': categories_wallpaper}
     return render(request, 'wallpapers.html', context)
 
