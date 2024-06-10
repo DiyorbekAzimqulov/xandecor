@@ -19,7 +19,7 @@ from django.views.generic import ListView, DetailView
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import requests
-from data.config import BOT_TOKEN
+from salebot.data.config import BOT_TOKEN
 
 class SuperuserRequiredMixin(AccessMixin):
     """Ensure that the current user is authenticated and is a superuser."""
