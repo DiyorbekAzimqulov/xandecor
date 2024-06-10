@@ -41,6 +41,8 @@ services:
       - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - DJANGO_SETTINGS_MODULE=orm.settings
 
 volumes:
   postgres_data:

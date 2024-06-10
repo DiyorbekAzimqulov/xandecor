@@ -1,6 +1,10 @@
 import os
+import sys
 
 from django.utils import timezone
+
+# Ensure the parent directory of 'orm' is in the PYTHONPATH
+sys.path.append('/app')
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "orm.settings")
 from django import setup
