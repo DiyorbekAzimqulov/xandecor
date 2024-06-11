@@ -1,27 +1,62 @@
 from keyboards.inline.users_inlines import (
+    get_cancel_sale_kb_in,
     get_products_kb_in,
     get_child_product_kb_in,
-    get_sp_child_product_kb_in,
 )
 from loader import dp, bot
 from aiogram import types
 
+from reviewbot.keyboards.inline.users_inlines import get_sp_child_product_kb_in
+from salebot.keyboards.default.users_replies import cancel_volume_kb, categories_kb
 from utils.db_api.connector_db import (
+    cancel_sale,
     check_user_exist,
     get_categories,
     get_child_product_by_id,
     get_products_child,
     get_products_parent,
-    get_sale_by_cp_ids,
     get_user_by_telegram_id,
-    rate_product,
-    get_sale_by_cp_ids,
+    get_user_sales,
+    create_user_sale,
     save_new_user,
-    update_review_count,
 )
 from aiogram.types import CallbackQuery
 from aiogram.dispatcher import FSMContext
+from salebot.states.userstates import SaleVolume
 
+async def get_file_path(product):
+    file_path1 = product.image1.path
+    file_path2 = product.image2.path
+    return file_path1, file_path2
+
+async def show_user_sales(telegram_id):
+    user = await get_user_by_telegram_id(telegram_id)
+    user_sales = await get_user_sales(user)
+    if not user_sales:
+        await bot.send_message(
+            text="📋 Sizning buyurtmalar ro'yxati bo'sh!",
+            chat_id=telegram_id
+        )
+        return
+    for sale in user_sales:
+        cancel_sale_kb_in = get_cancel_sale_kb_in(sale.id, telegram_id)
+        file_path1, file_path2 = await get_file_path(sale.product)
+        caption = f"🛒 <b>Mahsulot:</b> {sale.product.name}\n📦 <b>Model:</b> {sale.product.number}\n🔢 <b>Buyurtma soni:</b> {sale.volume}"
+        with open(file_path1, "rb") as file1, open(file_path2, "rb") as file2:
+            media = [
+                types.InputMediaPhoto(file1, caption=caption),
+                types.InputMediaPhoto(file2)
+            ]
+            await bot.send_media_group(
+                chat_id=telegram_id,
+                media=media
+            )
+            await bot.send_message(
+                text='❌ Buyurtmani bekor qilish!',
+                chat_id=telegram_id,
+                reply_markup=cancel_sale_kb_in
+            )
+    return
 
 @dp.message_handler()
 async def categories(message: types.Message):
@@ -30,40 +65,38 @@ async def categories(message: types.Message):
 
     categories_list = await get_categories()
     category_names = [category.name for category in categories_list]
-
+    if category_text == "📋 Buyurtmalarim":
+        await show_user_sales(telegram_id)
+        return
     if category_text not in category_names:
         await message.answer(
-            "Berilgan kategoriyada hech qanday mahsulot topilmadi! Iltimos, qaytadan urinib ko'ring!"
+            "⚠️ Berilgan kategoriyada hech qanday mahsulot topilmadi! Iltimos, qaytadan urinib ko'ring!"
         )
         return
-
     products = await get_products_parent(category_text)
 
     for product in products:
         products_kb_in = await get_products_kb_in(product.id, telegram_id)
-        file_path1 = product.image1.path
-        file_path2 = product.image2.path
-        caption = f"{category_text}\n{product.name}\n{product.number}"
+        file_path1, file_path2 = await get_file_path(product)
+        caption = f"📚 <b>Mahsulot turi:</b> {category_text}\n🛍️ <b>Mahsulot:</b> {product.name}\n🔢 <b>Model:</b> {product.number}"
         try:
             with open(file_path1, "rb") as file1, open(file_path2, "rb") as file2:
-                # Send the first image with caption
                 media = [
-                        types.InputMediaPhoto(file1, caption=caption),
-                        types.InputMediaPhoto(file2)
-                    ]
+                    types.InputMediaPhoto(file1, caption=caption),
+                    types.InputMediaPhoto(file2)
+                ]
                 await bot.send_media_group(
                     chat_id=telegram_id,
                     media=media
                 )
                 await bot.send_message(
-                    text='Boshqa mahsulotlarni ko\'rish uchun quyidagi tugmani bosing:',
+                    text='▶️ Boshqa mahsulotlarni ko\'rish uchun quyidagi tugmani bosing:',
                     chat_id=telegram_id,
                     reply_markup=products_kb_in
                 )
         except Exception as e:
             print(e)
             await bot.send_message(telegram_id, caption)
-
 
 @dp.callback_query_handler(lambda query: query.data.startswith("product"), state=None)
 async def product(query: CallbackQuery, state: FSMContext):
@@ -75,14 +108,12 @@ async def product(query: CallbackQuery, state: FSMContext):
                 child_product_kb_in = await get_sp_child_product_kb_in(
                     child_product.id, telegram_id, container_id
                 )
-                print("\nInlined Keyboard: ", child_product_kb_in)
             else:
                 child_product_kb_in = await get_child_product_kb_in(
                     child_product.id, telegram_id
                 )
-            file_path1 = child_product.image1.path
-            file_path2 = child_product.image2.path
-            caption = f"{child_product.name}\n{child_product.number}"
+            file_path1, file_path2 = await get_file_path(child_product)
+            caption = f"🛍️ <b>Mahsulot:</b> {child_product.name}\n🔢 <b>Model:</b> {child_product.number}"
             with open(file_path1, "rb") as file1, open(file_path2, "rb") as file2:
                 media = [
                     types.InputMediaPhoto(file1, caption=caption),
@@ -93,77 +124,13 @@ async def product(query: CallbackQuery, state: FSMContext):
                     media=media
                 )
                 await bot.send_message(
-                    text='Mahsulotni baholash uchun quyidagi tugmalardan birini tanlang:',
+                    text='🛒 Mahsulotni sotib olish uchun quyidagi tugmani bosing:',
                     chat_id=telegram_id,
                     reply_markup=child_product_kb_in
                 )
     except Exception as e:
         print("IN the Child product includes the error is: ", e)
-        await query.answer("Error")
-
-
-@dp.callback_query_handler(lambda query: query.data.startswith("rate"), state=None)
-async def rate_of_product(query: CallbackQuery, state: FSMContext):
-    try:
-        _, child_product_id, rating, telegram_id = query.data.split(":")
-        await query.answer(f"Siz {rating}ga baholadingiz!")
-        # remove inline keyboard from message
-        await bot.edit_message_reply_markup(
-            chat_id=telegram_id, message_id=query.message.message_id
-        )
-        EXCELLENT = "EXCELLENT"
-        MEDIUM = "MEDIUM"
-        BAD = "BAD"
-        if rating == "A'lo":
-            rating = EXCELLENT
-        elif rating == "Yaxshi":
-            rating = MEDIUM
-        elif rating == "Qoniqarsiz":
-            rating = BAD
-        try:
-            child_product = await get_child_product_by_id(child_product_id)
-            user = await get_user_by_telegram_id(telegram_id)
-            await rate_product(user, child_product, rating)
-        except Exception as e:
-            print(e)
-            await query.answer("Error")
-
-    except Exception as e:
-        print(e)
-        await query.answer("Error")
-
-
-@dp.callback_query_handler(lambda query: query.data.startswith("review"), state=None)
-async def rate_of_product(query: CallbackQuery, state: FSMContext):
-    try:
-        _, child_product_id, rating, telegram_id, container_id = query.data.split(":")
-        await query.answer(f"Siz {rating}ga baholadingiz!")
-        # remove inline keyboard from message
-        await bot.edit_message_reply_markup(
-            chat_id=telegram_id, message_id=query.message.message_id
-        )
-        EXCELLENT = "EXCELLENT"
-        MEDIUM = "MEDIUM"
-        BAD = "BAD"
-        if rating == "A'lo":
-            rating = EXCELLENT
-        elif rating == "Yaxshi":
-            rating = MEDIUM
-        elif rating == "Qoniqarsiz":
-            rating = BAD
-        try:
-            child_product = await get_child_product_by_id(child_product_id)
-            sale = await get_sale_by_cp_ids(child_product_id, container_id)
-            user = await get_user_by_telegram_id(telegram_id)
-            await rate_product(user, child_product, rating, sale)
-            await update_review_count(sale)
-        except Exception as e:
-            print(e)
-            await query.answer("Error")
-
-    except Exception as e:
-        print(e)
-        await query.answer("Error")
+        await query.answer("⚠️ Error")
 
 @dp.message_handler(content_types=types.ContentType.CONTACT)
 async def handle_contact(message: types.Message):
@@ -173,14 +140,57 @@ async def handle_contact(message: types.Message):
     last_name = contact.last_name
     phone_number = contact.phone_number
     if await check_user_exist(phone_number=phone_number):
-        await message.reply(f"Kechirasiz, {firt_name}! Siz ro'yxatdan o'tgansiz! Iltimos, kuting admin sizni qo'shadi!")
+        await message.reply(f"⚠️ Kechirasiz, {firt_name}! Siz ro'yxatdan o'tgansiz! Iltimos, kuting admin sizni qo'shadi!")
         return
     if firt_name is None:
         firt_name = "Mavjud emas"
     elif last_name is None:
         last_name = "Mavjud emas"
     await save_new_user(telegram_id=telegram_id, phone_number=phone_number, first_name=firt_name, last_name=last_name)
-    # You can now use user_id and phone_number as needed
-    await message.reply(f"Rahmat! Sizning telefon raqamingiz: {phone_number} qabul qilindi!\nIltimos, kuting admin sizni ro'yxatdan o'tkazadi!")
-    # Save the phone number to the database
-    
+    await message.reply(f"✅ Rahmat! Sizning telefon raqamingiz: {phone_number} qabul qilindi!\nIltimos, kuting admin sizni ro'yxatdan o'tkazadi!")
+
+@dp.callback_query_handler(lambda query: query.data.startswith("sale"), state=None)
+async def usersale(query: CallbackQuery, state: FSMContext):
+    try:
+        _, child_product_id, telegram_id = query.data.split(":")
+        await query.answer("✅ Buyurtma qabul qilindi!")
+        await query.message.answer("🛒 Buyurtmangiz qabul qilindi! Iltimos, qancha sotib olishingizni <b>raqamlar</b> bilan yozing!", parse_mode="HTML", reply_markup=cancel_volume_kb())
+        await state.update_data(child_product_id=child_product_id)
+    except Exception as e:
+        print("IN the Child product includes the error is: ", e)
+        await query.answer("⚠️ Error")
+    await SaleVolume.sale_volume.set()
+
+@dp.message_handler(state=SaleVolume.sale_volume)
+async def sale_volume(message: types.Message, state: FSMContext):
+    telegram_id = message.from_user.id
+    product_volume = message.text
+    categories = await categories_kb()
+    if product_volume == "❌ Bekor qilish":
+        await message.answer("❌ Buyurtma bekor qilindi!", reply_markup=categories)
+        await state.finish()
+        return
+    if not product_volume.isdigit():
+        await message.answer("⚠️ Iltimos, faqat raqamlar kiriting!")
+        await SaleVolume.sale_volume.set()
+        return
+    data = await state.get_data()
+    child_product_id = data.get("child_product_id")
+    user = await get_user_by_telegram_id(telegram_id)
+    child_product = await get_child_product_by_id(child_product_id)
+    sale = await create_user_sale(user, child_product, int(product_volume))
+    categories = await categories_kb()
+    await message.answer("✅ Buyurtma qabul qilindi! Siz buyurtmangizni 2 kun ichida bekor qilishingiz mumkin!", reply_markup=categories)
+    await state.finish()
+    return
+
+@dp.callback_query_handler(lambda query: query.data.startswith("cancel"), state=None)
+async def cancelsale(query: CallbackQuery, state: FSMContext):
+    try:
+        _, sale_id, telegram_id = query.data.split(":")
+        await cancel_sale(sale_id)
+        await query.answer("❌ Buyurtma bekor qilindi!")
+        await bot.delete_message(chat_id=telegram_id, message_id=query.message.message_id)        
+    except Exception as e:
+        print("IN the Child product includes the error is: ", e)
+        await query.answer("⚠️ Error")

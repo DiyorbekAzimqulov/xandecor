@@ -84,14 +84,15 @@ class Sale(models.Model):
     container = models.ForeignKey(
         "Container", on_delete=models.SET_NULL, null=True, blank=True
     )
-    purchase_date = models.DateField()
+    purchase_date = models.DateField(blank=True, null=True)
+    volume = models.IntegerField(default=0)
     review_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(self.purchase_date) if self.purchase_date else ""
+        return str(self.purchase_date) if self.purchase_date else "No Purchase Date"
 
 
 class Review(models.Model):

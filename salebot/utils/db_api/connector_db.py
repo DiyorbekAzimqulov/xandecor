@@ -126,4 +126,20 @@ def check_user_exist(phone_number):
     except ObjectDoesNotExist:
         return None
 
-    
+@sync_to_async
+def get_user_sales(user):
+    # return list(models.Sale.objects.filter(user=user).select_related("product"))
+    return list(models.Sale.objects.filter(user=user).select_related("product"))
+
+@sync_to_async
+def create_user_sale(user, product, product_volume):
+    sale = models.Sale.objects.create(user=user, product=product, volume=product_volume)
+    sale.save()
+    return sale
+
+@sync_to_async
+def cancel_sale(sale_id):
+    sale = models.Sale.objects.get(id=sale_id)
+    sale.delete()
+    return True
+
