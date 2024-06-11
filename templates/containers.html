@@ -7,13 +7,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Container List</title>
+    <!-- External CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <!-- Internal CSS -->
     <link rel="stylesheet" href="{% static 'css/containers.css' %}" />
 </head>
 
 <body>
-    
+    <!-- Include Navbar -->
     {% include '_navbar.html' %}
 
     <!-- Date Range Picker -->
@@ -23,6 +25,7 @@
         <button id="filter-button">Filter</button>
     </div>
 
+    <!-- Container Table -->
     <table id="container-table">
         <thead>
             <tr>
@@ -30,6 +33,7 @@
                 <th><i class="fas fa-box"></i> Containers</th>
                 <th><i class="far fa-calendar-alt"></i> Arrival Date</th>
                 <th><i class="fas fa-info-circle"></i> Details</th>
+                <th>Actions</th> <!-- Added Actions column -->
             </tr>
         </thead>
         <tbody>
@@ -37,8 +41,10 @@
             <tr style="animation: fadeIn 0.5s ease forwards; animation-delay: {{ forloop.counter }}s;">
                 <td>{{ forloop.counter }}</td>
                 <td>
+                    <!-- Container Details -->
                     <div class="container-details" data-container-id="{{ container.id }}">
                         <i class="fas fa-truck icon"></i>
+                        <!-- Container Number Link -->
                         <a href="{% url 'container-detail' container.id %}" class="container-number">{{ container.number }}</a>
                     </div>
                 </td>
@@ -47,10 +53,16 @@
                     {{ container.arrival_date }}
                 </td>
                 <td>
+                    <!-- Container Dates -->
                     <div>
                         <span class="small-text"><i class="fas fa-clock icon"></i> Created At: {{ container.created_at|date:"DATETIME_FORMAT" }}</span><br>
                         <span class="small-text"><i class="fas fa-history icon"></i> Updated At: {{ container.updated_at|date:"DATETIME_FORMAT" }}</span>
                     </div>
+                </td>
+                <td> <!-- Added Actions column -->
+                    <!-- Buttons for Orders and Reviews -->
+                    <button onclick="location.href='{% url 'container_orders' container.id %}'">Orders</button>
+                    <button onclick="location.href='{% url 'container-detail' container.id %}'">Reviews</button>
                 </td>
             </tr>
             {% endfor %}
@@ -60,15 +72,16 @@
     <!-- Pagination Links -->
     <div class="pagination">
         <span class="step-links">
+            <!-- Previous Page Links -->
             {% if containers.has_previous %}
             <a href="?page=1">&laquo; First</a>
             <a href="?page={{ containers.previous_page_number }}">Previous</a>
             {% endif %}
-
-            <span class="current">
-                Page {{ containers.number }} of {{ containers.paginator.num_pages }}.
-            </span>
-
+            
+            <!-- Current Page -->
+            <span class="current">Page {{ containers.number }} of {{ containers.paginator.num_pages }}.</span>
+            
+            <!-- Next Page Links -->
             {% if containers.has_next %}
             <a href="?page={{ containers.next_page_number }}">Next</a>
             <a href="?page={{ containers.paginator.num_pages }}">Last &raquo;</a>
@@ -76,14 +89,17 @@
         </span>
     </div>
 
+    <!-- External JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Initialize Date Range Picker
             flatpickr("#date-range", {
                 mode: "range",
                 dateFormat: "Y-m-d",
             });
 
+            // Filter Button Click Event
             document.getElementById("filter-button").addEventListener("click", function () {
                 const dateRange = document.getElementById("date-range").value;
                 if (dateRange) {

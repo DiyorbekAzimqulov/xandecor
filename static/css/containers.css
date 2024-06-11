@@ -2,7 +2,7 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f8f9fa;
   margin: 0;
-  padding: 20px;
+  padding: 0;
   color: #333;
 }
 
@@ -182,7 +182,7 @@ tr:hover {
 /* Calendar */
 
 .date-picker {
-  margin: 20px 0;
+  margin: 20px 20px;
   display: flex;
   align-items: center;
   justify-content: flex-end; /* Align to the right */

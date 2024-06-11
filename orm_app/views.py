@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 
-from .models import Container, User, AskUser, Organization
+from .models import Container, User, AskUser, Organization, Sale
 from .services import (
     get_review_statistics_by_container,
     get_reviewers_statistics_by_user,
@@ -173,3 +173,27 @@ def save_user_with_organizations(request):
         requests.post(url, data=payload)
         return JsonResponse(response)
     return JsonResponse({'status': 'error'}, status=400)
+
+
+# View for showing users who ordered products in a specific container
+def container_orders(request, container_id):
+    container = get_object_or_404(Container, id=container_id)
+    sales = Sale.objects.filter(container=container).select_related('user')
+    users = {sale.user for sale in sales}
+    
+    context = {
+        'container': container,
+        'users': users,
+    }
+    return render(request, 'container_orders.html', context)
+
+# View for showing orders of a specific user
+def user_orders(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    sales = Sale.objects.filter(user=user).select_related('product', 'container')
+    
+    context = {
+        'user': user,
+        'sales': sales,
+    }
+    return render(request, 'user_orders.html', context)

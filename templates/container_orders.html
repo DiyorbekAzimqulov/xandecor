@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Container List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/containers.css' %}" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    
+    {% include '_navbar.html' %}
+<div class="container">
+    <h1>Orders for Container: {{ container.number }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th><i class="fas fa-user"></i> User Name</th>
+                <th><i class="fas fa-phone"></i> Phone Number</th>
+                <th><i class="fas fa-building"></i> Organization</th>
+                <th><i class="fas fa-shopping-cart"></i> Number of Orders</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr onclick="location.href='{% url 'user_orders' user.id %}'" style="cursor: pointer;">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.phone_number }}</td>
+                <td>{{ user.organization }}</td>
+                <td>{{ user.orders.count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
