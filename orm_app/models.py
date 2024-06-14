@@ -86,13 +86,15 @@ class Sale(models.Model):
     )
     purchase_date = models.DateField(blank=True, null=True)
     volume = models.IntegerField(default=0)
+    price = models.FloatField(default=0)
     review_count = models.IntegerField(default=0)
+    deadline = models.DateField(blank=True, null=True,help_text="Deadline for money return")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(self.purchase_date) if self.purchase_date else "No Purchase Date"
+        return f"|{self.user.name}|-|{self.container.number}|-|{self.purchase_date}|" if self.user and self.purchase_date else self.user.name
 
 
 class Review(models.Model):

@@ -1,8 +1,6 @@
 import os
 import sys
 
-from django.utils import timezone
-
 # Ensure the parent directory of 'orm' is in the PYTHONPATH
 sys.path.append('/app')
 
@@ -15,6 +13,8 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from orm_app import models
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 
 @sync_to_async
@@ -143,3 +143,16 @@ def cancel_sale(sale_id):
     sale.delete()
     return True
 
+
+@sync_to_async
+def get_sales_by_deadline():
+    today = timezone.now().date()
+    # Use select_related to fetch related user and product in a single query
+    sales = models.Sale.objects.filter(deadline__isnull=False).select_related('user', 'product')
+    deadline_sales = [sale for sale in sales if sale.deadline - timedelta(days=1) == today]
+    return deadline_sales
+
+
+@sync_to_async
+def get_sales_by_container_id(container_id):
+    return list(models.Sale.objects.filter(container_id=container_id).select_related("user", "container", "product"))

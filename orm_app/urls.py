@@ -9,8 +9,10 @@ from .views import (
     accept_user,
     save_user_with_organizations,
     reject_user,
-    container_orders,
-    user_orders,
+    ContainerOrdersDetailView,
+    UserOrdersView,
+    RequestedOrdersView,
+    report_location,
 )
 
 urlpatterns = [
@@ -27,7 +29,8 @@ urlpatterns = [
     path('accept-user/<int:pk>/', accept_user, name='accept_user'),
     path('save-user-with-organizations/', save_user_with_organizations, name='save_user_with_organizations'),
     path('reject-user/<int:pk>/', reject_user, name='reject_user'),
-    path('<int:container_id>/orders/', container_orders, name='container_orders'),
-    path('user/<int:user_id>/orders/', user_orders, name='user_orders'),
-
+    path('<int:container_id>/users/', ContainerOrdersDetailView.as_view(), name='container_orders'),
+    path('u<int:user_id>/c<int:container_id>/orders/', UserOrdersView.as_view(), name='user_orders'),
+    path('requested-orders/', RequestedOrdersView.as_view(), name='requested_order'),
+    path('report-location/', report_location, name='report-location'),
 ]

@@ -4,71 +4,82 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Orders for User</title>
+    <title>Requested Orders</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'css/containers.css' %}" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap CSS for better button styling -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        .missing-date, .missing-container {
+        .table-hover tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        .symbol-yes {
+            color: green;
+        }
+        .symbol-no {
             color: red;
+        }
+        .table th, .table td {
+            vertical-align: middle;
         }
     </style>
 </head>
 <body>
+
     {% include '_navbar.html' %}
     <div class="container">
-        <h1>Orders for User: {{ user.name }}</h1>
+        <h1>Requested Orders</h1>
         <table class="table table-hover">
             <thead>
                 <tr>
                     <th>#</th>
+                    <th><i class="fas fa-user"></i> User</th>
                     <th><i class="fas fa-box"></i> Product</th>
-                    <th><i class="fas fa-truck"></i> Container</th>
                     <th><i class="far fa-calendar-alt"></i> Purchase Date</th>
+                    <th><i class="fas fa-truck"></i> Container</th>
                     <th><i class="fas fa-cube"></i> Volume</th>
+                    <th><i class="fas fa-dollar-sign"></i> Price</th>
                     <th><i class="fas fa-comments"></i> Reviews</th>
-                    <th><i class="fas fa-dollar-sign"></i> Price {{ total_price }} $</th>
                     <th><i class="far fa-calendar-check"></i> Deadline</th>
                     <th><i class="fas fa-edit"></i> Edit</th>
                 </tr>
             </thead>
             <tbody>
-                {% for sale, has_missing in sales_with_indicators %}
+                {% for sale in object_list %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
+                    <td>{{ sale.user.name }}</td>
                     <td>{{ sale.product.name }}</td>
-                    <td>
-                        {% if sale.container %}
-                            {{ sale.container.number }}
-                        {% else %}
-                            <span class="missing-container"><i class="fas fa-exclamation-circle"></i> Missing</span>
-                        {% endif %}
-                    </td>
                     <td>
                         {% if sale.purchase_date %}
                             {{ sale.purchase_date }}
                         {% else %}
-                            <span class="missing-date"><i class="fas fa-exclamation-circle"></i> Missing</span>
+                            <i class="fas fa-times symbol-no"></i> <!-- Symbol for missing purchase date -->
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if sale.container %}
+                            {{ sale.container.number }}
+                        {% else %}
+                            <i class="fas fa-times symbol-no"></i> <!-- Symbol for missing container -->
                         {% endif %}
                     </td>
                     <td>{{ sale.volume }}</td>
-                    <td>{{ sale.review_count }}</td>
                     <td>
                         {% if sale.price %}
                             {{ sale.price }}
                         {% else %}
-                            <span class="missing-price"><i class="fas fa-exclamation-circle"></i> Missing</span>
+                            <i class="fas fa-times symbol-no"></i> <!-- Symbol for missing price -->
                         {% endif %}
                     </td>
+                    <td>{{ sale.review_count }}</td>
                     <td>
                         {% if sale.deadline %}
                             {{ sale.deadline }}
                         {% else %}
-                            <span class="missing-deadline"><i class="fas fa-exclamation-circle"></i> Missing</span>
+                            <i class="fas fa-times symbol-no"></i> <!-- Symbol for missing deadline -->
                         {% endif %}
                     </td>
                     <td>

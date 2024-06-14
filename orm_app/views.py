@@ -8,7 +8,6 @@ from .services import (
     get_review_statistics_by_container,
     get_reviewers_statistics_by_user,
 )
-from django.core.paginator import Paginator
 from .services import (
     get_review_statistics_by_container,
     get_reviewers_statistics_by_user,
@@ -20,6 +19,9 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import requests
 from salebot.data.config import BOT_TOKEN
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+
 
 class SuperuserRequiredMixin(AccessMixin):
     """Ensure that the current user is authenticated and is a superuser."""
@@ -169,31 +171,87 @@ def save_user_with_organizations(request):
         user.delete()
         response = {'status': 'success'}
         url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
-        payload = {'chat_id': user.telegram_id, 'text': "Sizning arizangiz qabul qilindi! Botimizdan foydalanishga ruxsat berildi!"}
+        payload = {'chat_id': user.telegram_id, 'text': "Sizning arizangiz qabul qilindi! Botimizdan foydalanishga ruxsat berildi! /start buyrug'ini bosing!"}
         requests.post(url, data=payload)
         return JsonResponse(response)
     return JsonResponse({'status': 'error'}, status=400)
 
 
-# View for showing users who ordered products in a specific container
-def container_orders(request, container_id):
-    container = get_object_or_404(Container, id=container_id)
-    sales = Sale.objects.filter(container=container).select_related('user')
-    users = {sale.user for sale in sales}
-    
-    context = {
-        'container': container,
-        'users': users,
-    }
-    return render(request, 'container_orders.html', context)
+class ContainerOrdersDetailView(SuperuserRequiredMixin, ListView):
+    template_name = 'container_orders.html'
 
-# View for showing orders of a specific user
-def user_orders(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    sales = Sale.objects.filter(user=user).select_related('product', 'container')
+    def get(self, request, container_id):
+        container = get_object_or_404(Container, id=container_id)
+        users = User.objects.filter(sale__container=container).distinct()
+
+        def user_has_missing_purchase_date(user):
+            return Sale.objects.filter(user=user, container=container, purchase_date__isnull=True).exists()
+
+        users_with_indicators = [(user, user_has_missing_purchase_date(user)) for user in users]
+        
+
+        context = {
+            'container': container,
+            'users_with_indicators': users_with_indicators,
+        }
+        return render(request, self.template_name, context)
     
-    context = {
-        'user': user,
-        'sales': sales,
-    }
-    return render(request, 'user_orders.html', context)
+
+class UserOrdersView(SuperuserRequiredMixin, ListView):
+    template_name = 'user_orders.html'
+
+    def get(self, request, user_id, container_id):
+        user = get_object_or_404(User, id=user_id)
+        sales = Sale.objects.filter(user=user, container_id=container_id)
+
+        def has_missing_purchase_date(sale):
+            return sale.purchase_date is None
+
+        sales_with_indicators = [(sale, has_missing_purchase_date(sale)) for sale in sales]
+
+        total_price = sum(sale.price for sale in sales)
+        
+        context = {
+            'user': user,
+            'sales_with_indicators': sales_with_indicators,
+            'total_price': total_price,
+            
+        }
+        return render(request, self.template_name, context)
+
+
+class RequestedOrdersView(SuperuserRequiredMixin, ListView):
+    template_name = 'requested_orders.html'
+    model = Sale
+
+    def get_queryset(self):
+        # if the container is null with the purchase date, it means the order is requested
+        return Sale.objects.filter(Q(container__isnull=True))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active_page'] = 'requested_orders'
+        return context
+
+
+@csrf_exempt
+def report_location(request):
+    if request.method == 'POST':
+        location_name = request.POST.get('location_name')
+        containers = request.POST.get('containers').split(',')
+        for container_id in containers:
+            user, container, product = Sale.objects.filter(container_id=container_id).select_related('user', 'container', 'product').first()
+            context = {
+                    f"📌 Location: {location_name}\n"
+                    f"# Container Number: {container.number}\n"
+                    f"📦 Product: {product.name}\n"
+                    f"📅 Arrival Date: {container.arrival_date}\n"
+                    f"🧑‍💼 User: {user.username}\n"
+            }
+            
+            url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
+            payload = {'chat_id': user.telegram_id, 'text': context}
+            response = requests.post(url, data=payload)
+            
+        return JsonResponse(response)
+    return JsonResponse({'status': 'failed'}, status=400)

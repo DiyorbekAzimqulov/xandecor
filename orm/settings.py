@@ -155,5 +155,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = "/login/"  # Or your custom login route
 LOGIN_REDIRECT_URL = "/containers"  # Or your custom URL
-REVIEW_LIMIT = 2
-REVIEW_DAYS = 7
+REVIEW_LIMIT = 2 # 2 reviews
+REVIEW_DAYS = 7 # 7 days
+DAILY_CRON_INTERVAL = 60 * 60 * 24 # 24 hours

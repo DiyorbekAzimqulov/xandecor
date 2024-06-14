@@ -4,13 +4,14 @@ from keyboards.inline.users_inlines import get_products_kb_in
 from loader import bot
 from utils.db_api.connector_db import get_sales
 
-DAILY_CRON_INTERVAL = 60 * 60 * 24 # 24 hours
-
+# import DAILY_CRON_INTERVAL from django settings.py
+from django.conf import settings
 
 async def ask_review_for_product():
     while True:
-        await asyncio.sleep(DAILY_CRON_INTERVAL)
-        sales = await get_sales()      
+        await asyncio.sleep(settings.DAILY_CRON_INTERVAL)
+        sales = await get_sales() 
+        print("Checking for sales Reviews...")     
         for sale in sales:
             product, user, container = sale.product, sale.user, sale.container
             products_kb_in = await get_products_kb_in(
