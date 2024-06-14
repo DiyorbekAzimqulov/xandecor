@@ -234,24 +234,45 @@ class RequestedOrdersView(SuperuserRequiredMixin, ListView):
         return context
 
 
+import requests
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Sale
+
 @csrf_exempt
 def report_location(request):
     if request.method == 'POST':
         location_name = request.POST.get('location_name')
         containers = request.POST.get('containers').split(',')
+        
+        response_data = []  # To collect response data for debugging
+
         for container_id in containers:
-            user, container, product = Sale.objects.filter(container_id=container_id).select_related('user', 'container', 'product').first()
-            context = {
+            sales = Sale.objects.filter(container_id=container_id).select_related('user', 'container', 'product').all()
+            for sale in sales:
+                message = (
                     f"📌 Location: {location_name}\n"
-                    f"# Container Number: {container.number}\n"
-                    f"📦 Product: {product.name}\n"
-                    f"📅 Arrival Date: {container.arrival_date}\n"
-                    f"🧑‍💼 User: {user.username}\n"
-            }
-            
-            url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
-            payload = {'chat_id': user.telegram_id, 'text': context}
-            response = requests.post(url, data=payload)
-            
-        return JsonResponse(response)
+                    f"# Container Number: {sale.container.number}\n"
+                    f"📦 Product: {sale.product.name}\n"
+                    f"📅 Arrival Date: {sale.container.arrival_date}\n"
+                    f"🧑‍💼 User: {sale.user.name}\n"
+                )
+                url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
+                payload = {'chat_id': sale.user.telegram_id, 'text': message}
+                response = requests.post(url, data=payload)
+                
+                response_data.append({
+                    'user': sale.user.name,
+                    'telegram_id': sale.user.telegram_id,
+                    'status_code': response.status_code,
+                    'response_text': response.text,
+                })
+
+                if response.status_code != 200:
+                    return JsonResponse({
+                        'status': 'failed',
+                        'error': response.json()
+                    }, status=400)
+        
+        return JsonResponse({'status': 'success', 'details': response_data})
     return JsonResponse({'status': 'failed'}, status=400)

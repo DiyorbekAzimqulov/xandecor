@@ -17,49 +17,44 @@
     <!-- Include Navbar -->
     {% include '_navbar.html' %}
 
-    
-    
     <!-- Container Table -->
-    <div class="container-fluid mx-5">
-        <h1 class="my-3">Containers</h1>
+    <div class="container-fluid">
+        <h1 class="mt-5"><i class="fas fa-truck"></i> <b>Container List</b></h1>
         
-        <div class="container mx-5">
-          <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <div class="d-flex justify-content-between">
             <!-- Report Location Button -->
-            <button id="report-location-button" class="btn btn-warning ml-2">Report Location</button>
+            <div>
+                <button id="report-location-button" class="btn btn-warning ml-2">Report Location</button>
+            </div>
       
-            <div class="date-picker my-4 ml-5">
+            <div>
                 <label for="date-range">Select Date Range: </label>
                 <input type="text" id="date-range" class="form-control d-inline-block w-auto" />
                 <button id="filter-button" class="btn btn-primary">Filter</button>
             </div>
-          </header>
         </div>
-        <!-- Date Range Picker -->
 
-        
+        <!-- Date Range Picker -->
         <table id="container-table" class="table table-hover mr-5">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th><i>Containers</i></th>
-                    <th><i>Arrival Date</i></th>
-                    <th><i>Details</i></th>
-                    <th><i>Actions</i></th>
+                    <th scope="col">#</th>
+                    <th><i class="fas fa-box"></i> Container Number</th>
+                    <th><i class="fas fa-calendar-alt"></i> Arrival Date</th>
+                    <th><i class="fas fa-history"></i> Dates</th>
+                    <th><i class="fas fa-cogs"></i> Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for container in containers %}
-                <tr style="animation: fadeIn 0.5s ease forwards; animation-delay: {{ forloop.counter }}s;">
+                <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>
-                        <!-- Container Details -->
-                        <i class="fas fa-truck icon"></i>
                         <!-- Container Number Link -->
                         <a href="{% url 'container-detail' container.id %}" class="container-number">{{ container.number }}</a>
                     </td>
                     <td>
-                        {{ container.arrival_date }}
+                        <i class="fas fa-calendar-alt icon"></i> {{ container.arrival_date }}
                     </td>
                     <td>
                         <!-- Container Dates -->
@@ -106,7 +101,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="location-name">Location Name</label>
+                        <label for="location-name">Location Container</label>
                         <select id="location-name" class="form-control">
                             <!-- Replace with actual location names -->
                             <option value="Location 1">Xitoy</option>
@@ -119,7 +114,7 @@
                         <div id="container-selection">
                             {% for container in containers %}
                             <div class="form-check">
-                                <input class="form-check-input container-checkbox-modal" type="checkbox" value="{{ container.id }}" id="containerModal{{ container.id }}">
+                                <input class="form-check-input container-checkbox-modal" type="checkbox" value="{{ container.id }}" id="containerModal{{ container.id }}" required>
                                 <label class="form-check-label" for="containerModal{{ container.id }}">
                                     {{ container.number }} (Arrival: {{ container.arrival_date }})
                                 </label>

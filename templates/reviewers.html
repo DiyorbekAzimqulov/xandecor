@@ -21,7 +21,7 @@
   <table id="user-table">
     <thead>
       <tr>
-        <th><i class="fas fa-id-card"></i> ID</th>
+        <th><i class="fas fa-id-card"></i> No</th>
         <th><i class="fas fa-user"></i> Name</th>
         <th><i class="fab fa-telegram"></i> Telegram ID</th>
         <th><i class="fas fa-phone"></i> Phone Number</th>
@@ -34,7 +34,7 @@
     <tbody>
       {% for user in reviewers %}
       <tr onclick="window.location='{% url 'reviewer-detail' user.id %}'" style="cursor: pointer">
-        <td>{{ user.id }}</td>
+        <td>{{ forloop.counter }}</td>
         <td>{{ user.name }}</td>
         <td>{{ user.telegram_id }}</td>
         <td>{{ user.phone_number }}</td>
