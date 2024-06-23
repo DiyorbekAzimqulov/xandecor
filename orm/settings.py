@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
-from django.utils.translation import gettext_lazy as _
 
+from django.utils.translation import gettext_lazy as _
 from environs import Env
 
 # environs kutubxonasidan foydalanish
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    'django.middleware.locale.LocaleMiddleware',
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -65,9 +65,9 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                'website.service.get_about_us',
-                'website.service.get_carousel_main_photo',
-                'orm_app.services.asked_users_count',
+                "website.service.get_about_us",
+                "website.service.get_carousel_main_photo",
+                "orm_app.services.asked_users_count",
             ],
         },
     },
@@ -130,20 +130,18 @@ STATICFILES_DIRS = [
 ]
 
 LANGUAGES = [
-    ('en', _('English')),
-    ('ru', _('Russian')),
-    ('uz', _('Uzbek')),
-    ('tr', _('Turkish')),
-    ('zh-hans', _('Chinese')),
-    ('kk', _('Kazakh')),
+    ("en", _("English")),
+    ("ru", _("Russian")),
+    ("uz", _("Uzbek")),
+    ("tr", _("Turkish")),
+    ("zh-hans", _("Chinese")),
+    ("kk", _("Kazakh")),
 ]
-MODEL_TRANSLATION_DEFAULT_LANGUAGE = 'en'
+MODEL_TRANSLATION_DEFAULT_LANGUAGE = "en"
 
-MODELTRANSLATION_FALLBACK_LANGUAGES = ('en', 'ru', 'uz', 'tr', 'zh-hans', 'kk')
+MODELTRANSLATION_FALLBACK_LANGUAGES = ("en", "ru", "uz", "tr", "zh-hans", "kk")
 
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'locale/'),
-)
+LOCALE_PATHS = (os.path.join(BASE_DIR, "locale/"),)
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -155,6 +153,29 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = "/login/"  # Or your custom login route
 LOGIN_REDIRECT_URL = "/containers"  # Or your custom URL
-REVIEW_LIMIT = 2 # 2 reviews
-REVIEW_DAYS = 7 # 7 days
-DAILY_CRON_INTERVAL = 60 * 60 * 24 # 24 hours
+REVIEW_LIMIT = 2  # 2 reviews
+REVIEW_DAYS = 7  # 7 days
+DAILY_CRON_INTERVAL = 60 * 60 * 24  # 24 hours
+
+
+# AWS
+AWS_ACCESS_KEY_ID = ""
+AWS_SECRET_ACCESS_KEY = ""
+AWS_STORAGE_BUCKET_NAME = "xandecor"
+AWS_S3_REGION_NAME = "us-east-2"  # e.g., 'us-east-1'
+
+AWS_S3_CUSTOM_DOMAIN = "xandecor.s3.us-east-2.amazonaws.com"
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=86400",
+}
+AWS_S3_FILE_OVERWRITE = False
+AWS_LOCATION = "static"
+AWS_MEDIA_LOCATION = "media"
+AWS_QUERYSTRING_AUTH = False
+AWS_HEADERS = {"Access-Control-Allow-Origin": "*"}
+AWS_DEFAULT_ACL = "public-read"
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_MEDIA_LOCATION)
