@@ -24,10 +24,10 @@ from aiogram.types import CallbackQuery
 from aiogram.dispatcher import FSMContext
 from salebot.states.userstates import SaleVolume
 
-async def get_file_path(product):
-    file_path1 = product.image1.path
-    file_path2 = product.image2.path
-    return file_path1, file_path2
+async def get_file_urls(product):
+    file_url1 = product.image1.url
+    file_url2 = product.image2.url
+    return file_url1, file_url2
 
 async def show_user_sales(telegram_id):
     user = await get_user_by_telegram_id(telegram_id)
@@ -40,22 +40,21 @@ async def show_user_sales(telegram_id):
         return
     for sale in user_sales:
         cancel_sale_kb_in = get_cancel_sale_kb_in(sale.id, telegram_id)
-        file_path1, file_path2 = await get_file_path(sale.product)
+        file_url1, file_url2 = await get_file_urls(sale.product)
         caption = f"🛒 <b>Mahsulot:</b> {sale.product.name}\n📦 <b>Model:</b> {sale.product.number}\n🔢 <b>Buyurtma soni:</b> {sale.volume}"
-        with open(file_path1, "rb") as file1, open(file_path2, "rb") as file2:
-            media = [
-                types.InputMediaPhoto(file1, caption=caption),
-                types.InputMediaPhoto(file2)
-            ]
-            await bot.send_media_group(
-                chat_id=telegram_id,
-                media=media
-            )
-            await bot.send_message(
-                text='❌ Buyurtmani bekor qilish!',
-                chat_id=telegram_id,
-                reply_markup=cancel_sale_kb_in
-            )
+        media = [
+            types.InputMediaPhoto(file_url1, caption=caption),
+            types.InputMediaPhoto(file_url2)
+        ]
+        await bot.send_media_group(
+            chat_id=telegram_id,
+            media=media
+        )
+        await bot.send_message(
+            text='❌ Buyurtmani bekor qilish!',
+            chat_id=telegram_id,
+            reply_markup=cancel_sale_kb_in
+        )
     return
 
 @dp.message_handler()
@@ -77,23 +76,22 @@ async def categories(message: types.Message):
 
     for product in products:
         products_kb_in = await get_products_kb_in(product.id, telegram_id)
-        file_path1, file_path2 = await get_file_path(product)
+        file_url1, file_url2 = await get_file_urls(product)
         caption = f"📚 <b>Mahsulot turi:</b> {category_text}\n🛍️ <b>Mahsulot:</b> {product.name}\n🔢 <b>Model:</b> {product.number}"
         try:
-            with open(file_path1, "rb") as file1, open(file_path2, "rb") as file2:
-                media = [
-                    types.InputMediaPhoto(file1, caption=caption),
-                    types.InputMediaPhoto(file2)
-                ]
-                await bot.send_media_group(
-                    chat_id=telegram_id,
-                    media=media
-                )
-                await bot.send_message(
-                    text='▶️ Boshqa mahsulotlarni ko\'rish uchun quyidagi tugmani bosing:',
-                    chat_id=telegram_id,
-                    reply_markup=products_kb_in
-                )
+            media = [
+                types.InputMediaPhoto(file_url1, caption=caption),
+                types.InputMediaPhoto(file_url2)
+            ]
+            await bot.send_media_group(
+                chat_id=telegram_id,
+                media=media
+            )
+            await bot.send_message(
+                text='▶️ Boshqa mahsulotlarni ko\'rish uchun quyidagi tugmani bosing:',
+                chat_id=telegram_id,
+                reply_markup=products_kb_in
+            )
         except Exception as e:
             print(e)
             await bot.send_message(telegram_id, caption)
@@ -112,22 +110,21 @@ async def product(query: CallbackQuery, state: FSMContext):
                 child_product_kb_in = await get_child_product_kb_in(
                     child_product.id, telegram_id
                 )
-            file_path1, file_path2 = await get_file_path(child_product)
+            file_url1, file_url2 = await get_file_urls(child_product)
             caption = f"🛍️ <b>Mahsulot:</b> {child_product.name}\n🔢 <b>Model:</b> {child_product.number}"
-            with open(file_path1, "rb") as file1, open(file_path2, "rb") as file2:
-                media = [
-                    types.InputMediaPhoto(file1, caption=caption),
-                    types.InputMediaPhoto(file2)
-                ]
-                await bot.send_media_group(
-                    chat_id=telegram_id,
-                    media=media
-                )
-                await bot.send_message(
-                    text='🛒 Mahsulotni sotib olish uchun quyidagi tugmani bosing:',
-                    chat_id=telegram_id,
-                    reply_markup=child_product_kb_in
-                )
+            media = [
+                types.InputMediaPhoto(file_url1, caption=caption),
+                types.InputMediaPhoto(file_url2)
+            ]
+            await bot.send_media_group(
+                chat_id=telegram_id,
+                media=media
+            )
+            await bot.send_message(
+                text='🛒 Mahsulotni sotib olish uchun quyidagi tugmani bosing:',
+                chat_id=telegram_id,
+                reply_markup=child_product_kb_in
+            )
     except Exception as e:
         print("IN the Child product includes the error is: ", e)
         await query.answer("⚠️ Error")

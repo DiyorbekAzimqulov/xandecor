@@ -19,10 +19,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-a4=1h=g*!p5dpd8_k#81!0@j@+&^ldj45kepx5c4^65^92!xqn"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG")
 
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [env.str("ALLOWED_HOSTS")]
 
 
 # Application definition
@@ -159,8 +159,8 @@ DAILY_CRON_INTERVAL = 60 * 60 * 24  # 24 hours
 
 
 # AWS
-AWS_ACCESS_KEY_ID = ""
-AWS_SECRET_ACCESS_KEY = ""
+AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = "xandecor"
 AWS_S3_REGION_NAME = "us-east-2"  # e.g., 'us-east-1'
 

@@ -234,11 +234,6 @@ class RequestedOrdersView(SuperuserRequiredMixin, ListView):
         return context
 
 
-import requests
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import Sale
-
 @csrf_exempt
 def report_location(request):
     if request.method == 'POST':
@@ -276,3 +271,4 @@ def report_location(request):
         
         return JsonResponse({'status': 'success', 'details': response_data})
     return JsonResponse({'status': 'failed'}, status=400)
+
