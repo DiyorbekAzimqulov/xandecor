@@ -29,14 +29,11 @@ from django.conf.urls.i18n import i18n_patterns
 
 class MyLoginView(auth_views.LoginView):
 
-    @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
 class MyLogoutView(auth_views.LogoutView):
 
-
-    @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
@@ -56,3 +53,4 @@ urlpatterns += i18n_patterns (
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
