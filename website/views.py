@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.utils import translation
 from django.urls import reverse
 from orm_app.models import Product, Category
-
+from django.views.decorators.csrf import csrf_exempt
 
 def base(request):
     """Base view for the wallpaper app."""
@@ -104,7 +104,7 @@ def service(request):
     return render(request=request, template_name='service.html', context=context)
 
 
-
+@csrf_exempt
 def submit_service(request):
     if request.method == 'POST':
         # Extract data from the form
@@ -149,7 +149,7 @@ def submit_service(request):
         # Render the form page
         return render(request, 'service.html', {'services': models.Service.objects.all()})
 
-
+@csrf_exempt
 def submit_base(request):
     if request.method == 'POST':
         # Extract data from the form
@@ -178,6 +178,8 @@ def submit_base(request):
     else:
         # Render the form page
         return render(request, 'layout/base.html')
+    
+@csrf_exempt
 def submit_contact(request):
     if request.method == 'POST':
         # Extract data from the form
@@ -206,9 +208,6 @@ def submit_contact(request):
     else:
         # Render the form page
         return render(request, 'contact.html')
-
-
-
 
 
 def news_list(request):
