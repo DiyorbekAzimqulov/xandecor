@@ -16,17 +16,14 @@ async def bot_start(message: types.Message):
     telegram_id = message.from_user.id
     users = await get_users()
     categories = await categories_kb()
-    user_phone_kb = get_user_phone_kb()
     if telegram_id == int("1180612659"):
         await message.answer("Nodirbek sizni ko'rganimdan xursandman!")
     elif telegram_id not in [user.telegram_id for user in users]:
         await message.answer(
-            "Salom! Siz ro'yxatdan o'tmagansiz. Ro'yxatdan o'tish uchun telefon raqamingizni kiriting.",
-            reply_markup=user_phone_kb,
+            "Salom! Siz ro'yxatdan o'tmagansiz. Ro'yxatdan o'tish uchun ushbu bot orqali telefon raqamingizni yuboring!\n\nhttps://t.me/KhanDecorbot?start=register"
         )
         return
     await message.answer(
         f"Salom, {message.from_user.full_name}!", reply_markup=categories
     )
- 
 

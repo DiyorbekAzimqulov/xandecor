@@ -19,6 +19,8 @@ from utils.db_api.connector_db import (
 )
 from aiogram.types import CallbackQuery
 from aiogram.dispatcher import FSMContext
+from aiogram.types import ReplyKeyboardRemove
+
 
 @dp.message_handler()
 async def categories(message: types.Message):
@@ -145,7 +147,7 @@ async def handle_contact(message: types.Message):
     last_name = contact.last_name or "Mavjud emas"
     phone_number = contact.phone_number
     if await check_user_exist(phone_number=phone_number):
-        await message.reply(f"Kechirasiz, {first_name}! Siz allaqachon ro'yxatdan o'tgansiz! Iltimos, adminning tasdiqlashini kuting!")
+        await message.reply(f"Kechirasiz, {first_name}! Siz allaqachon ro'yxatdan o'tgansiz! Iltimos, adminning tasdiqlashini kuting!", reply_markup=ReplyKeyboardRemove())
         return
     await save_new_user(telegram_id=telegram_id, phone_number=phone_number, first_name=first_name, last_name=last_name)
-    await message.reply(f"Rahmat! Sizning telefon raqamingiz: {phone_number} qabul qilindi! Iltimos, adminning tasdiqlashini kuting!")
+    await message.reply(f"Rahmat! Sizning telefon raqamingiz: {phone_number} qabul qilindi! Iltimos, adminning tasdiqlashini kuting!", reply_markup=ReplyKeyboardRemove())

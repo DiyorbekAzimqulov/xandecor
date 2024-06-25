@@ -23,6 +23,7 @@ from utils.db_api.connector_db import (
 from aiogram.types import CallbackQuery
 from aiogram.dispatcher import FSMContext
 from salebot.states.userstates import SaleVolume
+from aiogram.types import ReplyKeyboardRemove
 
 async def get_file_urls(product):
     file_url1 = product.image1.url
@@ -129,22 +130,6 @@ async def product(query: CallbackQuery, state: FSMContext):
         print("IN the Child product includes the error is: ", e)
         await query.answer("⚠️ Error")
 
-@dp.message_handler(content_types=types.ContentType.CONTACT)
-async def handle_contact(message: types.Message):
-    contact = message.contact
-    telegram_id = message.from_user.id
-    firt_name = contact.first_name
-    last_name = contact.last_name
-    phone_number = contact.phone_number
-    if await check_user_exist(phone_number=phone_number):
-        await message.reply(f"⚠️ Kechirasiz, {firt_name}! Siz ro'yxatdan o'tgansiz! Iltimos, kuting admin sizni qo'shadi!")
-        return
-    if firt_name is None:
-        firt_name = "Mavjud emas"
-    elif last_name is None:
-        last_name = "Mavjud emas"
-    await save_new_user(telegram_id=telegram_id, phone_number=phone_number, first_name=firt_name, last_name=last_name)
-    await message.reply(f"✅ Rahmat! Sizning telefon raqamingiz: {phone_number} qabul qilindi!\nIltimos, kuting admin sizni ro'yxatdan o'tkazadi!")
 
 @dp.callback_query_handler(lambda query: query.data.startswith("sale"), state=None)
 async def usersale(query: CallbackQuery, state: FSMContext):

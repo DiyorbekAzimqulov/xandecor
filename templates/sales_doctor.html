@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales Doctor</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    /* Navbar Styles */
+    .navbar {
+      background-color: #1132ab;
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar-brand {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    .navbar-button {
+      font-size: 1em;
+      text-decoration: none;
+      color: #fff;
+      margin-left: 10px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      background-color: #007bff;
+    }
+    .navbar-button:last-child {
+      margin-right: 0;
+    }
+    .navbar-button:hover {
+      background-color: #0b7dda; /* Darker Blue */
+    }
+    .navbar-text {
+      color: #fff;
+      font-weight: bold;
+      font-size: 1.2em;
+      position: center;
+    }
+    /* Active Button Style */
+    .navbar-button.active {
+      background-color: #0056b3; /* Darker Blue for active button */
+      color: white; /* Ensure the text color is white */
+      font-weight: bold; /* Make the active link bold */
+    }
+    .fas.fa-check {
+      color: green;
+    }
+    .fas.fa-times {
+      color: red;
+    }
+    .fas.fa-thumbs-up {
+      color: green;
+    }
+    .fas.fa-thumbs-down {
+      color: red;
+    }
+    .fas.fa-minus-circle {
+      color: orange;
+    }
+    table {
+      width: 100%;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    th, td {
+      text-align: center;
+      padding: 8px;
+      word-wrap: break-word;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .urixzor {
+      background-color: #fdf2ec;
+    }
+    .jome {
+      background-color: #eef7fd;
+    }
+    .bekTop {
+      background-color: #f4f5fc;
+    }
+    .quyliq {
+      background-color: #edf7f8;
+    }
+    .total {
+      background-color: #e8f7fc;
+    }
+    .header-icon {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .header-text {
+      display: block;
+      vertical-align: middle;
+      margin-left: 5px;
+    }
+    .container {
+      max-width: 100%;
+      padding: 0 15px;
+    }
+    .table th, .table td {
+      white-space: nowrap;
+    }
+    .header-cell {
+      white-space: normal;
+    }
+  </style>
+</head>
+<body>
+  {% include "_navbar.html" %}
+  <div class="container mt-5">
+    <h2 class="mb-4 text-center"><b>Sales Doctor</b></h2>
+    <table class="table table-bordered table-sm">
+      <thead>
+        <tr>
+          <th rowspan="2">No</th>
+          <th rowspan="2">Name</th>
+          <th colspan="1" class="total">Total<br />Received</th>
+          <th colspan="4" class="urixzor">Urixzor</th>
+          <th colspan="4" class="jome">Jome</th>
+          <th colspan="4" class="bekTop">BekTop</th>
+          <th colspan="4" class="quyliq">Quyliq</th>
+          <th rowspan="2" class="total">Base</th>
+        </tr>
+        <tr>
+          <th>Received</th>
+          <th class="header-cell">
+            <i class="fas fa-receipt header-icon"></i
+            ><span class="header-text">Received</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-shopping-cart header-icon"></i
+            ><span class="header-text">Salled</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-exchange-alt header-icon"></i
+            ><span class="header-text">Moving</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-box-open header-icon"></i
+            ><span class="header-text">Left</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-receipt header-icon"></i
+            ><span class="header-text">Received</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-shopping-cart header-icon"></i
+            ><span class="header-text">Salled</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-exchange-alt header-icon"></i
+            ><span class="header-text">Moving</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-box-open header-icon"></i
+            ><span class="header-text">Left</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-receipt header-icon"></i
+            ><span class="header-text">Received</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-shopping-cart header-icon"></i
+            ><span class="header-text">Salled</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-exchange-alt header-icon"></i
+            ><span class="header-text">Moving</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-box-open header-icon"></i
+            ><span class="header-text">Left</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-receipt header-icon"></i
+            ><span class="header-text">Received</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-shopping-cart header-icon"></i
+            ><span class="header-text">Salled</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-exchange-alt header-icon"></i
+            ><span class="header-text">Moving</span>
+          </th>
+          <th class="header-cell">
+            <i class="fas fa-box-open header-icon"></i
+            ><span class="header-text">Left</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in data %}
+        <tr>
+          <td>{{ row.No }}</td>
+          <td>{{ row.Name }}</td>
+          <td>{{ row.total_received }}</td>
+          <td>{{ row.urixzor_received }}</td>
+          <td>{{ row.urixzor_salled }}</td>
+          <td>{{ row.urixzor_moving }}</td>
+          <td>{{ row.urixzor_left }}</td>
+          <td>{{ row.jome_received }}</td>
+          <td>{{ row.jome_salled }}</td>
+          <td>{{ row.jome_moving }}</td>
+          <td>{{ row.jome_left }}</td>
+          <td>{{ row.bekTop_received }}</td>
+          <td>{{ row.bekTop_salled }}</td>
+          <td>{{ row.bekTop_moving }}</td>
+          <td>{{ row.bekTop_left }}</td>
+          <td>{{ row.quyliq_received }}</td>
+          <td>{{ row.quyliq_salled }}</td>
+          <td>{{ row.quyliq_moving }}</td>
+          <td>{{ row.quyliq_left }}</td>
+          <td>{{ row.total_base }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
