@@ -7,6 +7,7 @@
         <a href="{% url 'requested_order' %}" class="navbar-button {% if active_page == 'requested_order' %}active{% endif %}"><i class="fas fa-users"></i> Requested Orders</a>
         <a href="{% url 'containers_list' %}" class="navbar-button {% if active_page == 'containers_list' %}active{% endif %}"><i class="fas fa-box-open"></i> Containers</a>
         <a href="{% url 'reviewers' %}" class="navbar-button {% if active_page == 'reviewers' %}active{% endif %}"><i class="fas fa-users"></i> Users</a>
+        <a href="{% url 'products_reviews' %}" class="navbar-button {% if active_page == 'products_reviews' %}active{% endif %}"><i class="fas fa-star"></i> Product Reviews</a>
         <a href="{% url 'asked_users' %}" class="navbar-button {% if active_page == 'asked_users' %}active{% endif %}"><i class="fas fa-users"></i> Requests
             {% if asked_users_count > 0 %}
                 <span class="badge">{{ asked_users_count }}</span>

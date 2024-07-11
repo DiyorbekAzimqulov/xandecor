@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 
-from .models import Container, User, AskUser, Organization, Sale
+from .models import Container, User, AskUser, Organization, Sale, Product
 from .services import (
     get_review_statistics_by_container,
     get_reviewers_statistics_by_user,
@@ -12,6 +12,7 @@ from .services import (
     get_review_statistics_by_container,
     get_reviewers_statistics_by_user,
     get_products_statistics_by_date,
+    get_product_reviews_statistics_by_pk,
 )
 from django.contrib.auth.mixins import AccessMixin
 from django.views.generic import ListView, DetailView
@@ -272,3 +273,26 @@ def report_location(request):
         return JsonResponse({'status': 'success', 'details': response_data})
     return JsonResponse({'status': 'failed'}, status=400)
 
+
+class ProductsReviewsView(SuperuserRequiredMixin, ListView):
+    template_name = 'product_reviews.html'
+    model = Product
+    
+    def get_queryset(self):
+        return Product.objects.all()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active_page'] = 'products_reviews'
+        return context
+    
+class ProductReviewsDetailView(SuperuserRequiredMixin, DetailView):
+    template_name = 'product_reviews_detail.html'
+    model = Product
+    context_object_name = 'product'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reviews'] = get_product_reviews_statistics_by_pk(self.kwargs['pk'])
+        context['active_page'] = 'products_reviews'
+        return context

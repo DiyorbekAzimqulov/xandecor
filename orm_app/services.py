@@ -4,6 +4,8 @@ from django.db.models import Count, OuterRef, Subquery
 
 from .models import AskUser, Container, Product, Review, Sale, User
 
+from django.db.models import Avg
+
 
 def get_review_statistics_by_container(container_id) -> dict:
     review_statistics = {}
@@ -95,4 +97,23 @@ def get_products_statistics_by_date(from_date, to_date) -> dict:
 def asked_users_count(request):
     return {
         'asked_users_count': AskUser.objects.count(),
+    }
+    
+def get_product_reviews_statistics_by_pk(product_pk):
+    reviews = Review.objects.filter(product_id=product_pk, is_active=True)
+    total_reviews = reviews.count()
+    reviewers = reviews.values_list('user__name', flat=True).distinct()
+    average_rating = reviews.aggregate(average_rating=Avg('numerical_rating'))['average_rating']
+    excellent_reviews = reviews.filter(rating=Review.EXCELLENT).count()
+    medium_reviews = reviews.filter(rating=Review.MEDIUM).count()
+    bad_reviews = reviews.filter(rating=Review.BAD).count()
+    
+    return {
+        'total_reviews': total_reviews,
+        'reviewers': list(reviewers),
+        'average_rating': average_rating,
+        'excellent_reviews': excellent_reviews,
+        'medium_reviews': medium_reviews,
+        'bad_reviews': bad_reviews,
+        'details': reviews,
     }

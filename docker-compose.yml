@@ -20,6 +20,16 @@ services:
       - .:/app
     depends_on:
       - db
+  
+  salesdoctorbot:
+    build: .
+    container_name: salesdoctorbot
+    command: python3 salesdoctorbot/app.py
+    env_file: ./.env
+    volumes:
+      - .:/app
+    depends_on:
+      - db
 
   admin:
     build: .

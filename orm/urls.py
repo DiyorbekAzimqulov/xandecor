@@ -43,7 +43,7 @@ urlpatterns = [
     path('login/', MyLoginView.as_view(), name='login'),
     path('logout/', MyLogoutView.as_view(next_page='/login/'), name='logout'),
     path("containers/", include("orm_app.urls")),
-    path("sales-doctor/", include("salesdoctor.urls")),
+    path("sales-doctor/", include("salesdoctorbot.urls")),
     path("", include("website.urls")),
 ]
 

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class SalesdoctorConfig(AppConfig):
+class SalesdoctorbotConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'salesdoctor'
+    name = 'salesdoctorbot'

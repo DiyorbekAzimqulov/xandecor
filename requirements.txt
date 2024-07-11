@@ -7,3 +7,4 @@ django-modeltranslation==0.18.11
 requests==2.31.0
 boto3==1.34.131
 django-storages==1.14.3
+apscheduler==3.10.4

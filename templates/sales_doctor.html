@@ -1,3 +1,4 @@
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +13,6 @@
       margin: 0;
       padding: 0;
     }
-    /* Navbar Styles */
     .navbar {
       background-color: #1132ab;
       color: #fff;
@@ -36,66 +36,27 @@
       border-radius: 5px;
       background-color: #007bff;
     }
-    .navbar-button:last-child {
-      margin-right: 0;
-    }
     .navbar-button:hover {
-      background-color: #0b7dda; /* Darker Blue */
+      background-color: #0b7dda;
     }
-    .navbar-text {
-      color: #fff;
-      font-weight: bold;
-      font-size: 1.2em;
-      position: center;
-    }
-    /* Active Button Style */
     .navbar-button.active {
-      background-color: #0056b3; /* Darker Blue for active button */
-      color: white; /* Ensure the text color is white */
-      font-weight: bold; /* Make the active link bold */
+      background-color: #0056b3;
+      color: white;
+      font-weight: bold;
     }
-    .fas.fa-check {
-      color: green;
+    .container {
+      padding: 10px; /* Reduced padding for smaller size */
     }
-    .fas.fa-times {
-      color: red;
+    .table {
+      font-size: 0.65rem; /* Smaller font size for table */
     }
-    .fas.fa-thumbs-up {
-      color: green;
-    }
-    .fas.fa-thumbs-down {
-      color: red;
-    }
-    .fas.fa-minus-circle {
-      color: orange;
-    }
-    table {
-      width: 100%;
-      font-size: 14px;
-      table-layout: fixed;
-    }
-    th, td {
+    .table th, .table td {
+      white-space: nowrap;
       text-align: center;
-      padding: 8px;
-      word-wrap: break-word;
+      padding: 2px; /* Further reduced padding */
     }
-    th {
-      background-color: #f2f2f2;
-    }
-    .urixzor {
-      background-color: #fdf2ec;
-    }
-    .jome {
-      background-color: #eef7fd;
-    }
-    .bekTop {
-      background-color: #f4f5fc;
-    }
-    .quyliq {
-      background-color: #edf7f8;
-    }
-    .total {
-      background-color: #e8f7fc;
+    .header-cell {
+      white-space: normal;
     }
     .header-icon {
       display: inline-block;
@@ -104,131 +65,106 @@
     .header-text {
       display: block;
       vertical-align: middle;
-      margin-left: 5px;
+      margin-left: 3px;
     }
-    .container {
-      max-width: 100%;
-      padding: 0 15px;
+    .warehouse-cell-main {
+      background-color: #f1c40f; /* Yellow for Main Warehouse */
     }
-    .table th, .table td {
-      white-space: nowrap;
+    .warehouse-cell-secondary {
+      background-color: #3498db; /* Blue for Other Warehouses */
     }
-    .header-cell {
-      white-space: normal;
+    .row-even {
+      background-color: #f8f9fa; /* Light grey for Even Rows */
+    }
+    .row-odd {
+      background-color: #ffffff; /* White for Odd Rows */
+    }
+    .symbol-cell {
+      font-size: 0.7rem; /* Adjusted symbol size */
+    }
+    .symbol-cell.prixod {
+      color: #28a745; /* Green for prixod */
+    }
+    .symbol-cell.sold {
+      color: #dc3545; /* Red for sold */
+    }
+    .symbol-cell.ostatok {
+      color: #ffc107; /* Yellow for ostatok */
+    }
+    .table-bordered {
+      border: none; /* Remove table borders */
+    }
+    .table tbody tr:hover {
+      background-color: #c0c0c0; /* Light grey background on hover */
+    }
+    .table tbody tr:hover {
+      background-color: #d3d3d3; /* Light grey background on hover */
     }
   </style>
 </head>
 <body>
   {% include "_navbar.html" %}
-  <div class="container mt-5">
+  <div class="container-fluid mt-5">
     <h2 class="mb-4 text-center"><b>Sales Doctor</b></h2>
-    <table class="table table-bordered table-sm">
-      <thead>
-        <tr>
-          <th rowspan="2">No</th>
-          <th rowspan="2">Name</th>
-          <th colspan="1" class="total">Total<br />Received</th>
-          <th colspan="4" class="urixzor">Urixzor</th>
-          <th colspan="4" class="jome">Jome</th>
-          <th colspan="4" class="bekTop">BekTop</th>
-          <th colspan="4" class="quyliq">Quyliq</th>
-          <th rowspan="2" class="total">Base</th>
-        </tr>
-        <tr>
-          <th>Received</th>
-          <th class="header-cell">
-            <i class="fas fa-receipt header-icon"></i
-            ><span class="header-text">Received</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-shopping-cart header-icon"></i
-            ><span class="header-text">Salled</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-exchange-alt header-icon"></i
-            ><span class="header-text">Moving</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-box-open header-icon"></i
-            ><span class="header-text">Left</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-receipt header-icon"></i
-            ><span class="header-text">Received</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-shopping-cart header-icon"></i
-            ><span class="header-text">Salled</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-exchange-alt header-icon"></i
-            ><span class="header-text">Moving</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-box-open header-icon"></i
-            ><span class="header-text">Left</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-receipt header-icon"></i
-            ><span class="header-text">Received</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-shopping-cart header-icon"></i
-            ><span class="header-text">Salled</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-exchange-alt header-icon"></i
-            ><span class="header-text">Moving</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-box-open header-icon"></i
-            ><span class="header-text">Left</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-receipt header-icon"></i
-            ><span class="header-text">Received</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-shopping-cart header-icon"></i
-            ><span class="header-text">Salled</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-exchange-alt header-icon"></i
-            ><span class="header-text">Moving</span>
-          </th>
-          <th class="header-cell">
-            <i class="fas fa-box-open header-icon"></i
-            ><span class="header-text">Left</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in data %}
-        <tr>
-          <td>{{ row.No }}</td>
-          <td>{{ row.Name }}</td>
-          <td>{{ row.total_received }}</td>
-          <td>{{ row.urixzor_received }}</td>
-          <td>{{ row.urixzor_salled }}</td>
-          <td>{{ row.urixzor_moving }}</td>
-          <td>{{ row.urixzor_left }}</td>
-          <td>{{ row.jome_received }}</td>
-          <td>{{ row.jome_salled }}</td>
-          <td>{{ row.jome_moving }}</td>
-          <td>{{ row.jome_left }}</td>
-          <td>{{ row.bekTop_received }}</td>
-          <td>{{ row.bekTop_salled }}</td>
-          <td>{{ row.bekTop_moving }}</td>
-          <td>{{ row.bekTop_left }}</td>
-          <td>{{ row.quyliq_received }}</td>
-          <td>{{ row.quyliq_salled }}</td>
-          <td>{{ row.quyliq_moving }}</td>
-          <td>{{ row.quyliq_left }}</td>
-          <td>{{ row.total_base }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    {% if status %}
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th rowspan="2">No</th>
+              <th rowspan="2">Name</th>
+              {% for warehouse in warehouse_names %}
+                {% if warehouse == "Основной склад" %}
+                  <th class="warehouse-cell-main" rowspan="2">{{ warehouse }} <i class="fas fa-warehouse"></i></th>
+                {% else %}
+                  <th class="warehouse-cell-secondary" colspan="3">{{ warehouse }} <i class="fas fa-warehouse"></i></th>
+                {% endif %}
+              {% endfor %}
+              <th rowspan="2">Total Otxod <i class="fas fa-trash-alt"></i></th>
+            </tr>
+            <tr>
+              {% for warehouse in warehouse_names %}
+                {% if warehouse != "Основной склад" %}
+                  <th class="warehouse-cell-secondary">Prixod <i class="fas fa-arrow-down symbol-cell prixod"></i></th>
+                  <th class="warehouse-cell-secondary">Sold <i class="fas fa-arrow-up symbol-cell sold"></i></th>
+                  <th class="warehouse-cell-secondary">Otxod <i class="fas fa-trash-alt symbol-cell ostatok"></i></th>
+                {% endif %}
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for product_name, data in product_data.items %}
+              <tr class="{{ forloop.counter0|divisibleby:2|yesno:'row-even,row-odd' }}">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ product_name }}</td>
+                {% for warehouse in warehouse_names %}
+                  {% with warehouse_data=data.stores|get_item:warehouse %}
+                    {% if warehouse_data %}
+                      {% if warehouse == "Основной склад" %}
+                        <td class="warehouse-cell-main">{{ warehouse_data.ostatok }} <i class="fas fa-arrow-down symbol-cell prixod"></i></td>
+                      {% else %}
+                        <td class="warehouse-cell-secondary">{{ warehouse_data.prixod }} <i class="fas fa-arrow-down symbol-cell prixod"></i></td>
+                        <td class="warehouse-cell-secondary">{{ warehouse_data.sold }} <i class="fas fa-arrow-up symbol-cell sold"></i></td>
+                        <td class="warehouse-cell-secondary">{{ warehouse_data.ostatok }} <i class="fas fa-trash-alt symbol-cell ostatok"></i></td>
+                      {% endif %}
+                    {% else %}
+                      <td class="warehouse-cell-secondary">0</td>
+                      {% if warehouse != "Основной склад" %}
+                        <td class="warehouse-cell-secondary">0</td>
+                        <td class="warehouse-cell-secondary">0</td>
+                      {% endif %}
+                    {% endif %}
+                  {% endwith %}
+                {% endfor %}
+                <td>{{ data.total_ostatok }} <i class="fas fa-trash-alt symbol-cell ostatok"></i></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-center">{{ error }}</p>
+    {% endif %}
   </div>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

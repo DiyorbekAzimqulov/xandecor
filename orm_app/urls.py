@@ -13,6 +13,8 @@ from .views import (
     UserOrdersView,
     RequestedOrdersView,
     report_location,
+    ProductsReviewsView,
+    ProductReviewsDetailView,
 )
 
 urlpatterns = [
@@ -33,4 +35,6 @@ urlpatterns = [
     path('u<int:user_id>/c<int:container_id>/orders/', UserOrdersView.as_view(), name='user_orders'),
     path('requested-orders/', RequestedOrdersView.as_view(), name='requested_order'),
     path('report-location/', report_location, name='report-location'),
+    path('products-reviews/', ProductsReviewsView.as_view(), name='products_reviews'),
+    path('product-reviews/<int:pk>/', ProductReviewsDetailView.as_view(), name='product_reviews_detail'),
 ]
