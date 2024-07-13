@@ -9,8 +9,40 @@
     <title>{% block title %}Xan Decor{% endblock %}</title>
     <link rel="icon" href="{% static 'brands/bfavicon.ico' %}" type="image/x-icon" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta content="Xan Decor is a company that provides services in the field of wallpapers and leds." name="keywords" />
-    <meta content="Xan Decor is a company that provides services in the field of wallpapers and leds." name="description" />
+    
+    <!-- General Meta Tags -->
+    <meta name="keywords" content="Xan Decor, wallpapers, LEDs, interior design, decoration" />
+    <meta name="description" content="Xan Decor is a company that provides services in the field of wallpapers and LEDs." />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Xan Decor" />
+    <meta property="og:description" content="Xan Decor is a company that provides services in the field of wallpapers and LEDs." />
+    <meta property="og:image" content="{% static 'brands/brand.jpg' %}" />
+    <meta property="og:url" content="https://xandecor.com" />
+    <meta property="og:site_name" content="Xan Decor" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ru_RU" />
+
+    <!-- Author and Publisher Meta Tags -->
+    <meta name="author" content="Nodirbek Abduraimov | NodirByte" />
+    <meta name="publisher" content="Nodirbek Abduraimov | NodirByte" />
+
+    <!-- Additional Meta Tags (if relevant) -->
+    <meta name="copyright" content="Xan Decor" />
+    <meta name="designer" content="Nodirbek Abduraimov | NodirByte" />
+    <meta name="reply-to" content="contact@xandecor.com" />
+    <meta name="owner" content="Xan Decor" />
+    <meta name="url" content="https://xandecor.com" />
+    <meta name="identifier-URL" content="https://xandecor.com" />
+    <meta name="directory" content="business" />
+    <meta name="category" content="Interior Design" />
+    <meta name="coverage" content="Worldwide" />
+    <meta name="distribution" content="Global" />
+    <meta name="rating" content="General" />
+    <meta name="revisit-after" content="7 days" />
+
+
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -137,13 +169,7 @@
                     Language
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="languageDropdown">
-                    {% get_current_language as CURRENT_LANGUAGE %}
-                    {% get_available_languages as AVAILABLE_LANGUAGES %}
-                    {% get_language_info_list for AVAILABLE_LANGUAGES as languages %}
-                    {% for language in languages %}
-                    <li><a class="dropdown-item {% if language.code == CURRENT_LANGUAGE %}active{% endif %}"
-                            href="/{{ language.code }}/">{{ language.name_local }}</a></li>
-                    {% endfor %}
+                    <li><a class="dropdown-item" href="#">English</a></li>
                 </ul>
             </li>
         </div>
@@ -585,7 +611,7 @@
                     <div class="col-md-6 text-center text-md-end">
                         <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
                         Designed By
-                        <a class="border-bottom" href="https://github.com/NodirbekSE/">Nodirbek Abduraimov</a>
+                        <a class="border-bottom" href="https://github.com/NodirByte/">Nodirbek Abduraimov</a>
                     </div>
                 </div>
             </div>

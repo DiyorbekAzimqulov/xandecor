@@ -28,7 +28,6 @@ ALLOWED_HOSTS = [env.str("ALLOWED_HOSTS")]
 # Application definition
 
 INSTALLED_APPS = [
-    "modeltranslation",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -130,17 +129,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-LANGUAGES = [
-    ("en", _("English")),
-    ("ru", _("Russian")),
-    ("uz", _("Uzbek")),
-    ("tr", _("Turkish")),
-    ("zh-hans", _("Chinese")),
-    ("kk", _("Kazakh")),
-]
-MODEL_TRANSLATION_DEFAULT_LANGUAGE = "en"
-
-MODELTRANSLATION_FALLBACK_LANGUAGES = ("en", "ru", "uz", "tr", "zh-hans", "kk")
 
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale/"),)
 

@@ -24,7 +24,6 @@ from django.contrib.auth import views as auth_views
 
 from django.urls import include
 import orm_app, website
-from django.conf.urls.i18n import i18n_patterns
 
 
 class MyLoginView(auth_views.LoginView):
@@ -46,10 +45,6 @@ urlpatterns = [
     path("sales-doctor/", include("salesdoctorbot.urls")),
     path("", include("website.urls")),
 ]
-
-urlpatterns += i18n_patterns (
-    path('', include('website.urls')),
-)
 
 
 if settings.DEBUG:
