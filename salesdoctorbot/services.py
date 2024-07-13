@@ -81,9 +81,6 @@ def get_sales_categories(token: str, user_id: str) -> dict:
             "error": response_data.get("error", "Failed to fetch sales categories"),
         }
 
-
-from django.db.models import F
-
 def update_sold_ostatok_stock(token: str, user_id: str, warehouse_id: str, order_ids: List[str]) -> dict:
     if not order_ids:
         return {"error": "No product IDs provided to update Sold and Ostatok"}
@@ -148,6 +145,7 @@ def update_sold_ostatok_stock(token: str, user_id: str, warehouse_id: str, order
                         else:
                             warehouse_product.sold = quantity
                             warehouse_product.prixod = warehouse_product.ostatok + int(quantity)  # Calculate prixod based on ostatok + quantity
+                        
                         warehouse_product.save()  # Save the warehouse_product instance after updating
                         
                     except StockProduct.DoesNotExist:

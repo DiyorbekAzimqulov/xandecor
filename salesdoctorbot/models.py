@@ -50,3 +50,5 @@ class WareHouseProduct(models.Model):
 
     def __str__(self):
         return f"{self.warehouse.name} - {self.product.name}"
+
+

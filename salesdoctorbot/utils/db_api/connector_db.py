@@ -58,3 +58,19 @@ def get_warehouse_products(warehouse, general_warehouse, product):
         ~Q(warehouse=warehouse) & ~Q(warehouse=general_warehouse),
         product=product
     ).order_by('-ostatok')
+    
+@sync_to_async
+def get_warehouse_by_id(warehouse_id):
+    return WareHouse.objects.get(id=warehouse_id)
+
+@sync_to_async
+def get_warehouse_by_name(name):
+    return WareHouse.objects.get(name=name)
+
+@sync_to_async
+def get_warehouse_products(warehouse):
+    return list(WareHouseProduct.objects.filter(warehouse=warehouse))
+
+@sync_to_async
+def get_general_product(product, general_warehouse):
+    return WareHouseProduct.objects.filter(product=product, warehouse=general_warehouse).first()
