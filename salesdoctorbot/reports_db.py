@@ -118,7 +118,13 @@ def redistribute_data() -> dict:
         # Add subwarehouse data
         subwarehouse_products = WareHouseProduct.objects.filter(product=main_product.product, ostatok__gt=0).exclude(warehouse=main_warehouse)
         for sub_product in subwarehouse_products:
-            if sub_product.warehouse.name == "Основной склад" or sub_product.warehouse.name == "Склад-VS (JIZZAX)" or sub_product.warehouse.name == "Склад-VS (QO'QON)" or sub_product.warehouse.name == "Склад-VS (SAMARQAND)" or sub_product.warehouse.name == "Склад-VS (BUXORO)": 
+            if sub_product.warehouse.name in [
+                "Основной склад",
+                "Склад-VS (JIZZAX)",
+                "Склад-VS (QO'QON)",
+                "Склад-VS (SAMARQAND)",
+                "Склад-VS (BUXORO)"
+            ]:
                 continue
             subwarehouse_data = {
                 "name": sub_product.warehouse.name,
@@ -131,6 +137,7 @@ def redistribute_data() -> dict:
             distribute_db[product_name].append(subwarehouse_data)
 
     return distribute_db
+
 
 
 def update_sale_percentage(warehouse):
@@ -219,11 +226,56 @@ def redistribute_products(db):
                 break
 
     for location_product, units in helper.items():
-        report += f"📦{units} {location_product[0]} 🔽 {location_product[2]} ⬅️ {location_product[1]}\n"
+        report += f"📦{units} shit {location_product[0]} 🔽 {location_product[2]} ⬅️ {location_product[1]}\n"
 
     return db, report.strip()
 
 
+def find_forgotten_shipments():
+    # Get the main warehouse
+    
+    main_warehouse = WareHouse.objects.get(name="Основной склад")
+
+    # Get products in the main warehouse with non-zero ostatok
+    main_warehouse_products = WareHouseProduct.objects.filter(
+        warehouse=main_warehouse,
+        ostatok__gt=0
+    )
+
+    # Find products that have no stock, sold, or incoming in all other warehouses
+    forget_products = []
+    for warehouse_product in main_warehouse_products:
+        # Check if the product exists in any other warehouse
+        other_warehouses_products = WareHouseProduct.objects.filter(
+            product=warehouse_product.product
+        ).exclude(warehouse=main_warehouse)
+
+        # Check if all other warehouses have ostatok, sold, and prixod equal to 0
+        if all(other_warehouse_product.ostatok == 0 and 
+               other_warehouse_product.sold == 0 and 
+               other_warehouse_product.prixod == 0 
+               for other_warehouse_product in other_warehouses_products):
+            forget_products.append(warehouse_product)
+
+    return forget_products
+    
+
+def generate_forgotten_shipment_report(forget_products):
+    if not forget_products:
+        return "Hech qanday unutilgan mahsulot topilmadi."
+
+    report_lines = ["🔍 Unutilgan Mahsulotlar Hisoboti:"]
+    
+    for product in forget_products:
+        report_lines.append(
+            f"Mahsulot: {product.product.name}, "
+            f"Ombor: {product.warehouse.name}, \n"
+            f"📊 Ostatok: {product.ostatok}, "
+            f"🔽 Sotilgan: {product.sold}, "
+            f"🔼 Prixod: {product.prixod}"
+        )
+
+    return "\n".join(report_lines)
 
 
 
