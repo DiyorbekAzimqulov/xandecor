@@ -47,6 +47,7 @@ def sales_doctor(request):
             "status": True,
             "warehouse_names": warehouse_names,
             "product_data": product_data,
+            "active_page": 'sales_doctor'
         }
 
     return render(request, "sales_doctor.html", context)
