@@ -1,145 +1,149 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Container List</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'css/containers.css' %}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-</head>
-<body>
-    
+  </head>
+  <body>
     {% include '_navbar.html' %}
 
     <h1>Manage User Permissions</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Telegram ID</th>
-                <th>Phone Number</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in asked_users %}
-            <tr id="user-{{ user.id }}">
-                <td>{{ user.first_name }}</td>
-                <td>{{ user.last_name }}</td>
-                <td>{{ user.telegram_id }}</td>
-                <td>{{ user.phone_number }}</td>
-                <td>
-                    <button class="btn btn-success" onclick="acceptUser({{ user.id }})">Qo'shish</button>
-                    <button class="btn btn-danger" onclick="rejectUser({{ user.id }})">Ruxsat bermaslik</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
+    <table class="container">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Telegram ID</th>
+          <th>Phone Number</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in asked_users %}
+        <tr id="user-{{ user.id }}">
+          <td>{{ user.first_name }}</td>
+          <td>{{ user.last_name }}</td>
+          <td>{{ user.telegram_id }}</td>
+          <td>{{ user.phone_number }}</td>
+          <td>
+            <button class="btn btn-success" onclick="acceptUser({{ user.id }})">Qo'shish</button>
+            <button class="btn btn-danger" onclick="rejectUser({{ user.id }})">
+              Ruxsat bermaslik
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
 
     <div class="pagination">
-        <span class="step-links">
-            {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; First</a>
-            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-            {% endif %}
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; First</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
 
-            <span class="current">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-            </span>
-
-            {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">Next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
-            {% endif %}
+        <span class="current">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
         </span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+        {% endif %}
+      </span>
     </div>
 
     <!-- Modal for organization selection -->
     <div id="organization-selection-modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Select Organizations</h2>
-            <form id="organization-selection-form">
-                <input type="hidden" name="user_id" id="modal-user-id" value="">
-                <label for="modal-organization-select">Organizations:</label>
-                <select name="organization_ids[]" id="modal-organization-select" multiple>
-                    {% for organization in organizations %}
-                    <option value="{{ organization.id }}">{{ organization.name }}</option>
-                    {% endfor %}
-                </select>
-                <button type="submit" class="btn btn-primary">Saqlash</button>
-            </form>
-        </div>
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Select Organizations</h2>
+        <form id="organization-selection-form">
+          <input type="hidden" name="user_id" id="modal-user-id" value="" />
+          <label for="modal-organization-select">Organizations:</label>
+          <select name="organization_ids[]" id="modal-organization-select" multiple>
+            {% for organization in organizations %}
+            <option value="{{ organization.id }}">{{ organization.name }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </form>
+      </div>
     </div>
 
     <script>
-        function acceptUser(userId) {
-            $.ajax({
-                url: `/containers/accept-user/${userId}/`,
-                type: 'GET',
-                success: function(response) {
-                    if (response.status === 'show_organizations') {
-                        $('#modal-user-id').val(response.user_id);
-                        $('#modal-organization-select').empty();
-                        response.organizations.forEach(function(organization) {
-                            $('#modal-organization-select').append(new Option(organization.name, organization.id));
-                        });
-                        $('#organization-selection-modal').show();
-                    }
-                }
-            });
-        }
-
-        function rejectUser(userId) {
-            $.ajax({
-                url: `/containers/reject-user/${userId}/`,
-                type: 'GET',
-                success: function(response) {
-                    if (response.status === 'rejected') {
-                        $(`#user-${userId}`).remove();
-                    }
-                }
-            });
-        }
-
-        $('#organization-selection-form').submit(function(event) {
-            event.preventDefault();
-            const userId = $('#modal-user-id').val();
-            const organizationIds = $('#modal-organization-select').val();
-
-            $.ajax({
-                url: `{% url 'save_user_with_organizations' %}`,
-                type: 'POST',
-                data: {
-                    'user_id': userId,
-                    'organization_ids[]': organizationIds,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'
-                },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        $(`#user-${userId}`).remove();
-                        closeModal();
-                        clearModalContent();
-                    }
-                }
-            });
+      function acceptUser(userId) {
+        $.ajax({
+          url: `/containers/accept-user/${userId}/`,
+          type: "GET",
+          success: function (response) {
+            if (response.status === "show_organizations") {
+              $("#modal-user-id").val(response.user_id);
+              $("#modal-organization-select").empty();
+              response.organizations.forEach(function (organization) {
+                $("#modal-organization-select").append(
+                  new Option(organization.name, organization.id)
+                );
+              });
+              $("#organization-selection-modal").show();
+            }
+          },
         });
+      }
 
-        function closeModal() {
-            $('#organization-selection-modal').hide();
-        }
+      function rejectUser(userId) {
+        $.ajax({
+          url: `/containers/reject-user/${userId}/`,
+          type: "GET",
+          success: function (response) {
+            if (response.status === "rejected") {
+              $(`#user-${userId}`).remove();
+            }
+          },
+        });
+      }
 
-        function clearModalContent() {
-            $('#modal-user-id').val('');
-            $('#modal-organization-select').empty();
-        }
+      $("#organization-selection-form").submit(function (event) {
+        event.preventDefault();
+        const userId = $("#modal-user-id").val();
+        const organizationIds = $("#modal-organization-select").val();
+
+        $.ajax({
+          url: `{% url 'save_user_with_organizations' %}`,
+          type: "POST",
+          data: {
+            user_id: userId,
+            "organization_ids[]": organizationIds,
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+          success: function (response) {
+            if (response.status === "success") {
+              $(`#user-${userId}`).remove();
+              closeModal();
+              clearModalContent();
+            }
+          },
+        });
+      });
+
+      function closeModal() {
+        $("#organization-selection-modal").hide();
+      }
+
+      function clearModalContent() {
+        $("#modal-user-id").val("");
+        $("#modal-organization-select").empty();
+      }
     </script>
-</body>
+  </body>
 </html>

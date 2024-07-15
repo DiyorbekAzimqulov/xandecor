@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from salesdoctorbot.salesDoctorAuth import auth_sales_doctor
 from salesdoctorbot.models import WareHouse, StockProduct, WareHouseProduct
-from salesdoctorbot.services import getProducts_by_WH_Ca
+from salesdoctorbot.services import getProducts_by_WH_Ca, update_sold_ostatok_stock
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 
