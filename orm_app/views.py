@@ -35,7 +35,7 @@ class SuperuserRequiredMixin(AccessMixin):
 
 class IndexView(SuperuserRequiredMixin, ListView):
     model = Container
-    template_name = "containers.html"
+    template_name = "general/containers.html"
     context_object_name = "containers"
     paginate_by = 10
 
@@ -51,7 +51,7 @@ class IndexView(SuperuserRequiredMixin, ListView):
 
 class ContainerDetailView(SuperuserRequiredMixin, DetailView):
     model = Container
-    template_name = "container_detail.html"
+    template_name = "general/container_detail.html"
     context_object_name = "container"
 
     def get_queryset(self):
@@ -118,7 +118,7 @@ class ProductsStatisticsView(SuperuserRequiredMixin, ListView):
 
 class AskedUsersView(SuperuserRequiredMixin, ListView):
     model = AskUser
-    template_name = 'asked_users.html'
+    template_name = 'general/asked_users.html'
     context_object_name = 'asked_users'
     paginate_by = 10
 
@@ -179,7 +179,7 @@ def save_user_with_organizations(request):
 
 
 class ContainerOrdersDetailView(SuperuserRequiredMixin, ListView):
-    template_name = 'container_orders.html'
+    template_name = 'general/container_orders.html'
 
     def get(self, request, container_id):
         container = get_object_or_404(Container, id=container_id)
@@ -275,7 +275,7 @@ def report_location(request):
 
 
 class ProductsReviewsView(SuperuserRequiredMixin, ListView):
-    template_name = 'product_reviews.html'
+    template_name = 'general/product_reviews.html'
     model = Product
     
     def get_queryset(self):
@@ -287,12 +287,12 @@ class ProductsReviewsView(SuperuserRequiredMixin, ListView):
         return context
     
 class ProductReviewsDetailView(SuperuserRequiredMixin, DetailView):
-    template_name = 'product_reviews_detail.html'
+    template_name = 'general/product_reviews_detail.html'
     model = Product
     context_object_name = 'product'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reviews'] = get_product_reviews_statistics_by_pk(self.kwargs['pk'])
+        # context['reviews'] = get_product_reviews_statistics_by_pk(self.kwargs['pk'])
         context['active_page'] = 'products_reviews'
         return context
