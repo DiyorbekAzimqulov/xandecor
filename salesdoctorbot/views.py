@@ -16,7 +16,7 @@ def sales_doctor(request):
         stockproducts = WareHouseProduct.objects.filter(
             category__sd_id=CATEGORY_ID,
             ostatok__gt=0
-        ).distinct()
+        ).distinct().order_by('product__name')  # Sort by product name
 
         warehouse_names = list(WareHouse.objects.values_list('name', flat=True))
 

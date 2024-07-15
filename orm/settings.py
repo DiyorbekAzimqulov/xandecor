@@ -145,7 +145,6 @@ LOGIN_REDIRECT_URL = "/containers"  # Or your custom URL
 REVIEW_LIMIT = 2  # 2 reviews
 REVIEW_DAYS = 7  # 7 days
 DAILY_CRON_INTERVAL = 60 * 60 * 24  # 24 hours
-DAILY_REPORT_INTERVAL = "09:00"  # 09:00 AM
 
 
 # AWS

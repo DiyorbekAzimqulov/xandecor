@@ -70,9 +70,16 @@
     .warehouse-cell-main {
       background-color: #f1c40f; /* Yellow for Main Warehouse */
     }
-    .warehouse-cell-secondary {
-      background-color: #3498db; /* Blue for Other Warehouses */
+    .warehouse-cell-secondary-1 {
+      background-color: #3498db; /* Blue for Secondary Warehouse 1 */
     }
+    .warehouse-cell-secondary-2 {
+      background-color: #e74c3c; /* Red for Secondary Warehouse 2 */
+    }
+    .warehouse-cell-secondary-3 {
+      background-color: #9b59b6; /* Purple for Secondary Warehouse 3 */
+    }
+    /* Add more as needed */
     .row-even {
       background-color: #f8f9fa; /* Light grey for Even Rows */
     }
@@ -97,10 +104,6 @@
     .table tbody tr:hover {
       background-color: #c0c0c0; /* Light grey background on hover */
     }
-    .table tbody tr:hover {
-      background-color: #d3d3d3; /* Light grey background on hover */
-    }
-    
   </style>
 </head>
 <body>
@@ -120,6 +123,12 @@
               {% for warehouse in warehouse_names %}
                 {% if warehouse == "Основной склад" %}
                   <th class="warehouse-cell-main" rowspan="2">{{ warehouse }} <i class="fas fa-warehouse"></i></th>
+                {% elif warehouse == "Secondary Warehouse 1" %}
+                  <th class="warehouse-cell-secondary-1" colspan="3">{{ warehouse }} <i class="fas fa-warehouse"></i></th>
+                {% elif warehouse == "Secondary Warehouse 2" %}
+                  <th class="warehouse-cell-secondary-2" colspan="3">{{ warehouse }} <i class="fas fa-warehouse"></i></th>
+                {% elif warehouse == "Secondary Warehouse 3" %}
+                  <th class="warehouse-cell-secondary-3" colspan="3">{{ warehouse }} <i class="fas fa-warehouse"></i></th>
                 {% else %}
                   <th class="warehouse-cell-secondary" colspan="3">{{ warehouse }} <i class="fas fa-warehouse"></i></th>
                 {% endif %}
@@ -192,7 +201,6 @@
 
     function updateTableWithWarehouseData(warehouse) {
       // Fetch the data for the selected warehouse (using Ajax or fetching from a variable)
-      // Example: Fetch data using Ajax
       $.ajax({
         url: '{% url "fetch_warehouse_data" %}',
         method: 'GET',
