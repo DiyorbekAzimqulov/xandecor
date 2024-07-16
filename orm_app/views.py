@@ -203,7 +203,7 @@ class ContainerOrdersDetailView(SuperuserRequiredMixin, ListView):
     
 
 class UserOrdersView(SuperuserRequiredMixin, ListView):
-    template_name = 'user_orders.html'
+    template_name = 'general/user_orders.html'
 
     def get(self, request, user_id, container_id):
         user = get_object_or_404(User, id=user_id)
