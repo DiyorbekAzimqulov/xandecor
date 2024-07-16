@@ -68,7 +68,7 @@ class ContainerDetailView(SuperuserRequiredMixin, DetailView):
 
 class ReviewersView(SuperuserRequiredMixin, ListView):
     model = User
-    template_name = "reviewers.html"
+    template_name = "general/reviewers.html"
     context_object_name = "reviewers"
     paginate_by = 10
 
@@ -84,7 +84,7 @@ class ReviewersView(SuperuserRequiredMixin, ListView):
 
 class ReviewerDetailView(SuperuserRequiredMixin, DetailView):
     model = User
-    template_name = "reviewer_detail.html"
+    template_name = "general/reviewer_detail.html"
     context_object_name = "reviewer"
 
     def get_queryset(self):
@@ -226,7 +226,7 @@ class UserOrdersView(SuperuserRequiredMixin, ListView):
 
 
 class RequestedOrdersView(SuperuserRequiredMixin, ListView):
-    template_name = 'requested_orders.html'
+    template_name = 'general/requested_orders.html'
     model = Sale
 
     def get_queryset(self):

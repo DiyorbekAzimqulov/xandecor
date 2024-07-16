@@ -1,0 +1,96 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+.navbar {
+  background-color: #1132ab;
+  color: #fff;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.navbar-brand {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+.navbar-button {
+  font-size: 1em;
+  text-decoration: none;
+  color: #fff;
+  margin-left: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: #007bff;
+}
+.navbar-button:hover {
+  background-color: #0b7dda;
+}
+.navbar-button.active {
+  background-color: #0056b3;
+  color: white;
+  font-weight: bold;
+}
+.container {
+  padding: 10px; /* Reduced padding for smaller size */
+}
+.table {
+  font-size: 0.65rem; /* Smaller font size for table */
+}
+.table th,
+.table td {
+  white-space: nowrap;
+  text-align: center;
+  padding: 2px; /* Further reduced padding */
+}
+.header-cell {
+  white-space: normal;
+}
+.header-icon {
+  display: inline-block;
+  vertical-align: middle;
+}
+.header-text {
+  display: block;
+  margin-left: 3px;
+}
+.warehouse-cell-main {
+  background-color: #f1c40f; /* Yellow for Main Warehouse */
+}
+.warehouse-cell-secondary-1 {
+  background-color: #3498db; /* Blue for Secondary Warehouse 1 */
+}
+.warehouse-cell-secondary-2 {
+  background-color: #e74c3c; /* Red for Secondary Warehouse 2 */
+}
+.warehouse-cell-secondary-3 {
+  background-color: #9b59b6; /* Purple for Secondary Warehouse 3 */
+}
+/* Add more as needed */
+.row-even {
+  background-color: #f8f9fa; /* Light grey for Even Rows */
+}
+.row-odd {
+  background-color: #ffffff; /* White for Odd Rows */
+}
+.symbol-cell {
+  font-size: 0.7rem; /* Adjusted symbol size */
+}
+.symbol-cell.prixod {
+  color: #28a745; /* Green for prixod */
+}
+.symbol-cell.sold {
+  color: #dc3545; /* Red for sold */
+}
+.symbol-cell.ostatok {
+  color: #ffc107; /* Yellow for ostatok */
+}
+.table-bordered {
+  border: none; /* Remove table borders */
+}
+.table tbody tr:hover {
+  background-color: #c0c0c0; /* Light grey background on hover */
+}

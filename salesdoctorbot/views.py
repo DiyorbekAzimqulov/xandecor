@@ -50,7 +50,7 @@ def sales_doctor(request):
             "active_page": 'sales_doctor'
         }
 
-    return render(request, "sales_doctor.html", context)
+    return render(request, "general/sales_doctor.html", context)
 
 
 def fetch_warehouse_data(request):
@@ -80,7 +80,7 @@ def fetch_warehouse_data(request):
             'ostatok': product.ostatok
         }
 
-    table_body_html = render_to_string('product_zapravka.html', {
+    table_body_html = render_to_string('general/ship_products.html', {
         'product_data': product_data,
         'warehouse_names': [warehouse],
     })
