@@ -33,12 +33,12 @@ $("#organization-selection-form").submit(function (event) {
   const organizationIds = $("#modal-organization-select").val();
 
   $.ajax({
-    url: `{% url 'save_user_with_organizations' %}`,
+    url: saveUserWithOrganizationsUrl,
     type: "POST",
     data: {
       user_id: userId,
       "organization_ids[]": organizationIds,
-      csrfmiddlewaretoken: "{{ csrf_token }}",
+      csrfmiddlewaretoken: csrfToken,
     },
     success: function (response) {
       if (response.status === "success") {

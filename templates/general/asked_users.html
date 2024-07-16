@@ -24,7 +24,7 @@
       <td>{{ user.phone_number }}</td>
       <td>
         <button class="btn btn-success" onclick="acceptUser({{ user.id }})">Qo'shish</button>
-        <button class="btn btn-danger" onclick="rejectUser({{ user.id }})">Ruxsat bermaslik</button>
+        <button class="btn btn-danger" onclick="rejectUser({{ user.id }})">Rad etish</button>
       </td>
     </tr>
     {% endfor %}
@@ -48,7 +48,7 @@
 </div>
 
 <!-- Modal for organization selection -->
-<div id="organization-selection-modal">
+<div id="organization-selection-modal" style="display: none">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
     <h2>Select Organizations</h2>
@@ -68,5 +68,9 @@
 
 <!-- Script -->
 {% block script %}
+<script>
+  const saveUserWithOrganizationsUrl = "{% url 'save_user_with_organizations' %}";
+  const csrfToken = "{{ csrf_token }}";
+</script>
 <script src="{% static 'js/asked_users.js' %}"></script>
 {% endblock %}

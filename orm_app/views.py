@@ -19,7 +19,7 @@ from django.views.generic import ListView, DetailView
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import requests
-from salebot.data.config import BOT_TOKEN
+from reviewbot.data.config import BOT_TOKEN
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 
@@ -145,16 +145,21 @@ def accept_user(request, pk):
 
 def reject_user(request, pk):
     user = get_object_or_404(AskUser, pk=pk)
-    # Format the data into a readable string
     
+    # Send rejection message via Telegram bot
     url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
     payload = {'chat_id': user.telegram_id, 'text': "Sizning arizangiz rad etildi!"}
-    response = requests.post(url, data=payload)
-
+    requests.post(url, data=payload)
+    
+    # Prepare the response
     response = {
         'status': 'rejected',
         'user_id': user.id
     }
+    
+    # Remove the user from the model
+    user.delete()
+    
     return JsonResponse(response)
 
 def save_user_with_organizations(request):
@@ -176,7 +181,6 @@ def save_user_with_organizations(request):
         requests.post(url, data=payload)
         return JsonResponse(response)
     return JsonResponse({'status': 'error'}, status=400)
-
 
 class ContainerOrdersDetailView(SuperuserRequiredMixin, ListView):
     template_name = 'general/container_orders.html'

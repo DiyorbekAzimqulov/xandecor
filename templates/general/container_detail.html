@@ -1,5 +1,12 @@
-{% extends "general/main.html" %} {% load static %} {% block title %}{{ container.number }}
-Details{% endblock %}
+{% extends "general/main.html" %} {% load static %}
+
+<!-- Title -->
+{% block title %}{{ container.number }} Details{% endblock %}
+
+<!-- Style -->
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/containers.css' %}" />
+{% endblock %}
 
 <!-- Content -->
 {% block content %}
