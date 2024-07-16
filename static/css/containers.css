@@ -82,7 +82,6 @@ h1 {
   color: red; /* Change color for bad rating */
 }
 
-
 .container-reviewer {
   background-color: #fff;
   padding: 20px;
@@ -91,12 +90,16 @@ h1 {
   margin-top: 20px;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: #333;
   margin-bottom: 10px;
 }
 
-.user-info, .statistics, .product-ratings {
+.user-info,
+.statistics,
+.product-ratings {
   margin-bottom: 20px;
 }
 
@@ -161,7 +164,8 @@ tr:hover {
   text-align: center;
   margin-top: 20px;
 }
-.pagination .step-links a, .pagination .step-links span {
+.pagination .step-links a,
+.pagination .step-links span {
   margin: 0 5px;
   padding: 5px 10px;
   text-decoration: none;
@@ -212,32 +216,32 @@ tr:hover {
 
 @keyframes fadeIn {
   from {
-      opacity: 0;
+    opacity: 0;
   }
   to {
-      opacity: 1;
+    opacity: 1;
   }
 }
 
 @keyframes zoomIn {
   from {
-      transform: scale(0);
+    transform: scale(0);
   }
   to {
-      transform: scale(1);
+    transform: scale(1);
   }
 }
 
 @media screen and (max-width: 600px) {
   table {
-      overflow-x: auto;
-      display: block;
+    overflow-x: auto;
+    display: block;
   }
 
   th,
   td {
-      white-space: nowrap;
-      min-width: 150px;
+    white-space: nowrap;
+    min-width: 150px;
   }
 }
 
@@ -292,11 +296,21 @@ tr:hover {
   font-weight: bold; /* Make the active link bold */
 }
 
-.fas.fa-check { color: green; }
-.fas.fa-times { color: red; }
-.fas.fa-thumbs-up { color: green; }
-.fas.fa-thumbs-down { color: red; }
-.fas.fa-minus-circle { color: orange; }
+.fas.fa-check {
+  color: green;
+}
+.fas.fa-times {
+  color: red;
+}
+.fas.fa-thumbs-up {
+  color: green;
+}
+.fas.fa-thumbs-down {
+  color: red;
+}
+.fas.fa-minus-circle {
+  color: orange;
+}
 
 /* Detail page */
 
@@ -333,7 +347,8 @@ tr:hover {
   align-items: flex-start;
   margin-bottom: 30px;
 }
-.review-stat, .reviewer-info {
+.review-stat,
+.reviewer-info {
   flex: 1;
   padding: 15px;
   border: 1px solid #ddd;
@@ -344,7 +359,8 @@ tr:hover {
 .review-stat:last-child {
   margin-right: 0;
 }
-.review-stat h3, .reviewer-info h3 {
+.review-stat h3,
+.reviewer-info h3 {
   font-size: 20px;
   margin-bottom: 15px;
   color: #007bff;
@@ -356,7 +372,8 @@ table {
   width: 100%;
   border-collapse: collapse;
 }
-th, td {
+th,
+td {
   border: 1px solid #ddd;
   padding: 10px;
   text-align: center;
@@ -364,7 +381,7 @@ th, td {
 th {
   background-color: #f2f2f2;
   font-weight: bold;
-}        
+}
 ul {
   list-style: none;
   padding: 0;
@@ -404,7 +421,6 @@ td.rating-bad {
   background-color: #dc3545;
   color: white;
 }
-
 
 /* Modal styling */
 #organization-selection-modal {
@@ -465,7 +481,8 @@ table {
   margin-top: 20px;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
