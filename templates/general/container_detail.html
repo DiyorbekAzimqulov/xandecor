@@ -1,0 +1,60 @@
+{% extends "general/main.html" %} {% load static %}
+
+<!-- Title -->
+{% block title %}{{ container.number }} Details{% endblock %}
+
+<!-- Style -->
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/containers.css' %}" />
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+<div class="container-detail">
+  <h1>{{ container.number }} Container</h1>
+  <div class="product">
+    {% for product, stats in review_statistics.items %}
+    <div class="product-name"><i class="fas fa-box-open"></i> {{ product }}</div>
+    <div class="review-section">
+      <div class="review-stat">
+        <h3><i class="fas fa-chart-line"></i> Review Statistics</h3>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Rating</th>
+                <th>Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for rating, count in stats.reviews.items %}
+              <tr>
+                <td class="rating-{{ rating|lower }}">{{ rating }}</td>
+                <td>{{ count }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="reviewer-info">
+        <h3><i class="fas fa-users"></i> Reviewers</h3>
+        <ul>
+          {% for reviewer, ratings in stats.reviewers.items %}
+          <li>
+            <span class="reviewer-name">{{ reviewer }}</span>
+            <ul class="rating-list">
+              {% for rating in ratings %}
+              <li class="rating-{{ rating|lower }}">{{ rating }}</li>
+              {% endfor %}
+            </ul>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <hr />
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

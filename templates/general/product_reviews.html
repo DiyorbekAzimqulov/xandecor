@@ -1,0 +1,16 @@
+{% extends "general/main.html" %} {% load static %} {% block title %}Product Reviews{% endblock %}
+
+<!-- Content -->
+{% block content %}
+<h1><i class="fas fa-star"></i> Product Reviews</h1>
+
+<ul>
+  {% for product in object_list %}
+  <li>
+    <a href="{% url 'product_reviews_detail' product.pk %}">{{ product.name }}</a>
+  </li>
+  {% empty %}
+  <li>No products found.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

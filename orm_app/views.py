@@ -19,7 +19,7 @@ from django.views.generic import ListView, DetailView
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import requests
-from salebot.data.config import BOT_TOKEN
+from reviewbot.data.config import BOT_TOKEN
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 
@@ -35,7 +35,7 @@ class SuperuserRequiredMixin(AccessMixin):
 
 class IndexView(SuperuserRequiredMixin, ListView):
     model = Container
-    template_name = "containers.html"
+    template_name = "general/containers.html"
     context_object_name = "containers"
     paginate_by = 10
 
@@ -51,7 +51,7 @@ class IndexView(SuperuserRequiredMixin, ListView):
 
 class ContainerDetailView(SuperuserRequiredMixin, DetailView):
     model = Container
-    template_name = "container_detail.html"
+    template_name = "general/container_detail.html"
     context_object_name = "container"
 
     def get_queryset(self):
@@ -68,7 +68,7 @@ class ContainerDetailView(SuperuserRequiredMixin, DetailView):
 
 class ReviewersView(SuperuserRequiredMixin, ListView):
     model = User
-    template_name = "reviewers.html"
+    template_name = "general/reviewers.html"
     context_object_name = "reviewers"
     paginate_by = 10
 
@@ -84,7 +84,7 @@ class ReviewersView(SuperuserRequiredMixin, ListView):
 
 class ReviewerDetailView(SuperuserRequiredMixin, DetailView):
     model = User
-    template_name = "reviewer_detail.html"
+    template_name = "general/reviewer_detail.html"
     context_object_name = "reviewer"
 
     def get_queryset(self):
@@ -118,7 +118,7 @@ class ProductsStatisticsView(SuperuserRequiredMixin, ListView):
 
 class AskedUsersView(SuperuserRequiredMixin, ListView):
     model = AskUser
-    template_name = 'asked_users.html'
+    template_name = 'general/asked_users.html'
     context_object_name = 'asked_users'
     paginate_by = 10
 
@@ -145,16 +145,21 @@ def accept_user(request, pk):
 
 def reject_user(request, pk):
     user = get_object_or_404(AskUser, pk=pk)
-    # Format the data into a readable string
     
+    # Send rejection message via Telegram bot
     url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
     payload = {'chat_id': user.telegram_id, 'text': "Sizning arizangiz rad etildi!"}
-    response = requests.post(url, data=payload)
-
+    requests.post(url, data=payload)
+    
+    # Prepare the response
     response = {
         'status': 'rejected',
         'user_id': user.id
     }
+    
+    # Remove the user from the model
+    user.delete()
+    
     return JsonResponse(response)
 
 def save_user_with_organizations(request):
@@ -177,9 +182,8 @@ def save_user_with_organizations(request):
         return JsonResponse(response)
     return JsonResponse({'status': 'error'}, status=400)
 
-
 class ContainerOrdersDetailView(SuperuserRequiredMixin, ListView):
-    template_name = 'container_orders.html'
+    template_name = 'general/container_orders.html'
 
     def get(self, request, container_id):
         container = get_object_or_404(Container, id=container_id)
@@ -199,7 +203,7 @@ class ContainerOrdersDetailView(SuperuserRequiredMixin, ListView):
     
 
 class UserOrdersView(SuperuserRequiredMixin, ListView):
-    template_name = 'user_orders.html'
+    template_name = 'general/user_orders.html'
 
     def get(self, request, user_id, container_id):
         user = get_object_or_404(User, id=user_id)
@@ -222,7 +226,7 @@ class UserOrdersView(SuperuserRequiredMixin, ListView):
 
 
 class RequestedOrdersView(SuperuserRequiredMixin, ListView):
-    template_name = 'requested_orders.html'
+    template_name = 'general/requested_orders.html'
     model = Sale
 
     def get_queryset(self):
@@ -275,7 +279,7 @@ def report_location(request):
 
 
 class ProductsReviewsView(SuperuserRequiredMixin, ListView):
-    template_name = 'product_reviews.html'
+    template_name = 'general/product_reviews.html'
     model = Product
     
     def get_queryset(self):
@@ -287,12 +291,12 @@ class ProductsReviewsView(SuperuserRequiredMixin, ListView):
         return context
     
 class ProductReviewsDetailView(SuperuserRequiredMixin, DetailView):
-    template_name = 'product_reviews_detail.html'
+    template_name = 'general/product_reviews_detail.html'
     model = Product
     context_object_name = 'product'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reviews'] = get_product_reviews_statistics_by_pk(self.kwargs['pk'])
+        # context['reviews'] = get_product_reviews_statistics_by_pk(self.kwargs['pk'])
         context['active_page'] = 'products_reviews'
         return context

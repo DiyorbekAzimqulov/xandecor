@@ -1,0 +1,76 @@
+{% extends "general/main.html" %} {% load static %}
+
+<!-- Title -->
+{% block title %}Manage User Permissions{% endblock %}
+
+<!-- Content -->
+{% block content %}
+<table class="container">
+  <thead>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Telegram ID</th>
+      <th>Phone Number</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in asked_users %}
+    <tr id="user-{{ user.id }}">
+      <td>{{ user.first_name }}</td>
+      <td>{{ user.last_name }}</td>
+      <td>{{ user.telegram_id }}</td>
+      <td>{{ user.phone_number }}</td>
+      <td>
+        <button class="btn btn-success" onclick="acceptUser({{ user.id }})">Qo'shish</button>
+        <button class="btn btn-danger" onclick="rejectUser({{ user.id }})">Rad etish</button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="pagination">
+  <span class="step-links">
+    {% if page_obj.has_previous %}
+    <a href="?page=1">&laquo; First</a>
+    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    <span class="current"> Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}. </span>
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+    {% endif %}
+  </span>
+</div>
+
+<!-- Modal for organization selection -->
+<div id="organization-selection-modal" style="display: none">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Select Organizations</h2>
+    <form id="organization-selection-form">
+      <input type="hidden" name="user_id" id="modal-user-id" value="" />
+      <label for="modal-organization-select">Organizations:</label>
+      <select name="organization_ids[]" id="modal-organization-select" multiple>
+        {% for organization in organizations %}
+        <option value="{{ organization.id }}">{{ organization.name }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary">Saqlash</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+<!-- Script -->
+{% block script %}
+<script>
+  const saveUserWithOrganizationsUrl = "{% url 'save_user_with_organizations' %}";
+  const csrfToken = "{{ csrf_token }}";
+</script>
+<script src="{% static 'js/asked_users.js' %}"></script>
+{% endblock %}

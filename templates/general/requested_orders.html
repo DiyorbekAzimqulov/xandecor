@@ -1,0 +1,72 @@
+{% extends "general/main.html" %} {% load static %}
+
+<!-- Title -->
+{% block title %}Requested Orders{% endblock %}
+
+<!-- Style -->
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/requested_orders.css' %}" />
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+<div>
+  <h1><b>Requested Orders</b></h1>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th><i class="fas fa-user"></i> User</th>
+        <th><i class="fas fa-box"></i> Product</th>
+        <th><i class="far fa-calendar-alt"></i> Purchase Date</th>
+        <th><i class="fas fa-truck"></i> Container</th>
+        <th><i class="fas fa-cube"></i> Volume</th>
+        <th><i class="fas fa-dollar-sign"></i> Price</th>
+        <th><i class="fas fa-comments"></i> Reviews</th>
+        <th><i class="far fa-calendar-check"></i> Deadline</th>
+        <th><i class="fas fa-edit"></i> Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sale in object_list %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ sale.user.name }}</td>
+        <td>{{ sale.product.name }}</td>
+        <td>
+          {% if sale.purchase_date %} {{ sale.purchase_date }} {% else %}
+          <i class="fas fa-times symbol-no"></i>
+          <!-- Symbol for missing purchase date -->
+          {% endif %}
+        </td>
+        <td>
+          {% if sale.container %} {{ sale.container.number }} {% else %}
+          <i class="fas fa-times symbol-no"></i>
+          <!-- Symbol for missing container -->
+          {% endif %}
+        </td>
+        <td>{{ sale.volume }}</td>
+        <td>
+          {% if sale.price %} {{ sale.price }} {% else %}
+          <i class="fas fa-times symbol-no"></i>
+          <!-- Symbol for missing price -->
+          {% endif %}
+        </td>
+        <td>{{ sale.review_count }}</td>
+        <td>
+          {% if sale.deadline %} {{ sale.deadline }} {% else %}
+          <i class="fas fa-times symbol-no"></i>
+          <!-- Symbol for missing deadline -->
+          {% endif %}
+        </td>
+        <td>
+          <a href="{% url 'admin:orm_app_sale_change' sale.id %}" class="btn btn-primary btn-sm">
+            <i class="fas fa-edit"></i> Edit
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

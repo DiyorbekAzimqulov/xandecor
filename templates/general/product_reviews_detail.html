@@ -1,0 +1,61 @@
+{% extends "general/main.html" %} {% load static %}
+
+<!-- Title -->
+{% block title %}Product Reviews Detail{% endblock %}
+
+<!-- Style -->
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/product_reviews_detail.css' %}" />
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+<div class="container">
+  <h1><i class="fas fa-star"></i> Product: {{ product.name }}</h1>
+
+  <div class="reviews-summary">
+    <div>
+      <p class="icon"><i class="fas fa-comments"></i></p>
+      <p>Total Reviews</p>
+      <p>{{ reviews.total_reviews }}</p>
+    </div>
+    <div>
+      <p class="icon"><i class="fas fa-users"></i></p>
+      <p>Reviewers</p>
+      <p>{{ reviews.reviewers|join:", " }}</p>
+    </div>
+    <div>
+      <p class="icon"><i class="fas fa-star-half-alt"></i></p>
+      <p>Average Rating</p>
+      <p>{{ reviews.average_rating|default:"Not rated yet" }}</p>
+    </div>
+    <div>
+      <p class="icon"><i class="fas fa-thumbs-up"></i></p>
+      <p>Excellent Reviews</p>
+      <p>{{ reviews.excellent_reviews }}</p>
+    </div>
+    <div>
+      <p class="icon"><i class="fas fa-meh"></i></p>
+      <p>Medium Reviews</p>
+      <p>{{ reviews.medium_reviews }}</p>
+    </div>
+    <div>
+      <p class="icon"><i class="fas fa-thumbs-down"></i></p>
+      <p>Bad Reviews</p>
+      <p>{{ reviews.bad_reviews }}</p>
+    </div>
+  </div>
+
+  <button class="btn-toggle" onclick="toggleDetails()">Toggle Review Details</button>
+
+  <div class="review-details">
+    <h2>Review Details</h2>
+    <p>{{ reviews.details }}</p>
+  </div>
+</div>
+{% endblock %}
+
+<!-- Script -->
+{% block script %}
+<script src="{% static 'js/product_reviews_detail.js' %}"></script>
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from salesdoctorbot.salesDoctorAuth import auth_sales_doctor
 from salesdoctorbot.models import WareHouse, StockProduct, WareHouseProduct
-from salesdoctorbot.services import getProducts_by_WH_Ca
+from salesdoctorbot.services import getProducts_by_WH_Ca, update_sold_ostatok_stock
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 
@@ -47,9 +47,10 @@ def sales_doctor(request):
             "status": True,
             "warehouse_names": warehouse_names,
             "product_data": product_data,
+            "active_page": 'sales_doctor'
         }
 
-    return render(request, "sales_doctor.html", context)
+    return render(request, "general/sales_doctor.html", context)
 
 
 def fetch_warehouse_data(request):
@@ -79,7 +80,7 @@ def fetch_warehouse_data(request):
             'ostatok': product.ostatok
         }
 
-    table_body_html = render_to_string('product_zapravka.html', {
+    table_body_html = render_to_string('general/ship_products.html', {
         'product_data': product_data,
         'warehouse_names': [warehouse],
     })
