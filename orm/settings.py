@@ -148,26 +148,26 @@ DAILY_CRON_INTERVAL = 60 * 60 * 24  # 24 hours
 
 
 # AWS
-AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = "xandecor"
-AWS_S3_REGION_NAME = "us-east-2"  # e.g., 'us-east-1'
+# AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
+# AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
+# AWS_STORAGE_BUCKET_NAME = "xandecor"
+# AWS_S3_REGION_NAME = "us-east-2"  # e.g., 'us-east-1'
 
-AWS_S3_CUSTOM_DOMAIN = "xandecor.s3.us-east-2.amazonaws.com"
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=86400",
-}
-AWS_S3_FILE_OVERWRITE = False
-AWS_LOCATION = "static"
-AWS_MEDIA_LOCATION = "media"
-AWS_QUERYSTRING_AUTH = False
-AWS_HEADERS = {"Access-Control-Allow-Origin": "*"}
-AWS_DEFAULT_ACL = "public-read"
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+# AWS_S3_CUSTOM_DOMAIN = "xandecor.s3.us-east-2.amazonaws.com"
+# AWS_S3_OBJECT_PARAMETERS = {
+#     "CacheControl": "max-age=86400",
+# }
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_LOCATION = "static"
+# AWS_MEDIA_LOCATION = "media"
+# AWS_QUERYSTRING_AUTH = False
+# AWS_HEADERS = {"Access-Control-Allow-Origin": "*"}
+# AWS_DEFAULT_ACL = "public-read"
+# DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+# STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-STATIC_URL = "https://%s/%s/" % (AWS_LOCATION)
-MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_MEDIA_LOCATION)
+# STATIC_URL = "https://%s/%s/" % (AWS_LOCATION)
+# MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_MEDIA_LOCATION)
 
 CSRF_TRUSTED_ORIGINS = [
     'https://xandecor.com',

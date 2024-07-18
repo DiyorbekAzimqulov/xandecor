@@ -1,5 +1,5 @@
 {% load static %}
-<div class="navbar">
+<div class="navbar {% if active_page == 'sales_doctor' %}fixed-top{% endif %}">
   <a href="{% url 'home' %}" class="navbar-brand"><i class="fas fa-cube"></i> Xandecor</a>
   <div class="navbar-menu">
     <span class="navbar-text"><i class="fas fa-boxes"></i> Containers List</span>
