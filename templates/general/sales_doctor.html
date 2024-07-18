@@ -6,7 +6,16 @@
 <!-- Style -->
 {% block style %}
 <link rel="stylesheet" href="{% static 'css/sales_doctor.css' %}" />
+
+<style>
+  body {
+    padding-top: 56px; /* Height of the navbar */
+  }
+</style>
 {% endblock %}
+
+<!-- Sidebar -->
+{% block sidebar %} {% include "_sidebar.html" %}{% endblock %}
 
 <!-- Content -->
 {% block content %}
@@ -14,51 +23,53 @@
   <h2 class="mb-4 text-center"><b>Sales Doctor</b></h2>
 
   {% if status %}
-  <div class="table-responsive">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th rowspan="2">No</th>
-          <th rowspan="2">Name</th>
-          {% for warehouse in warehouse_names %} {% if warehouse == "Основной склад" %}
-          <th class="warehouse-cell-main" rowspan="2">
-            {{ warehouse }} <i class="fas fa-warehouse"></i>
-          </th>
-          {% elif warehouse == "Secondary Warehouse 1" %}
-          <th class="warehouse-cell-secondary-1" colspan="3">
-            {{ warehouse }} <i class="fas fa-warehouse"></i>
-          </th>
-          {% elif warehouse == "Secondary Warehouse 2" %}
-          <th class="warehouse-cell-secondary-2" colspan="3">
-            {{ warehouse }} <i class="fas fa-warehouse"></i>
-          </th>
-          {% elif warehouse == "Secondary Warehouse 3" %}
-          <th class="warehouse-cell-secondary-3" colspan="3">
-            {{ warehouse }} <i class="fas fa-warehouse"></i>
-          </th>
-          {% else %}
-          <th class="warehouse-cell-secondary" colspan="3">
-            {{ warehouse }} <i class="fas fa-warehouse"></i>
-          </th>
-          {% endif %} {% endfor %}
-          <th rowspan="2">Total Otxod <i class="fas fa-trash-alt"></i></th>
-        </tr>
-        <tr>
-          {% for warehouse in warehouse_names %} {% if warehouse != "Основной склад" %}
-          <th class="warehouse-cell-secondary">
-            Prixod <i class="fas fa-arrow-down symbol-cell prixod"></i>
-          </th>
-          <th class="warehouse-cell-secondary">
-            Sold <i class="fas fa-arrow-up symbol-cell sold"></i>
-          </th>
-          <th class="warehouse-cell-secondary">
-            Otxod <i class="fas fa-trash-alt symbol-cell ostatok"></i>
-          </th>
-          {% endif %} {% endfor %}
-        </tr>
-      </thead>
-      {% include 'general/ship_products.html' %}
-    </table>
+  <div class="mx-5">
+    <div class="table-responsive ml-5">
+      <table class="table table-bordered ml-5">
+        <thead>
+          <tr>
+            <th rowspan="2">No</th>
+            <th rowspan="2">Name</th>
+            {% for warehouse in warehouse_names %} {% if warehouse == "Основной склад" %}
+            <th class="warehouse-cell-main" rowspan="2">
+              {{ warehouse }} <i class="fas fa-warehouse"></i>
+            </th>
+            {% elif warehouse == "Secondary Warehouse 1" %}
+            <th class="warehouse-cell-secondary-1" colspan="3">
+              {{ warehouse }} <i class="fas fa-warehouse"></i>
+            </th>
+            {% elif warehouse == "Secondary Warehouse 2" %}
+            <th class="warehouse-cell-secondary-2" colspan="3">
+              {{ warehouse }} <i class="fas fa-warehouse"></i>
+            </th>
+            {% elif warehouse == "Secondary Warehouse 3" %}
+            <th class="warehouse-cell-secondary-3" colspan="3">
+              {{ warehouse }} <i class="fas fa-warehouse"></i>
+            </th>
+            {% else %}
+            <th class="warehouse-cell-secondary" colspan="3">
+              {{ warehouse }} <i class="fas fa-warehouse"></i>
+            </th>
+            {% endif %} {% endfor %}
+            <th rowspan="2">Total Otxod <i class="fas fa-trash-alt"></i></th>
+          </tr>
+          <tr>
+            {% for warehouse in warehouse_names %} {% if warehouse != "Основной склад" %}
+            <th class="warehouse-cell-secondary">
+              Prixod <i class="fas fa-arrow-down symbol-cell prixod"></i>
+            </th>
+            <th class="warehouse-cell-secondary">
+              Sold <i class="fas fa-arrow-up symbol-cell sold"></i>
+            </th>
+            <th class="warehouse-cell-secondary">
+              Otxod <i class="fas fa-trash-alt symbol-cell ostatok"></i>
+            </th>
+            {% endif %} {% endfor %}
+          </tr>
+        </thead>
+        {% include 'general/ship_products.html' %}
+      </table>
+    </div>
   </div>
   {% else %}
   <p class="text-center">{{ error }}</p>
