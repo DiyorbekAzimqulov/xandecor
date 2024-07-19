@@ -68,4 +68,5 @@ class ShipProductView(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         ship_data = ship_db_data()
         data, _ = ship_products(ship_data)
+        print("SHIP DATA", data)
         return render(request, "general/ship_product.html", data)

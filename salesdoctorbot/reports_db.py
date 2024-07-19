@@ -95,7 +95,7 @@ def ship_products(shipping_db):
     for sub_warehouse_name, entries in report_data.items():
         report += f"📦 <b>{html.escape(sub_warehouse_name)}</b>:\n"
         for entry in entries:
-            report += f"+ {html.escape(entry['product_name'])} → <b>{entry['total_units_to_ship']} units needed</b>\n"
+            report += f"⬇️ {html.escape(entry['product_name'])} → <b>{entry['total_units_to_ship']} Aboi</b>\n"
         report += "\n"
 
     return report_data, report.strip()
@@ -226,7 +226,7 @@ def redistribute_products(db):
                 break
 
     for location_product, units in helper.items():
-        report += f"📦{units} shit {location_product[0]} 🔽 {location_product[2]} ⬅️ {location_product[1]}\n"
+        report += f"{location_product[1]} {units} shit↗️ {location_product[0]} ➡️ {location_product[2]}\n"
 
     return db, report.strip()
 

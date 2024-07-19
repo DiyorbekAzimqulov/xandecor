@@ -9,26 +9,19 @@ from salesdoctorbot.reports_db import ship_db_data, ship_products, redistribute_
 from django.utils.timezone import now
 import datetime
 
-DAILY_SHIPPING_HOUR, DAILY_SHIPPING_MINUTE = 12, 20
-DAILY_REDISTRIBUTE_HOUR, DAILY_REDISTRIBUTE_MINUTE = 7, 5
-DAILY_FORGOTTEN_SHIPMENTS_HOUR, DAILY_FORGOTTEN_SHIPMENTS_MINUTE = 7, 10
+DAILY_SHIPPING_HOUR = 7
+DAILY_REDISTRIBUTE_HOUR = 7
+DAILY_FORGOTTEN_SHIPMENTS_HOUR = 7
 
 TELEGRAM_MESSAGE_LIMIT = 4096  # Telegram message character limit
 
-async def calculate_seconds_until_next_report(hour: int, minute: int) -> int:
-    """Calculate the seconds until the next occurrence of the specified hour and minute."""
-    current_time = now()
-    report_time = current_time.replace(hour=hour, minute=minute, second=0, microsecond=0)
 
-    if current_time >= report_time:
-        report_time += datetime.timedelta(days=1)
-    return (report_time - current_time).total_seconds()
 
 async def daily_shipping_report() -> str:
     while True:
+        print("Daily shipping report task starting...")
         # Calculate the time until the next report
-        seconds_until_next_report = await calculate_seconds_until_next_report(DAILY_SHIPPING_HOUR, DAILY_SHIPPING_MINUTE)
-        await asyncio.sleep(seconds_until_next_report)
+        await asyncio.sleep(DAILY_SHIPPING_HOUR)
         
         token, user_id = await sync_to_async(auth_sales_doctor)()
         if token and user_id:
@@ -38,7 +31,10 @@ async def daily_shipping_report() -> str:
             warehouses = await sync_to_async(lambda: list(WareHouse.objects.all()))()
             for warehouse in warehouses:
                 order_ids = await sync_to_async(lambda: list(WareHouseProduct.objects.filter(warehouse=warehouse).values_list('product__sd_id', flat=True)))()            
+                print("Updating Products ...")
                 await sync_to_async(update_sold_ostatok_stock)(token, user_id, warehouse.sd_id, order_ids)
+                print("Products Updated")
+                
             
             shipping_db = await sync_to_async(ship_db_data)()
             _, report = await sync_to_async(ship_products)(shipping_db)
@@ -53,9 +49,9 @@ async def daily_shipping_report() -> str:
 
 async def daily_redistribute_report():
     while True:
+        print("Daily redistribute report task starting...")
         # Calculate the time until the next report
-        seconds_until_next_report = await calculate_seconds_until_next_report(DAILY_REDISTRIBUTE_HOUR, DAILY_REDISTRIBUTE_MINUTE)
-        await asyncio.sleep(seconds_until_next_report)
+        await asyncio.sleep(DAILY_REDISTRIBUTE_HOUR)
             
         redistribute_db = await sync_to_async(redistribute_data)()
         
@@ -71,9 +67,9 @@ async def daily_redistribute_report():
 
 async def daily_forgotten_shipments():
     while True:
+        print("Daily forgotten shipments task starting...")
         # Calculate the time until the next report
-        seconds_until_next_report = await calculate_seconds_until_next_report(DAILY_FORGOTTEN_SHIPMENTS_HOUR, DAILY_FORGOTTEN_SHIPMENTS_MINUTE)
-        await asyncio.sleep(seconds_until_next_report)
+        await asyncio.sleep(DAILY_FORGOTTEN_SHIPMENTS_HOUR)
         
         forgotten_shipments = await sync_to_async(find_forgotten_shipments)()
         report = await sync_to_async(generate_forgotten_shipment_report)(forgotten_shipments)
@@ -85,3 +81,4 @@ async def daily_forgotten_shipments():
                 print("No forgotten shipments report to send.")
         except Exception as e:
             print(f"Error sending message: {e} in daily_forgotten_shipments")
+
