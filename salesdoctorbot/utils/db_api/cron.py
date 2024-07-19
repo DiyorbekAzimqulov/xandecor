@@ -5,13 +5,21 @@ from salesdoctorbot.models import WareHouse, WareHouseProduct
 from salesdoctorbot.salesDoctorAuth import auth_sales_doctor
 from salesdoctorbot.services import getProducts_by_WH_Ca, update_sold_ostatok_stock
 from salesdoctorbot.data.config import CATEGORY_ID, GROUP_ID
-from salesdoctorbot.reports_db import ship_db_data, ship_products, redistribute_products, redistribute_data, find_forgotten_shipments, generate_forgotten_shipment_report
+from salesdoctorbot.reports_db import (
+    ship_db_data, ship_products, 
+    redistribute_products, 
+    redistribute_data, 
+    find_forgotten_shipments, 
+    generate_forgotten_shipment_report
+)
 from django.utils.timezone import now
 import datetime
 
-DAILY_SHIPPING_HOUR = 7
-DAILY_REDISTRIBUTE_HOUR = 7
-DAILY_FORGOTTEN_SHIPMENTS_HOUR = 7
+# Constants for the daily report tasks hour in seconds since the start of the day
+DAILY_SHIPPING_HOUR = 7 * 60 * 60  # 7:00 AM
+DAILY_REDISTRIBUTE_HOUR = DAILY_SHIPPING_HOUR + 10 * 60  # 7:10 AM
+DAILY_FORGOTTEN_SHIPMENTS_HOUR = DAILY_REDISTRIBUTE_HOUR + 10 * 60  # 7:20 AM
+
 
 TELEGRAM_MESSAGE_LIMIT = 4096  # Telegram message character limit
 

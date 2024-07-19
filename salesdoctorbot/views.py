@@ -3,7 +3,12 @@ from salesdoctorbot.salesDoctorAuth import auth_sales_doctor
 from salesdoctorbot.models import WareHouse, WareHouseProduct
 from django.contrib.auth.mixins import AccessMixin
 from django.views import View
-from salesdoctorbot.reports_db import ship_db_data, ship_products
+from salesdoctorbot.reports_db import (
+    ship_db_data, 
+    ship_products,
+    redistribute_data,
+    redistribute_products
+)
 
 NAME_CATEGORY = "Xan Decor Naxt"
 CATEGORY_ID = "d0_5"
@@ -82,3 +87,21 @@ class ShipProductView(SuperuserRequiredMixin, View):
 
 
         return render(request, "general/ship_products.html", context)
+
+class RedistributeProductView(SuperuserRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        data = redistribute_data()
+
+        max_length = max(len(products) for products in data.values())
+
+        # Create a list of indices
+        indices = list(range(max_length))
+
+        context = {
+            'data': data,
+            'active_page': 'redistribute_product',
+            'indices': indices
+        }
+        print("Data   ", data)
+
+        return render(request, "general/redistribute_products.html", context)

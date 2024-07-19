@@ -226,7 +226,7 @@ def redistribute_products(db):
                 break
 
     for location_product, units in helper.items():
-        report += f"{location_product[1]} {units} shit↗️ {location_product[0]} ➡️ {location_product[2]}\n"
+        report += f"{location_product[1]} ↗️ {units} shit {location_product[0]} ➡️ {location_product[2]}\n"
 
     return db, report.strip()
 
