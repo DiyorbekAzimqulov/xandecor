@@ -68,4 +68,17 @@ class ShipProductView(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         ship_data = ship_db_data()
         data, _ = ship_products(ship_data)
-        return render(request, "general/ship_product.html", data)
+
+        max_length = max(len(products) for products in data.values())
+
+        # Create a list of indices
+        indices = list(range(max_length))
+
+        context = {
+            'data': data,
+            'active_page': 'ship_product',
+            'indices': indices
+        }
+
+
+        return render(request, "general/ship_products.html", context)

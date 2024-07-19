@@ -1,32 +1,47 @@
-{# table_body.html #}
+{% extends "general/main.html" %} {% load static %} {% load custom_filters %}
 
-{% load custom_filters %}
+<!-- Title -->
+{% block title %}Sales Doctor{% endblock %}
 
-<tbody>
-  {% for product_name, data in product_data.items %}
-    <tr class="{{ forloop.counter0|divisibleby:2|yesno:'row-even,row-odd' }}">
-      <td data-label="No.">{{ forloop.counter }}</td>
-      <td data-label="Product">{{ product_name }}</td>
-      {% for warehouse in warehouse_names %}
-        {% with warehouse_data=data.stores|get_item:warehouse %}
-          {% if warehouse_data %}
-            {% if warehouse == "Основной склад" %}
-              <td class="warehouse-cell-main" data-label="Ostatok">{{ warehouse_data.ostatok }} <i class="fas fa-arrow-down symbol-cell prixod"></i></td>
-            {% else %}
-              <td class="warehouse-cell-secondary" data-label="Prixod">{{ warehouse_data.prixod }} <i class="fas fa-arrow-down symbol-cell prixod"></i></td>
-              <td class="warehouse-cell-secondary" data-label="Sold">{{ warehouse_data.sold }} <i class="fas fa-arrow-up symbol-cell sold"></i></td>
-              <td class="warehouse-cell-secondary" data-label="Ostatok">{{ warehouse_data.ostatok }} <i class="fas fa-trash-alt symbol-cell ostatok"></i></td>
-            {% endif %}
-          {% else %}
-            <td class="warehouse-cell-secondary" data-label="Ostatok">0</td>
-            {% if warehouse != "Основной склад" %}
-              <td class="warehouse-cell-secondary" data-label="Prixod">0</td>
-              <td class="warehouse-cell-secondary" data-label="Sold">0</td>
-            {% endif %}
-          {% endif %}
-        {% endwith %}
+<!-- Style -->
+{% block style %}
+<style>
+  body {
+    padding-top: 60px;
+  }
+</style>
+{% endblock %}
+
+<!-- Sidebar -->
+{% block sidebar %} {% include "_sidebar.html" %}{% endblock %}
+
+<!-- Content -->
+{% block content %}
+<h1 class="mt-3"><b>Zapravka qilish</b></h1>
+
+<div class="container-fluid ml-5">
+  <table class="table col-11 ml-5">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        {% for ware in data %}
+        <th scope="col">{{ ware }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in indices %}
+      <tr>
+        <td>{{ i|add:"1" }}</td>
+        {% for ware, prods in data.items %}
+        <td>
+          {% with product=prods|get_item_at_index:i %} {% if product %} {{ product.product_name }}:
+          {{ product.total_units_to_ship }} {% else %} &nbsp; {% endif %} {% endwith %}
+        </td>
+        {% endfor %}
+      </tr>
       {% endfor %}
-      <td data-label="Total Ostatok">{{ data.total_ostatok }} <i class="fas fa-trash-alt symbol-cell ostatok"></i></td>
-    </tr>
-  {% endfor %}
-</tbody>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
