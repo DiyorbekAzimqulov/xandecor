@@ -42,6 +42,7 @@ class WareHouseProduct(models.Model):
     prixod = models.IntegerField(_("Prixod"), default=0)
     sold = models.IntegerField(_("Sold"), default=0)
     ostatok = models.IntegerField(_("Ostatok"), default=0)
+    arrivel_date = models.DateTimeField(_("Arrivel date"), null=True, blank=True)
 
     class Meta:
         verbose_name = _("Warehouse product")

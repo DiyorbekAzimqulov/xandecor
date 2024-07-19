@@ -1,7 +1,7 @@
 from django.urls import path
-from salesdoctorbot import views
+from .views import SalesDoctorView, ShipProductView
 
 urlpatterns = [
-    path('', views.sales_doctor, name='sales_doctor'),
-    path('fetch_warehouse_data/', views.fetch_warehouse_data, name='fetch_warehouse_data'),
+    path('', SalesDoctorView.as_view(), name='sales_doctor'),
+    path('ship/', ShipProductView.as_view(), name='ship_product'),
 ]

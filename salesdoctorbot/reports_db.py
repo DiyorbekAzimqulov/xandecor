@@ -98,7 +98,7 @@ def ship_products(shipping_db):
             report += f"+ {html.escape(entry['product_name'])} → <b>{entry['total_units_to_ship']} units needed</b>\n"
         report += "\n"
 
-    return shipping_db, report.strip()
+    return report_data, report.strip()
 
 
 

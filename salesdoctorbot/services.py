@@ -201,3 +201,18 @@ def getProducts_by_WH_Ca(token: str, user_id: str, category_id: str) -> dict:
         return {"error": response_data.get("error", "Failed to retrieve data")}
 
     return {"success": "Products updated successfully"}
+
+# def getStoreLogs(token: str, user_id: str, warehouse_id: str, category_id: str) -> dict:
+#     data = {
+#         "auth": {"userId": user_id, "token": token},
+#         "method": "getStoreLogs",
+#         "params": {
+#             "storeId": warehouse_id,
+#         }
+#     }
+    
+#     response = requests.post(LOGIN_URL, headers=headers, json=data)
+#     response_data = response.json()
+    
+#     if response.status_code != 200:
+        
