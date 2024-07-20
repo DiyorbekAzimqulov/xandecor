@@ -91,6 +91,7 @@ class ShipProductView(SuperuserRequiredMixin, View):
 
 class RedistributeProductView(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
+        search_query = request.GET.get('name', '')
         data_dic = redistribute_data()
         data, _ = redistribute_products(data_dic)
         
@@ -103,13 +104,16 @@ class RedistributeProductView(SuperuserRequiredMixin, View):
             warehouse_name = location_name[1]
             subwarehouse = location_name[2]
             product_name = location_name[0]
-            if warehouse_name not in mapping_dic:
-                mapping_dic[warehouse_name] = []
-            mapping_dic[warehouse_name].append({
-                "units": units,
-                "subwarehouse": subwarehouse,
-                "product_name": product_name
-            })
+            
+            # Filter by search query
+            if search_query.lower() in product_name.lower():
+                if warehouse_name not in mapping_dic:
+                    mapping_dic[warehouse_name] = []
+                mapping_dic[warehouse_name].append({
+                    "units": units,
+                    "subwarehouse": subwarehouse,
+                    "product_name": product_name
+                })
 
         # Sort the mapping dictionary by warehouse names
         sorted_mapping = {k: mapping_dic[k] for k in sorted(mapping_dic.keys(), key=lambda x: (all_warehouses.index(x) if x in all_warehouses else float('inf'), x))}
@@ -117,10 +121,10 @@ class RedistributeProductView(SuperuserRequiredMixin, View):
         context = {
             'data': sorted_mapping,
             'active_page': 'redistribute_product',
+            'search_query': search_query
         }
 
         return render(request, "general/redistribute_products.html", context)
-
 
 class ForgottenShipment(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
