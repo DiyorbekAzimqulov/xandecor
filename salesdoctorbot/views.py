@@ -7,7 +7,8 @@ from salesdoctorbot.reports_db import (
     ship_db_data, 
     ship_products,
     redistribute_data,
-    redistribute_products
+    redistribute_products,
+    find_forgotten_shipments
 )
 
 NAME_CATEGORY = "Xan Decor Naxt"
@@ -90,18 +91,51 @@ class ShipProductView(SuperuserRequiredMixin, View):
 
 class RedistributeProductView(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        data = redistribute_data()
+        data_dic = redistribute_data()
+        data, _ = redistribute_products(data_dic)
+        
+        # Fetch all warehouse names
+        all_warehouses = list(WareHouse.objects.values_list('name', flat=True))
+        
+        # Create a mapping dictionary
+        mapping_dic = {}
+        for location_name, units in data.items():
+            warehouse_name = location_name[1]
+            subwarehouse = location_name[2]
+            product_name = location_name[0]
+            if warehouse_name not in mapping_dic:
+                mapping_dic[warehouse_name] = []
+            mapping_dic[warehouse_name].append({
+                "units": units,
+                "subwarehouse": subwarehouse,
+                "product_name": product_name
+            })
 
-        max_length = max(len(products) for products in data.values())
-
-        # Create a list of indices
-        indices = list(range(max_length))
+        # Sort the mapping dictionary by warehouse names
+        sorted_mapping = {k: mapping_dic[k] for k in sorted(mapping_dic.keys(), key=lambda x: (all_warehouses.index(x) if x in all_warehouses else float('inf'), x))}
 
         context = {
-            'data': data,
+            'data': sorted_mapping,
             'active_page': 'redistribute_product',
-            'indices': indices
         }
-        print("Data   ", data)
 
         return render(request, "general/redistribute_products.html", context)
+
+
+class ForgottenShipment(SuperuserRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        forgotten_product = find_forgotten_shipments()
+        products_dic = {}
+        for product in forgotten_product:
+            products_dic[product.product.name] = {
+                    "prxod": product.prixod,
+                    "sold": product.sold,
+                    "ostatok": product.ostatok
+                    }
+                
+        context = {
+            'data': products_dic,
+            'active_page': 'forgotten_product'
+        }
+
+        return render(request, "general/forgotten_product.html", context)

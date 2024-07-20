@@ -1,0 +1,50 @@
+{% extends "general/main.html" %} {% load static %} {% load custom_filters %}
+
+<!-- Title -->
+{% block title %}Sales Doctor{% endblock %}
+
+<!-- Style -->
+{% block style %}
+<style>
+  body {
+    padding-top: 60px;
+    text-align: center;
+  }
+</style>
+{% endblock %}
+
+<!-- Sidebar -->
+{% block sidebar %} {% include "_sidebar.html" %} {% endblock %}
+
+<!-- Content -->
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4"><b>Unutilgan Mahsulotlar</b></h1>
+
+  <!-- Bootstrap Table -->
+  <table class="table table-bordered shadow-lg">
+    <thead class="text-center">
+      <tr>
+        <th>Name</th>
+        <th>Prixod</th>
+        <th>Sold</th>
+        <th>Ostatok</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product_name, product_details in data.items %}
+      <tr>
+        <td>{{ product_name }}</td>
+        <td>{{ product_details.prxod }}</td>
+        <td>{{ product_details.sold }}</td>
+        <td>{{ product_details.ostatok }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="text-center">No data available</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
