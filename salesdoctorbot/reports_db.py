@@ -228,8 +228,7 @@ def redistribute_products(db):
     for location_product, units in helper.items():
         report += f"{location_product[1]} ↗️ {units} shit {location_product[0]} ➡️ {location_product[2]}\n"
 
-    return db, report.strip()
-
+    return helper, report.strip()
 
 def find_forgotten_shipments():
     # Get the main warehouse
@@ -240,7 +239,7 @@ def find_forgotten_shipments():
     main_warehouse_products = WareHouseProduct.objects.filter(
         warehouse=main_warehouse,
         ostatok__gt=0
-    )
+    ).select_related('product')
 
     # Find products that have no stock, sold, or incoming in all other warehouses
     forget_products = []

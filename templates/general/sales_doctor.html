@@ -22,7 +22,9 @@
 <div class="container mt-4">
   <h2 class="mb-1 text-center"><b>Sales Doctor</b></h2>
 
-  {% if status %}
+  <div class="ml-5">{% include "_search.html" %}</div>
+
+  {% if product_data %} {% if status %}
   <div class="table-responsive ml-5">
     <table class="table table-bordered">
       <thead>
@@ -110,9 +112,10 @@
   </div>
   {% else %}
   <p class="text-center">{{ error }}</p>
-  {% endif %}
 </div>
-{% endblock %}
+{% endif %} {% else %}
+<div class="alert alert-warning shadow-lg" role="alert">No data available</div>
+{% endif %} {% endblock %}
 
 <!-- Script -->
 {% block script %}

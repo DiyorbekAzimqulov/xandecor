@@ -7,7 +7,8 @@ from salesdoctorbot.reports_db import (
     ship_db_data, 
     ship_products,
     redistribute_data,
-    redistribute_products
+    redistribute_products,
+    find_forgotten_shipments
 )
 
 NAME_CATEGORY = "Xan Decor Naxt"
@@ -25,6 +26,7 @@ class SalesDoctorView(SuperuserRequiredMixin, View):
     template_name = "general/sales_doctor.html"
     
     def get(self, request, *args, **kwargs):
+        search_query = request.GET.get('name', '')
         token, user_id = auth_sales_doctor()
         context = {"status": False, "error": "Authentication failed"}
 
@@ -59,22 +61,43 @@ class SalesDoctorView(SuperuserRequiredMixin, View):
                     'ostatok': product.ostatok
                 }
 
+            if search_query:
+                product_data = {
+                    product_name: details
+                    for product_name, details in product_data.items()
+                    if search_query.lower() in product_name.lower()
+                }
+
             context = {
                 "status": True,
                 "warehouse_names": warehouse_names,
                 "product_data": product_data,
-                "active_page": 'sales_doctor'
+                "active_page": 'sales_doctor',
+                'search_query': search_query
             }
 
         return render(request, self.template_name, context)
 
-
 class ShipProductView(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
+        search_query = request.GET.get('name', '')
         ship_data = ship_db_data()
         data, _ = ship_products(ship_data)
+        
+        # Filter data based on search query
+        if search_query:
+            filtered_data = {}
+            for ware, prods in data.items():
+                filtered_products = [prod for prod in prods if search_query.lower() in prod.get('product_name', '').lower()]
+                if filtered_products:
+                    filtered_data[ware] = filtered_products
+            data = filtered_data
 
-        max_length = max(len(products) for products in data.values())
+        # Calculate max_length only if data is not empty
+        if data:
+            max_length = max(len(products) for products in data.values())
+        else:
+            max_length = 0
 
         # Create a list of indices
         indices = list(range(max_length))
@@ -82,26 +105,67 @@ class ShipProductView(SuperuserRequiredMixin, View):
         context = {
             'data': data,
             'active_page': 'ship_product',
-            'indices': indices
+            'indices': indices,
+            'search_query': search_query
         }
-
 
         return render(request, "general/ship_products.html", context)
-
+        
 class RedistributeProductView(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        data = redistribute_data()
+        search_query = request.GET.get('name', '')
+        data_dic = redistribute_data()
+        data, _ = redistribute_products(data_dic)
+        
+        # Fetch all warehouse names
+        all_warehouses = list(WareHouse.objects.values_list('name', flat=True))
+        
+        # Create a mapping dictionary
+        mapping_dic = {}
+        for location_name, units in data.items():
+            warehouse_name = location_name[1]
+            subwarehouse = location_name[2]
+            product_name = location_name[0]
+            
+            # Filter by search query
+            if search_query.lower() in product_name.lower():
+                if warehouse_name not in mapping_dic:
+                    mapping_dic[warehouse_name] = []
+                mapping_dic[warehouse_name].append({
+                    "units": units,
+                    "subwarehouse": subwarehouse,
+                    "product_name": product_name
+                })
 
-        max_length = max(len(products) for products in data.values())
-
-        # Create a list of indices
-        indices = list(range(max_length))
+        # Sort the mapping dictionary by warehouse names
+        sorted_mapping = {k: mapping_dic[k] for k in sorted(mapping_dic.keys(), key=lambda x: (all_warehouses.index(x) if x in all_warehouses else float('inf'), x))}
 
         context = {
-            'data': data,
+            'data': sorted_mapping,
             'active_page': 'redistribute_product',
-            'indices': indices
+            'search_query': search_query
         }
-        print("Data   ", data)
 
         return render(request, "general/redistribute_products.html", context)
+
+class ForgottenShipment(SuperuserRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        search_query = request.GET.get('name', '')
+        forgotten_product = find_forgotten_shipments()
+        
+        products_dic = {}
+        for product in forgotten_product:
+            if search_query.lower() in product.product.name.lower():
+                products_dic[product.product.name] = {
+                    "prxod": product.prixod,
+                    "sold": product.sold,
+                    "ostatok": product.ostatok
+                }
+        
+        context = {
+            'data': products_dic,
+            'search_query': search_query,
+            'active_page': 'forgotten_product'
+        }
+
+        return render(request, "general/forgotten_product.html", context)

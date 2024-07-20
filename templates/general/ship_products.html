@@ -9,6 +9,12 @@
   body {
     padding-top: 60px;
   }
+  small {
+    font-size: x-small;
+  }
+  th {
+    font-size: small;
+  }
 </style>
 {% endblock %}
 
@@ -19,29 +25,49 @@
 {% block content %}
 <h1 class="mt-3"><b>Zapravka qilish</b></h1>
 
-<div class="container-fluid ml-5">
-  <table class="table col-11 ml-5">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        {% for ware in data %}
-        <th scope="col">{{ ware }}</th>
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for i in indices %}
-      <tr>
-        <td>{{ i|add:"1" }}</td>
-        {% for ware, prods in data.items %}
-        <td>
-          {% with product=prods|get_item_at_index:i %} {% if product %} {{ product.product_name }}:
-          {{ product.total_units_to_ship }} {% else %} &nbsp; {% endif %} {% endwith %}
-        </td>
-        {% endfor %}
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="ml-4">
+  <div class="ml-5">
+    <div class="container-fluid">
+      {% include "_search.html" %}
+
+      <table class="table col-12 shadow-lg">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            {% for ware in data %}
+            <th scope="col">{{ ware }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in indices %}
+          <tr>
+            <th>{{ i|add:"1" }}</th>
+            {% for ware, prods in data.items %}
+            <td>
+              <div class="row">
+                <!-- data -->
+                {% with product=prods|get_item_at_index:i %}
+                <!-- else -->
+                {% if product %}
+                <div class="col-9 border-end"><small>{{ product.product_name }}</small></div>
+                <div class="col-3"><small>{{ product.total_units_to_ship }}</small></div>
+                {% else %}
+                <div class="col-9">&nbsp;</div>
+                <div class="col-3">&nbsp;</div>
+                {% endif %} {% endwith %}
+              </div>
+            </td>
+            {% endfor %}
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="text-center">No data available</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}
