@@ -26,6 +26,7 @@ class SalesDoctorView(SuperuserRequiredMixin, View):
     template_name = "general/sales_doctor.html"
     
     def get(self, request, *args, **kwargs):
+        search_query = request.GET.get('name', '')
         token, user_id = auth_sales_doctor()
         context = {"status": False, "error": "Authentication failed"}
 
@@ -60,11 +61,19 @@ class SalesDoctorView(SuperuserRequiredMixin, View):
                     'ostatok': product.ostatok
                 }
 
+            if search_query:
+                product_data = {
+                    product_name: details
+                    for product_name, details in product_data.items()
+                    if search_query.lower() in product_name.lower()
+                }
+
             context = {
                 "status": True,
                 "warehouse_names": warehouse_names,
                 "product_data": product_data,
-                "active_page": 'sales_doctor'
+                "active_page": 'sales_doctor',
+                'search_query': search_query
             }
 
         return render(request, self.template_name, context)
