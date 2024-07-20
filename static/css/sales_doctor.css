@@ -45,6 +45,7 @@ body {
   white-space: nowrap;
   text-align: center;
   padding: 2px; /* Further reduced padding */
+  min-width: 50px; /* Ensure minimum width for cells */
 }
 .header-cell {
   white-space: normal;

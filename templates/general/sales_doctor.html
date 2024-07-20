@@ -11,6 +11,23 @@
   body {
     padding-top: 56px; /* Height of the navbar */
   }
+  td,
+  th {
+    font-size: 90%;
+  }
+  .grid {
+    width: 100%;
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .table-container {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    margin-left: 35px;
+    -webkit-overflow-scrolling: touch;
+  }
 </style>
 {% endblock %}
 
@@ -19,13 +36,13 @@
 
 <!-- Content -->
 {% block content %}
-<div class="container mt-4">
+<div class="grid mt-4">
   <h2 class="mb-1 text-center"><b>Sales Doctor</b></h2>
 
   <div class="ml-5">{% include "_search.html" %}</div>
 
   {% if product_data %} {% if status %}
-  <div class="table-responsive ml-5">
+  <div class="table-container">
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -33,37 +50,39 @@
           <th rowspan="2"><small>Name</small></th>
           {% for warehouse in warehouse_names %} {% if warehouse == "Основной склад" %}
           <th class="warehouse-cell-main" rowspan="2">
-            <small>{{ warehouse }}</small> <i class="fas fa-warehouse"></i>
+            <small>{{ warehouse }} <i class="fas fa-warehouse"></i></small>
           </th>
           {% elif warehouse == "Secondary Warehouse 1" %}
           <th class="warehouse-cell-secondary-1" colspan="3">
-            <small>{{ warehouse }}</small> <i class="fas fa-warehouse"></i>
+            <small>{{ warehouse }} <i class="fas fa-warehouse"></i></small>
           </th>
           {% elif warehouse == "Secondary Warehouse 2" %}
           <th class="warehouse-cell-secondary-2" colspan="3">
-            <small>{{ warehouse }}</small> <i class="fas fa-warehouse"></i>
+            <small>{{ warehouse }} <i class="fas fa-warehouse"></i></small>
           </th>
           {% elif warehouse == "Secondary Warehouse 3" %}
           <th class="warehouse-cell-secondary-3" colspan="3">
-            <small>{{ warehouse }}</small> <i class="fas fa-warehouse"></i>
+            <small>{{ warehouse }} <i class="fas fa-warehouse"></i></small>
           </th>
           {% else %}
           <th class="warehouse-cell-secondary" colspan="3">
-            <small>{{ warehouse }}</small> <i class="fas fa-warehouse"></i>
+            <small>{{ warehouse }} <i class="fas fa-warehouse"></i></small>
           </th>
           {% endif %} {% endfor %}
-          <th rowspan="2"><small>Total Otxod</small> <i class="fas fa-trash-alt"></i></th>
+          <th rowspan="2">
+            <small>Total Otxod <i class="fas fa-trash-alt"></i></small>
+          </th>
         </tr>
         <tr>
           {% for warehouse in warehouse_names %} {% if warehouse != "Основной склад" %}
           <th class="warehouse-cell-secondary">
-            <small>Prixod</small> <i class="fas fa-arrow-down symbol-cell prixod"></i>
+            <small>Prixod <i class="fas fa-arrow-down symbol-cell prixod"></i></small>
           </th>
           <th class="warehouse-cell-secondary">
-            <small>Sold</small> <i class="fas fa-arrow-up symbol-cell sold"></i>
+            <small>Sold <i class="fas fa-arrow-up symbol-cell sold"></i></small>
           </th>
           <th class="warehouse-cell-secondary">
-            <small>Otxod</small> <i class="fas fa-trash-alt symbol-cell ostatok"></i>
+            <small>Otxod <i class="fas fa-trash-alt symbol-cell ostatok"></i></small>
           </th>
           {% endif %} {% endfor %}
         </tr>
@@ -114,7 +133,7 @@
   <p class="text-center">{{ error }}</p>
 </div>
 {% endif %} {% else %}
-<div class="alert alert-warning shadow-lg" role="alert">No data available</div>
+<div class="alert alert-warning shadow-lg mx-5" role="alert">No data available</div>
 {% endif %} {% endblock %}
 
 <!-- Script -->
