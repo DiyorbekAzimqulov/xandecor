@@ -1,0 +1,13 @@
+<form method="get" action="{% url active_page %}">
+  <div class="input-group mb-3 shadow-lg">
+    <span class="input-group-text">🔍</span>
+    <input
+      type="text"
+      class="form-control"
+      aria-label="Search by product name"
+      name="name"
+      value="{{ search_query }}"
+      placeholder="Mahsulot nomi" />
+    <button type="submit" class="btn btn-outline-info">Search</button>
+  </div>
+</form>

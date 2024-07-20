@@ -124,17 +124,21 @@ class RedistributeProductView(SuperuserRequiredMixin, View):
 
 class ForgottenShipment(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
+        search_query = request.GET.get('name', '')
         forgotten_product = find_forgotten_shipments()
+        
         products_dic = {}
         for product in forgotten_product:
-            products_dic[product.product.name] = {
+            if search_query.lower() in product.product.name.lower():
+                products_dic[product.product.name] = {
                     "prxod": product.prixod,
                     "sold": product.sold,
                     "ostatok": product.ostatok
-                    }
-                
+                }
+        
         context = {
             'data': products_dic,
+            'search_query': search_query,
             'active_page': 'forgotten_product'
         }
 
