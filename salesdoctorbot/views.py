@@ -69,13 +69,26 @@ class SalesDoctorView(SuperuserRequiredMixin, View):
 
         return render(request, self.template_name, context)
 
-
 class ShipProductView(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
+        search_query = request.GET.get('name', '')
         ship_data = ship_db_data()
         data, _ = ship_products(ship_data)
+        
+        # Filter data based on search query
+        if search_query:
+            filtered_data = {}
+            for ware, prods in data.items():
+                filtered_products = [prod for prod in prods if search_query.lower() in prod.get('product_name', '').lower()]
+                if filtered_products:
+                    filtered_data[ware] = filtered_products
+            data = filtered_data
 
-        max_length = max(len(products) for products in data.values())
+        # Calculate max_length only if data is not empty
+        if data:
+            max_length = max(len(products) for products in data.values())
+        else:
+            max_length = 0
 
         # Create a list of indices
         indices = list(range(max_length))
@@ -83,12 +96,12 @@ class ShipProductView(SuperuserRequiredMixin, View):
         context = {
             'data': data,
             'active_page': 'ship_product',
-            'indices': indices
+            'indices': indices,
+            'search_query': search_query
         }
 
-
         return render(request, "general/ship_products.html", context)
-
+        
 class RedistributeProductView(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         search_query = request.GET.get('name', '')
