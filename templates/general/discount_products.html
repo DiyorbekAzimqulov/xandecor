@@ -1,0 +1,108 @@
+{% extends "general/main.html" %} {% load static %} {% load custom_filters %}
+
+<!-- Title -->
+{% block title %}Discount{% endblock %}
+
+<!-- Style -->
+{% block style %}
+<style>
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-top: 40px;
+  }
+  .form-container {
+    width: 50%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .events-list {
+    width: 45%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .event-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eaeaea;
+  }
+  .event-item:last-child {
+    border-bottom: none;
+  }
+  .event-details {
+    max-width: 80%;
+  }
+  .btn-remove {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  .btn-remove:hover {
+    background-color: #c0392b;
+  }
+</style>
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+<div class="container">
+  <div class="form-container">
+    <h1 class="mb-4"><b>Discount</b></h1>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="products">Select Products</label>
+        <select id="products" name="products" multiple class="form-control">
+          {% for product in products %}
+          <option value="{{ product.id }}">{{ product.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="discount_text">Discount number</label>
+        <input type="text" class="form-control" id="discount_text" name="discount_text" />
+      </div>
+        <!-- groups select circle -->
+        <div class="form-group">
+          <label for="groups">Select Groups</label>
+            <select id="groups" name="groups" multiple class="form-control">
+                {% for group in groups %}
+                <option value="{{ group.id }}">{{ group.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+      <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    </form>
+  </div>
+
+  <div class="events-list">
+    <h2>Events</h2>
+    {% for event in events %}
+    <div class="event-item">
+      <div class="event-details">
+        <strong>Event {{ forloop.counter }}</strong><br />
+        <strong>Products:</strong>
+        {% for product in event.products.all %} {{ product.name }}{% if notforloop.last %}, {% endif %} {% endfor %}<br />
+        <strong>Discount Text:</strong> {{ event.discount_text }}
+      </div>
+      <form method="post" action="{% url 'remove_discount_event' event.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-remove">Remove</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

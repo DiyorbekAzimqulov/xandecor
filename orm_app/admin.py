@@ -9,6 +9,7 @@ from orm_app.models import (
     User,
     Sale,
     Review,
+    TelegramGroup,
 )
 
 
@@ -19,3 +20,4 @@ admin.site.register(Product)
 admin.site.register(User)
 admin.site.register(Sale)
 admin.site.register(Review)
+admin.site.register(TelegramGroup)

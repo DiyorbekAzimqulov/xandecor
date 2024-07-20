@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from salesdoctorbot.salesDoctorAuth import auth_sales_doctor
 from salesdoctorbot.models import WareHouse, WareHouseProduct
+from orm_app.models import Product, DiscountEvent, TelegramGroup
 from django.contrib.auth.mixins import AccessMixin
 from django.views import View
 from salesdoctorbot.reports_db import (
@@ -10,6 +11,10 @@ from salesdoctorbot.reports_db import (
     redistribute_products,
     find_forgotten_shipments
 )
+from django.shortcuts import redirect
+from django.http import HttpResponse
+
+
 
 NAME_CATEGORY = "Xan Decor Naxt"
 CATEGORY_ID = "d0_5"
@@ -169,3 +174,40 @@ class ForgottenShipment(SuperuserRequiredMixin, View):
         }
 
         return render(request, "general/forgotten_product.html", context)
+
+
+class DiscountProductView(SuperuserRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        products = Product.objects.all().order_by('name')
+        groups = TelegramGroup.objects.all()
+        events = DiscountEvent.objects.all().order_by('-created_at')
+        context = {
+            "products": products, 
+            "groups": groups, 
+            "events": events
+            }
+        return render(request, "general/discount_products.html", context)
+
+    def post(self, request, *args, **kwargs):
+        selected_products = request.POST.getlist('products')
+        discount_text = request.POST.get('discount_text')
+        selected_groups = request.POST.getlist('groups')
+        
+        if selected_products and discount_text and selected_groups:
+            event = DiscountEvent(discount_text=discount_text)
+            event.save()
+            event.products.set(selected_products)
+            event.group.set(selected_groups)
+            event.save()
+        return redirect('discount_product')
+
+
+class RemoveDiscountEventView(View):
+    def post(self, request, event_id, *args, **kwargs):
+        try:
+            event = DiscountEvent.objects.get(id=event_id)
+            event.delete()
+            return redirect('discount_product')
+        except DiscountEvent.DoesNotExist:
+            # Handle the case where the event does not exist
+            return redirect('discount_product')

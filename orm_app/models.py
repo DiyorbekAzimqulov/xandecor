@@ -135,3 +135,24 @@ class AskUser(models.Model):
     def __str__(self):
         return self.first_name + " " + self.last_name
 
+class TelegramGroup(models.Model):
+    name = models.CharField(max_length=100)
+    group_id = models.BigIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+class DiscountEvent(models.Model):
+    products = models.ManyToManyField(Product)
+    discount = models.IntegerField()
+    group = models.ManyToManyField(TelegramGroup)
+    report_count = models.IntegerField(default=60)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+
+

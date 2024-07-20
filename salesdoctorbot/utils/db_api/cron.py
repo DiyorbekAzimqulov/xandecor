@@ -12,8 +12,7 @@ from salesdoctorbot.reports_db import (
     find_forgotten_shipments, 
     generate_forgotten_shipment_report
 )
-from django.utils.timezone import now
-import datetime
+from orm_app.models import Product, DiscountEvent, TelegramGroup
 
 # Constants for the daily report tasks hour in seconds since the start of the day
 DAILY_SHIPPING_HOUR = 7 * 60 * 60  # 7:00 AM
@@ -94,3 +93,9 @@ async def daily_forgotten_shipments():
         except Exception as e:
             print(f"Error sending message: {e} in daily_forgotten_shipments")
 
+
+# async def daily_discount_report():
+#     while True:
+#         print("Daily discount report task starting...")
+#         # Calculate the time until the next report
+#         await asyncio.sleep(
