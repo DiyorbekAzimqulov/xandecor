@@ -93,9 +93,9 @@ def ship_products(shipping_db):
     # Generate the report text
     report = ""
     for sub_warehouse_name, entries in report_data.items():
-        report += f"📦 <b>{html.escape(sub_warehouse_name)}</b>:\n"
+        report += f"📦 {html.escape(sub_warehouse_name)}:\n"
         for entry in entries:
-            report += f"⬇️ {html.escape(entry['product_name'])} → <b>{entry['total_units_to_ship']} Aboi</b>\n"
+            report += f"⬇️ {html.escape(entry['product_name'])} → {entry['total_units_to_ship']} Aboi\n"
         report += "\n"
 
     return report_data, report.strip()

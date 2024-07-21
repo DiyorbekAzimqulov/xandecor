@@ -23,7 +23,7 @@ DEBUG = env.bool("DEBUG")
 
 
 ALLOWED_HOSTS = [env.str("ALLOWED_HOSTS")]
-
+DJANGO_APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
 
 # Application definition
 
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "salebot",
     "reviewbot",
     "salesdoctorbot",
+    "django_apscheduler"
 ]
 
 MIDDLEWARE = [

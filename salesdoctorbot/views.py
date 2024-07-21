@@ -4,7 +4,7 @@ from salesdoctorbot.models import WareHouse, WareHouseProduct
 from orm_app.models import Product, DiscountEvent, TelegramGroup
 from django.contrib.auth.mixins import AccessMixin
 from django.views import View
-from salesdoctorbot.reports_db import (
+from salesdoctorbot.report_functions import (
     ship_db_data, 
     ship_products,
     redistribute_data,
@@ -32,54 +32,51 @@ class SalesDoctorView(SuperuserRequiredMixin, View):
     
     def get(self, request, *args, **kwargs):
         search_query = request.GET.get('name', '')
-        token, user_id = auth_sales_doctor()
+        # token, user_id = auth_sales_doctor()
         context = {"status": False, "error": "Authentication failed"}
 
-        if token and user_id:
-            stockproducts = WareHouseProduct.objects.filter(
-                category__sd_id=CATEGORY_ID,
-                ostatok__gt=0
-            ).distinct().order_by('product__name')  # Sort by product name
+        # if token and user_id:
+        warehouse_products = WareHouseProduct.objects.select_related('product', 'warehouse').filter(
+            category__sd_id=CATEGORY_ID,
+            ostatok__gt=0
+        ).distinct().order_by('product__name')  # Sort by product name
 
-            warehouse_names = list(WareHouse.objects.values_list('name', flat=True))
+        if search_query:
+            warehouse_products = warehouse_products.filter(product__name=search_query)
 
-            # Ensure 'Основной склад' is first in the list
-            if "Основной склад" in warehouse_names:
-                warehouse_names.remove("Основной склад")
-                warehouse_names.insert(0, "Основной склад")
+        warehouse_names = list(WareHouse.objects.values_list('name', flat=True))
 
-            product_data = {}
-            for product in stockproducts:
-                if product.product.name not in product_data:
-                    product_data[product.product.name] = {
-                        'total_prixod': 0,
-                        'total_sold': 0,
-                        'total_ostatok': 0,
-                        'stores': {}
-                    }
-                product_data[product.product.name]['total_prixod'] += product.prixod
-                product_data[product.product.name]['total_sold'] += product.sold
-                product_data[product.product.name]['total_ostatok'] += product.ostatok
-                product_data[product.product.name]['stores'][product.warehouse.name] = {
-                    'prixod': product.prixod,
-                    'sold': product.sold,
-                    'ostatok': product.ostatok
+        # Ensure 'Основной склад' is first in the list
+        if "Основной склад" in warehouse_names:
+            warehouse_names.remove("Основной склад")
+            warehouse_names.insert(0, "Основной склад")
+
+        product_data = {}
+        for warehouse_product in warehouse_products:
+            if warehouse_product.product.name not in product_data:
+                product_data[warehouse_product.product.name] = {
+                    'total_prixod': 0,
+                    'total_sold': 0,
+                    'total_ostatok': 0,
+                    'stores': {}
                 }
-
-            if search_query:
-                product_data = {
-                    product_name: details
-                    for product_name, details in product_data.items()
-                    if search_query.lower() in product_name.lower()
-                }
-
-            context = {
-                "status": True,
-                "warehouse_names": warehouse_names,
-                "product_data": product_data,
-                "active_page": 'sales_doctor',
-                'search_query': search_query
+                continue
+            product_data[warehouse_product.product.name]['total_prixod'] += warehouse_product.prixod
+            product_data[warehouse_product.product.name]['total_sold'] += warehouse_product.sold
+            product_data[warehouse_product.product.name]['total_ostatok'] += warehouse_product.ostatok
+            product_data[warehouse_product.product.name]['stores'][warehouse_product.warehouse.name] = {
+                'prixod': warehouse_product.prixod,
+                'sold': warehouse_product.sold,
+                'ostatok': warehouse_product.ostatok
             }
+
+        context = {
+            "status": True,
+            "warehouse_names": warehouse_names,
+            "product_data": product_data,
+            "active_page": 'sales_doctor',
+            'search_query': search_query
+        }
 
         return render(request, self.template_name, context)
 
@@ -190,11 +187,11 @@ class DiscountProductView(SuperuserRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         selected_products = request.POST.getlist('products')
-        discount_text = request.POST.get('discount_text')
+        discount_number = request.POST.get('discount_number')
         selected_groups = request.POST.getlist('groups')
         
-        if selected_products and discount_text and selected_groups:
-            event = DiscountEvent(discount_text=discount_text)
+        if selected_products and discount_number and selected_groups:
+            event = DiscountEvent(discount=discount_number)
             event.save()
             event.products.set(selected_products)
             event.group.set(selected_groups)
