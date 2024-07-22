@@ -12,7 +12,6 @@ class WareHouse(models.Model):
     def __str__(self):
         return self.name
 
-
 class StockProduct(models.Model):
     sd_id = models.CharField(_("Product SD ID"), max_length=255, unique=True)
     name = models.CharField(_("Product name"), max_length=255)
@@ -23,7 +22,7 @@ class StockProduct(models.Model):
 
     def __str__(self):
         return self.name
-        
+
 class Category(models.Model):
     name = models.CharField(_("Name"), max_length=255, default="Xan Decor")
     sd_id = models.CharField(_("SD ID"), max_length=255, unique=True, default="d0_5")
@@ -31,6 +30,17 @@ class Category(models.Model):
     class Meta:
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")
+
+    def __str__(self):
+        return self.name
+
+class Store(models.Model):
+    name = models.CharField(_("Name"), max_length=255)
+    warehouse = models.ForeignKey(WareHouse, on_delete=models.CASCADE, related_name='stores')
+
+    class Meta:
+        verbose_name = _("Store")
+        verbose_name_plural = _("Stores")
 
     def __str__(self):
         return self.name
@@ -52,3 +62,15 @@ class WareHouseProduct(models.Model):
     def __str__(self):
         return f"{self.warehouse.name} - {self.product.name}"
 
+class StoreProduct(models.Model):
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='products')
+    product = models.ForeignKey(StockProduct, on_delete=models.CASCADE)
+    quantity = models.IntegerField(_("Quantity"))
+
+    class Meta:
+        verbose_name = _("Store product")
+        verbose_name_plural = _("Store products")
+        unique_together = ('store', 'product')
+
+    def __str__(self):
+        return f"{self.store.name} - {self.product.name}"

@@ -34,12 +34,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_apscheduler",
     "orm_app",
     "website",
     "salebot",
     "reviewbot",
     "salesdoctorbot",
-    "django_apscheduler"
+    "warehouse",
+    
 ]
 
 MIDDLEWARE = [
@@ -148,27 +150,27 @@ REVIEW_DAYS = 7  # 7 days
 DAILY_CRON_INTERVAL = 60 * 60 * 24  # 24 hours
 
 
-# AWS
-AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = "xandecors3"
-AWS_S3_REGION_NAME = "us-east-2"  # e.g., 'us-east-1'
+# # AWS
+# AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
+# AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
+# AWS_STORAGE_BUCKET_NAME = "xandecors3"
+# AWS_S3_REGION_NAME = "us-east-2"  # e.g., 'us-east-1'
 
-AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com"
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=86400",
-}
-AWS_S3_FILE_OVERWRITE = False
-AWS_LOCATION = "static"
-AWS_MEDIA_LOCATION = "media"
-AWS_QUERYSTRING_AUTH = False
-AWS_HEADERS = {"Access-Control-Allow-Origin": "*"}
-AWS_DEFAULT_ACL = "public-read"
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+# AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com"
+# AWS_S3_OBJECT_PARAMETERS = {
+#     "CacheControl": "max-age=86400",
+# }
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_LOCATION = "static"
+# AWS_MEDIA_LOCATION = "media"
+# AWS_QUERYSTRING_AUTH = False
+# AWS_HEADERS = {"Access-Control-Allow-Origin": "*"}
+# AWS_DEFAULT_ACL = "public-read"
+# DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+# STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
-MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/"
+# STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+# MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_MEDIA_LOCATION}/"
 
 CSRF_TRUSTED_ORIGINS = [
     'https://xandecor.com',

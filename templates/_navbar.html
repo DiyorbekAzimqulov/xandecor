@@ -36,6 +36,11 @@
       {% endif %}
     </a>
     <a
+      href="{% url 'warehouse_list' %}"
+      class="navbar-button {% if active_page == 'warehouse_list' %}active{% endif %}"
+      ><i class="fas fa-warehouse"></i></a
+    >
+    <a
       href="{% url 'discount_product' %}"
       class="navbar-button {% if active_page == 'discount_product' %}active{% endif %}"
       ><i class="fas fa-percent"></i> </a

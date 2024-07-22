@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/warehouse.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+</head>
+<body>
+    {% include '_navbar.html' %}
+    <div class="container mt-4">
+        <h1>Warehouse Product Summary</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Warehouse Name</th>
+                    <th>Product Name</th>
+                    <th>Ostatok</th>
+                    {% for store in data.0.store_quantities.keys %}
+                    <th>{{ store }}</th>
+                    {% endfor %}
+                    <th>Left Product Count in Warehouse</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in data %}
+                <tr>
+                    <td>{{ entry.warehouse_name }}</td>
+                    <td>{{ entry.product_name }}</td>
+                    <td>{{ entry.ostatok }}</td>
+                    {% for store in data.0.store_quantities.keys %}
+                    <td>{{ entry.store_quantities|get_item:store }}</td>
+                    {% endfor %}
+                    <td>{{ entry.left_product_count_in_warehouse }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
