@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,31 +13,32 @@
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 </head>
 <body>
-    {% include '_navbar.html' %}
     <div class="container mt-4">
-        <h1>Warehouse Product Summary</h1>
+        <h1>Warehouse Product Summary - {{ warehouse.name }}</h1>
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Warehouse Name</th>
                     <th>Product Name</th>
                     <th>Ostatok</th>
                     {% for store in data.0.store_quantities.keys %}
                     <th>{{ store }}</th>
                     {% endfor %}
-                    <th>Left Product Count in Warehouse</th>
+                    <th>Left in Warehouse</th>
                 </tr>
             </thead>
             <tbody>
                 {% for entry in data %}
                 <tr>
-                    <td>{{ entry.warehouse_name }}</td>
                     <td>{{ entry.product_name }}</td>
                     <td>{{ entry.ostatok }}</td>
                     {% for store in data.0.store_quantities.keys %}
                     <td>{{ entry.store_quantities|get_item:store }}</td>
                     {% endfor %}
                     <td>{{ entry.left_product_count_in_warehouse }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="100%">No products found in this warehouse.</td>
                 </tr>
                 {% endfor %}
             </tbody>

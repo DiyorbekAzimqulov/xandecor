@@ -20,7 +20,7 @@ def start():
         # Schedule the daily shipping report
         scheduler.add_job(
             daily_shipping_report,
-            trigger=CronTrigger(hour=17, minute=39),  # Runs daily at 7:00 AM
+            trigger=CronTrigger(hour=7, minute=0),  # Runs daily at 7:00 AM
             id="Daily Shipping Report",
             max_instances=1,
             replace_existing=True,
