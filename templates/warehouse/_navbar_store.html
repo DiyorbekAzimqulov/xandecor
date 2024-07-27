@@ -1,8 +1,15 @@
 {% load static %}
-<div>
+<div class="navbar">
   <a href="{% url 'home' %}" class="navbar-brand"><i class="fas fa-cube"></i> Xandecor</a>
   <div class="navbar-menu">
-    <ahref="#" class="navbar-button {% if active_page == 'edit_product' %}active{% endif %}">
-      <i class="fas fa-edit"></i> Edit</a>
+    <a href="#" class="navbar-button {% if active_page == 'edit_product' %}active{% endif %}">
+      <i class="fas fa-edit"></i> Edit</a
+    >
+
+    <a
+      href="{% url 'warehouse_list' %}"
+      class="navbar-button {% if active_page == 'warehouse_list' %}active{% endif %}"
+      ><i class="fas fa-warehouse"></i
+    ></a>
   </div>
 </div>

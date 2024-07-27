@@ -53,6 +53,7 @@ class WareHouseProduct(models.Model):
     sold = models.IntegerField(_("Sold"), default=0)
     ostatok = models.IntegerField(_("Ostatok"), default=0)
     arrivel_date = models.DateTimeField(_("Arrivel date"), null=True, blank=True)
+    shelf = models.CharField(_("Shelf"), max_length=255, null=True, blank=True, default="A1")
 
     class Meta:
         verbose_name = _("Warehouse product")
