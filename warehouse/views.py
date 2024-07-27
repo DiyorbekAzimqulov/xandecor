@@ -13,7 +13,7 @@ class SuperuserRequiredMixin(AccessMixin):
         if not request.user.is_authenticated or not request.user.is_superuser:
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
-    
+
 class WarehouseView(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         warehouses = WareHouse.objects.all().exclude(name="Основной склад")
@@ -26,6 +26,7 @@ class WareHouseStoreView(View):
 
         # Prepare data to be displayed
         data = []
+        warehouse = None
 
         if is_from_all:
             # Search across all warehouses
@@ -90,16 +91,28 @@ class StoreDetailView(View):
         }
         return render(request, "warehouse/store_detail.html", context)
 
-def edit_shelf(request):
+def edit_product_details(request):
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
+        store_id = request.POST.get('store_id')
         new_shelf = request.POST.get('shelf')
+        new_quantity = request.POST.get('quantity')
 
         try:
+            store_product = StoreProduct.objects.get(product_id=product_id, store_id=store_id)
+            store_product.quantity = new_quantity
+            store_product.save()
+
             warehouse_product = WareHouseProduct.objects.get(product_id=product_id)
             warehouse_product.shelf = new_shelf
             warehouse_product.save()
+
             return JsonResponse({'success': True})
-        except WareHouseProduct.DoesNotExist:
-            return JsonResponse({'success': False, 'error': 'Product not found'})
+        except (StoreProduct.DoesNotExist, WareHouseProduct.DoesNotExist):
+            return JsonResponse({'success': False, 'error': 'Product or store not found'})
     return JsonResponse({'success': False, 'error': 'Invalid request'})
+
+def get_stores(request):
+    stores = Store.objects.all()
+    store_list = list(stores.values('id', 'name'))
+    return JsonResponse({'stores': store_list})
