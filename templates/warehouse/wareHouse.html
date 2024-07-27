@@ -75,50 +75,69 @@
     </div>
 
     <!-- Modal -->
-<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editProductForm">
-                    <div class="mb-3">
-                        <label for="storeSelect" class="form-label">Select Store</label>
-                        <select id="storeSelect" class="form-select" required>
-                            <!-- Options will be populated by JavaScript -->
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newShelf" class="form-label">New Shelf</label>
-                        <input type="text" id="newShelf" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newQuantity" class="form-label">New Quantity</label>
-                        <input type="number" id="newQuantity" class="form-control" required>
-                    </div>
-                    <input type="hidden" id="productId">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </form>
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProductForm">
+                        <div class="mb-3">
+                            <label for="storeSelect" class="form-label">Select Store</label>
+                            <select id="storeSelect" class="form-select" required>
+                                <!-- Options will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newShelf" class="form-label">New Shelf</label>
+                            <input type="text" id="newShelf" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newQuantity" class="form-label">New Quantity</label>
+                            <input type="number" id="newQuantity" class="form-control" required>
+                        </div>
+                        <input type="hidden" id="productId">
+                        {% if warehouse %}
+                        <input type="hidden" id="warehouseId" value="{{ warehouse.id }}">
+                        {% else %}
+                        <input type="hidden" id="warehouseId" value="">
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Show the modal with product details and store list
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            const csrftoken = getCookie('csrftoken');
+    
             function showEditProductModal(productId, currentShelf) {
                 $('#productId').val(productId);
                 $('#newShelf').val(currentShelf);
-        
-                // Fetch and populate store list
+    
                 $.ajax({
-                    url: '{% url "get_stores" %}',  // Add URL to fetch store list
+                    url: '{% url "get_stores" %}',
                     method: 'GET',
                     success: function (response) {
                         const stores = response.stores;
@@ -132,27 +151,28 @@
                         alert('Error fetching stores: ' + error);
                     }
                 });
-        
+    
                 $('#editProductModal').modal('show');
             }
-        
-            // Handle form submission
+    
             $('#editProductForm').submit(function (event) {
                 event.preventDefault();
                 const productId = $('#productId').val();
+                const warehouseId = $('#warehouseId').val();
                 const storeId = $('#storeSelect').val();
                 const newShelf = $('#newShelf').val();
                 const newQuantity = $('#newQuantity').val();
-        
+    
                 $.ajax({
-                    url: '{% url "edit_product_details" %}',  // Add URL to handle the update
+                    url: '{% url "edit_product_details" %}',
                     method: 'POST',
                     data: {
+                        warehouse_id: warehouseId,
                         product_id: productId,
                         store_id: storeId,
                         shelf: newShelf,
                         quantity: newQuantity,
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                        csrfmiddlewaretoken: csrftoken
                     },
                     success: function (response) {
                         if (response.success) {
@@ -166,8 +186,7 @@
                     }
                 });
             });
-        
-            // Example button click handler to show the modal
+    
             $('button.edit-product').click(function () {
                 const productId = $(this).data('product-id');
                 const currentShelf = $(this).data('current-shelf');
@@ -175,5 +194,6 @@
             });
         });
     </script>
+    
 </body>
 </html>

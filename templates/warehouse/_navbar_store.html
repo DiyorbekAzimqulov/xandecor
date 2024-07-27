@@ -3,13 +3,20 @@
   <a href="{% url 'home' %}" class="navbar-brand"><i class="fas fa-cube"></i> Xandecor</a>
   <div class="navbar-menu">
     <a href="#" class="navbar-button {% if active_page == 'edit_product' %}active{% endif %}">
-      <i class="fas fa-edit"></i> Edit</a
-    >
-
+      <i class="fas fa-edit"></i> Edit</a>
     <a
       href="{% url 'warehouse_list' %}"
       class="navbar-button {% if active_page == 'warehouse_list' %}active{% endif %}"
-      ><i class="fas fa-warehouse"></i
-    ></a>
+      ><i class="fas fa-warehouse"></i></a>
+      
+    <a
+      href="{% url 'warehouse_list' %}"
+      class="navbar-button {% if active_page == 'warehouse_list' %}active{% endif %}"
+      ><i class="fas fa-warehouse"></i></a>
+
+    <a href="{% url 'discount_products_list' %}"
+      class="navbar-button {% if active_page == 'discount_products_list' %}active{% endif %}"
+      ><i class="fas fa-parcantage"></i>hk</a>
+
   </div>
 </div>

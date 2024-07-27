@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discount Products</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Discount Products</h1>
+        {% for event in events %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Discount Event - {{ event.created_at }}</h5>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Discount: {{ event.discount }}%</h5>
+                <div class="row">
+                    {% for product in event.products.all %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <img src="{{ product.image1.url }}" class="card-img-top" alt="{{ product.name }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <img src="{{ product.image2.url }}" class="img-fluid mb-2" alt="{{ product.name }}">
+                                <p class="card-text">Discount: {{ event.discount }}%</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>No products found for this event.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No discount events found.</p>
+        {% endfor %}
+    </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

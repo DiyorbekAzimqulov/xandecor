@@ -5,6 +5,8 @@ from salesdoctorbot.models import WareHouse, WareHouseProduct, StoreProduct, Sto
 from django.views import View
 from django.db.models import Sum
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from orm_app.models import DiscountEvent
 
 class SuperuserRequiredMixin(AccessMixin):
     """Ensure that the current user is authenticated and is a superuser."""
@@ -91,28 +93,45 @@ class StoreDetailView(View):
         }
         return render(request, "warehouse/store_detail.html", context)
 
+@csrf_exempt
 def edit_product_details(request):
-    if request.method == 'POST':
-        product_id = request.POST.get('product_id')
-        store_id = request.POST.get('store_id')
-        new_shelf = request.POST.get('shelf')
-        new_quantity = request.POST.get('quantity')
+    warehouse_id = request.POST.get('warehouse_id')
+    product_id = request.POST.get('product_id')
+    store_id = request.POST.get('store_id')
+    new_shelf = request.POST.get('shelf')
+    new_quantity = request.POST.get('quantity')
 
-        try:
-            store_product = StoreProduct.objects.get(product_id=product_id, store_id=store_id)
-            store_product.quantity = new_quantity
-            store_product.save()
+    if not all([warehouse_id, product_id, store_id, new_shelf, new_quantity]):
+        return JsonResponse({'success': False, 'error': 'Missing data'})
 
-            warehouse_product = WareHouseProduct.objects.get(product_id=product_id)
-            warehouse_product.shelf = new_shelf
-            warehouse_product.save()
+    try:
+        store_product = StoreProduct.objects.get(product_id=product_id, store_id=store_id)
+        store_product.quantity = new_quantity
+        store_product.save()
 
-            return JsonResponse({'success': True})
-        except (StoreProduct.DoesNotExist, WareHouseProduct.DoesNotExist):
-            return JsonResponse({'success': False, 'error': 'Product or store not found'})
-    return JsonResponse({'success': False, 'error': 'Invalid request'})
+        warehouse_product = WareHouseProduct.objects.get(product_id=product_id, warehouse_id=warehouse_id)
+        warehouse_product.shelf = new_shelf
+        warehouse_product.save()
+
+        return JsonResponse({'success': True})
+    except StoreProduct.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Store product not found'})
+    except WareHouseProduct.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Warehouse product not found'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
 
 def get_stores(request):
     stores = Store.objects.all()
     store_list = list(stores.values('id', 'name'))
-    return JsonResponse({'stores': store_list})
+    return JsonResponse({'stores': store_list}) 
+
+
+
+def discount_products(request):
+    events = DiscountEvent.objects.all().select_related("discount").prefetch_related("products")
+    context = {
+        'events': events,
+        'active_page': 'discount_products_list'
+    }
+    return render(request, 'discounts.html', context)
