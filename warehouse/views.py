@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import AccessMixin
 from django.shortcuts import redirect
-from salesdoctorbot.models import WareHouse, WareHouseProduct, StoreProduct, Store
+from salesdoctorbot.models import StockProduct, WareHouse, WareHouseProduct, StoreProduct, Store
 from django.views import View
 from django.db.models import Sum
 from django.http import JsonResponse
@@ -104,14 +104,26 @@ def edit_product_details(request):
     if not all([warehouse_id, product_id, store_id, new_shelf, new_quantity]):
         return JsonResponse({'success': False, 'error': 'Missing data'})
 
+    print(warehouse_id, product_id, store_id, new_shelf, new_quantity)
+    
     try:
-        store_product = StoreProduct.objects.get(product_id=product_id, store_id=store_id)
-        store_product.quantity = new_quantity
-        store_product.save()
-
-        warehouse_product = WareHouseProduct.objects.get(product_id=product_id, warehouse_id=warehouse_id)
+        warehouse = WareHouse.objects.get(id=warehouse_id)
+        print(warehouse)
+        product = StockProduct.objects.get(id=product_id)
+        print(product)
+        warehouse_product = WareHouseProduct.objects.get(warehouse=warehouse, product=product)
+        print(warehouse_product)
+        store = Store.objects.get(id=store_id)
+        print(store)
+        store_product = StoreProduct.objects.get(store=store, product_id=product_id)
+        print(store_product)
         warehouse_product.shelf = new_shelf
+        print(warehouse_product.shelf)
+        store_product.quantity = new_quantity
+        print(store_product.quantity)
         warehouse_product.save()
+        store_product.save()
+        
 
         return JsonResponse({'success': True})
     except StoreProduct.DoesNotExist:
@@ -134,4 +146,4 @@ def discount_products(request):
         'events': events,
         'active_page': 'discount_products_list'
     }
-    return render(request, 'discounts.html', context)
+    return render(request, 'warehouse/discounts.html', context)

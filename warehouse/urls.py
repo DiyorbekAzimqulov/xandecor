@@ -14,5 +14,5 @@ urlpatterns = [
     path('store/<int:id>/', StoreDetailView.as_view(), name='store_detail'),
     path('edit_product_details/', edit_product_details, name='edit_product_details'),
     path('get_stores/', get_stores, name='get_stores'),
-    path('descount-products-list', discount_products, 'discount_products_list')
+    path('descount-products-list/', discount_products, name='discount_products_list')
 ]
