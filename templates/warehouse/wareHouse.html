@@ -12,66 +12,85 @@
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
 </head>
 <body>
+    {% block content %}
     {% include "warehouse/_navbar_store.html" %}
-    <div class="container mt-4">
+    <div class="search_box" style="padding: 30px;">
         <form action="{% if warehouse %}{% url active_page id=warehouse.id %}{% else %}#{% endif %}" method="get">
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">🔍</span>
-                <input type="text" class="form-control" placeholder="Product name" aria-label="Username" aria-describedby="basic-addon1" name="prompt" value="{{ search_query }}" required />
+                <input type="text" class="form-control" placeholder="Product name" aria-label="Product name" aria-describedby="basic-addon1" name="prompt" value="{{ search_query }}" required />
                 <button type="submit" class="btn btn-outline-info">Search</button>
             </div>
-
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="True" id="flexCheckDefault" name="isFromAll" {% if is_from_all %}checked{% endif %} />
                 <label class="form-check-label" for="flexCheckDefault"> From all warehouses </label>
             </div>
         </form>
+    </div>
 
-        {% if not is_from_all %}
-        <h1>{{ warehouse.name }}</h1>
-        {% endif %}
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    {% if is_from_all %}
-                    <th>Warehouse Name</th>
-                    {% endif %}
-                    <th>Product Name</th>
-                    <th>Ostatok</th>
-                    {% if data %}
-                    {% for store in data.0.store_quantities.keys %}
-                    <th>{{ store }}</th>
+    <div class="view-box">
+        <div class="container mt-4">
+            <div class="center-side" style="display: flex;">
+                {% if not is_from_all %}
+                <h1>{{ warehouse.name }}</h1>
+                {% endif %}
+                <div class="sidebar-container">
+                    <div class="sidebar">
+                        {% for store in stores %}
+                        <div class="store">
+                            <button class="store-detail-button" data-store-id="{{ store.id }}">{{ store.name }}</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div id="store-details" style="display: none;">
+                <h2 id="store-name"></h2>
+                <p><strong>Warehouse:</strong> <span id="warehouse-name"></span></p>
+            </div>
+            <table class="table table-striped" id="dataTable">
+                <thead>
+                    <tr>
+                        {% if is_from_all %}
+                        <th>Warehouse Name</th>
+                        {% endif %}
+                        <th>Product Name</th>
+                        <th>Ostatok</th>
+                        {% if data %}
+                        {% for store_name, store in data.0.store_quantities.items %}
+                        <th style="max-width: 10ch; overflow: hidden; text-overflow: ellipsis;">{{ store_name }}</th>
+                        {% endfor %}
+                        <th>Left in Warehouse</th>
+                        <th>Shelf</th>
+                        <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in data %}
+                    <tr>
+                        {% if is_from_all %}
+                        <td>{{ entry.warehouse_name }}</td>
+                        {% endif %}
+                        <td>{{ entry.product_name }}</td>
+                        <td>{{ entry.ostatok }}</td>
+                        {% for store in entry.store_quantities.keys %}
+                        <td>{{ entry.store_quantities|get_item:store }}</td>
+                        {% endfor %}
+                        <td>{{ entry.left_product_count_in_warehouse }}</td>
+                        <td>{{ entry.shelf }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary edit-product" data-product-id="{{ entry.product_id }}" data-current-shelf="{{ entry.shelf }}">Edit</button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="100%">No products found.</td>
+                    </tr>
                     {% endfor %}
-                    <th>Left in Warehouse</th>
-                    <th>Shelf</th>
-                    <th>Actions</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for entry in data %}
-                <tr>
-                    {% if is_from_all %}
-                    <td>{{ entry.warehouse_name }}</td>
-                    {% endif %}
-                    <td>{{ entry.product_name }}</td>
-                    <td>{{ entry.ostatok }}</td>
-                    {% for store in entry.store_quantities.keys %}
-                    <td>{{ entry.store_quantities|get_item:store }}</td>
-                    {% endfor %}
-                    <td>{{ entry.left_product_count_in_warehouse }}</td>
-                    <td>{{ entry.shelf }}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary edit-product" data-product-id="{{ entry.product_id }}" data-current-shelf="{{ entry.shelf }}">Edit</button>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="100%">No products found.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Modal -->
@@ -192,8 +211,18 @@
                 const currentShelf = $(this).data('current-shelf');
                 showEditProductModal(productId, currentShelf);
             });
+    
+            $('.store-detail-button').click(function () {
+                const storeId = $(this).data('store-id');
+                if (storeId) {
+                    const storeDetailUrl = "{% url 'store_detail' 0 %}".replace('0', storeId);
+                    window.location.href = storeDetailUrl;
+                } else {
+                    alert('Store ID not found.');
+                }
+            });
         });
     </script>
-    
+    {% endblock %}
 </body>
 </html>

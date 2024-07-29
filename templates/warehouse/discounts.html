@@ -1,44 +1,98 @@
+{% extends "warehouse/wareHouse.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discount Products</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container mt-4">
-        <h1>Discount Products</h1>
-        {% for event in events %}
-        <div class="card mb-3">
-            <div class="card-header">
-                <h5>Discount Event - {{ event.created_at }}</h5>
-            </div>
+
+<!-- Title -->
+{% block title %}Discounts{% endblock %}
+
+<!-- Style -->
+{% block style %}
+<style>
+  .card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+  }
+  .card-header {
+    background-color: #f8f9fa;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    padding: 15px;
+  }
+  .card-title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .card-img-top {
+    border-radius: 10px 10px 0 0;
+    height: 200px;
+    object-fit: cover;
+  }
+  .img-fluid {
+    border-radius: 5px;
+  }
+  .container {
+    margin-top: 40px;
+  }
+  h1 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  .card-body {
+    padding: 20px;
+  }
+  .row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .col-md-4 {
+    flex: 0 0 auto;
+    width: 33.3333%;
+  }
+</style>
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+{% include "warehouse/_navbar_store.html" %}
+<div class="container mt-4">
+  <h1>Discount Products</h1>
+  {% for event in events %}
+  <div class="card">
+    <div class="card-header">
+      <h5>{{ event.created_at }}</h5>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Discount: {{ event.discount }}%</h5>
+      <div class="row">
+        {% for product in event.products.all %}
+        <div class="col-md-4">
+          <div class="card">
+            <img src="{{ product.image1.url }}" class="card-img-top" alt="{{ product.name }}">
             <div class="card-body">
-                <h5 class="card-title">Discount: {{ event.discount }}%</h5>
-                <div class="row">
-                    {% for product in event.products.all %}
-                    <div class="col-md-4 mb-3">
-                        <div class="card">
-                            <img src="{{ product.image1.url }}" class="card-img-top" alt="{{ product.name }}">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ product.name }}</h5>
-                                <img src="{{ product.image2.url }}" class="img-fluid mb-2" alt="{{ product.name }}">
-                                <p class="card-text">Discount: {{ event.discount }}%</p>
-                            </div>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <p>No products found for this event.</p>
-                    {% endfor %}
-                </div>
+              <h5 class="card-title">{{ product.name }}</h5>
+              <img src="{{ product.image2.url }}" class="img-fluid mb-2" alt="{{ product.name }}">
+              <p class="card-text">Discount: {{ event.discount }}%</p>
             </div>
+          </div>
         </div>
         {% empty %}
-        <p>No discount events found.</p>
+        <p>No products found for this event.</p>
         {% endfor %}
+      </div>
     </div>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+    {% empty %}
+    <p>No discount events found.</p>
+    {% endfor %}
+  </div>
+  <div class="mt-4">
+</div>
+</div>
+{% endblock %}
+
+<!-- Scripts -->
+{% block script %}
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

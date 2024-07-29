@@ -1,0 +1,41 @@
+/* CSS for the sidebar container */
+.sidebar {
+    width: auto;
+    background-color: #f0f0f0;
+    /* padding: 10px; */
+    height: 65px;
+    display: flex;
+    flex-direction: column; 
+    /* Align items vertically */
+    overflow-y: auto; /* Enable vertical scrolling */
+    list-style: none;      /* Remove default list styling */
+    padding: 0;            /* Remove default padding */
+    margin: 0;  
+    flex-wrap: wrap;
+}
+
+/* CSS for each store item */
+.store {
+    /* white-space: wrap; Prevent text from wrapping */
+    /* overflow: hidden; Hide overflowing text */
+    text-overflow: ellipsis; /* Display ellipsis for overflowed text */
+    padding: 5px; /* Add some padding for better appearance */
+    border-bottom: 1px solid #ddd; /* Add a separator between items */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    max-width: 20%;
+    flex-wrap: wrap ;
+    /* max-width: 8ch; */
+}
+
+/* Optional: Add hover effect for better UX */
+.store:hover {
+    background-color: #e0e0e0; /* Change background color on hover */
+}
+.sidebar-container{
+    width: 100%;          /* Set the width of the container */
+    height: 100%;         /* Set the height of the container */
+    overflow-y: auto;      /*Enable vertical scrolling*/
+    border: 1px solid #ccc; /* Optional: Add a border */
+     padding: 10px;         /*Optional: Add padding */
+}
+

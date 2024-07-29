@@ -63,6 +63,8 @@ class WareHouseStoreView(View):
                     store.name: store_products.filter(store=store).aggregate(quantity=Sum('quantity'))['quantity'] or 0
                     for store in Store.objects.filter(warehouse=warehouse)
                 }
+                
+                stores = Store.objects.filter(warehouse=warehouse)
 
                 left_product_count_in_warehouse = ostatok - sum(store_quantities.values())
 
@@ -77,6 +79,7 @@ class WareHouseStoreView(View):
                 })
         
         context = {
+            'stores': stores,
             'data': data,
             'warehouse': warehouse if not is_from_all else None,  # Pass warehouse object if not searching all
             'active_page': 'wareHouse',
@@ -85,14 +88,18 @@ class WareHouseStoreView(View):
         }
         return render(request, 'warehouse/wareHouse.html', context)
 
+
 class StoreDetailView(View):
     def get(self, request, *args, **kwargs):
         store = get_object_or_404(Store, pk=kwargs.get("id"))
+        store_products = StoreProduct.objects.filter(store=store, quantity__gt=0)
         context = {
             "store": store,
+            "store_products": store_products
         }
         return render(request, "warehouse/store_detail.html", context)
-
+    
+    
 @csrf_exempt
 def edit_product_details(request):
     warehouse_id = request.POST.get('warehouse_id')
@@ -140,8 +147,9 @@ def get_stores(request):
 
 
 
+
 def discount_products(request):
-    events = DiscountEvent.objects.all().select_related("discount").prefetch_related("products")
+    events = DiscountEvent.objects.all().prefetch_related("products")
     context = {
         'events': events,
         'active_page': 'discount_products_list'
