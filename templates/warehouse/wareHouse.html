@@ -10,68 +10,99 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="{% static 'css/warehouse.css' %}" />
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <style>
+        .store-list {
+            max-width: 200px;
+            font-size: small;
+            padding-right: 20px;
+        }
+        .store-list a {
+            display: block;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #000;
+        }
+        .store-list a:hover {
+            text-decoration: underline;
+        }
+        .store-list .active {
+            font-weight: bold;
+        }
+        .store-details {
+            flex-grow: 1;
+        }
+    </style>
 </head>
 <body>
+    {% block content %}
     {% include "warehouse/_navbar_store.html" %}
-    <div class="container mt-4">
-        <form action="{% if warehouse %}{% url active_page id=warehouse.id %}{% else %}#{% endif %}" method="get">
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">🔍</span>
-                <input type="text" class="form-control" placeholder="Product name" aria-label="Username" aria-describedby="basic-addon1" name="prompt" value="{{ search_query }}" required />
-                <button type="submit" class="btn btn-outline-info">Search</button>
-            </div>
 
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="True" id="flexCheckDefault" name="isFromAll" {% if is_from_all %}checked{% endif %} />
-                <label class="form-check-label" for="flexCheckDefault"> From all warehouses </label>
-            </div>
-        </form>
+    <div class="container mt-4 d-flex">
+        <div class="store-list">
+            {% for store in stores %}
+                <a href="#" class="store-link" data-store-id="{{ store.id }}">{{ store.name }}</a>
+            {% endfor %}
+        </div>
+        <div class="store-details">
+            <form action="{% if warehouse %}{% url active_page id=warehouse.id %}{% else %}#{% endif %}" method="get">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">🔍</span>
+                    <input type="text" class="form-control" placeholder="Product name" aria-label="Username" aria-describedby="basic-addon1" name="prompt" value="{{ search_query }}" required />
+                    <button type="submit" class="btn btn-outline-info">Search</button>
+                </div>
 
-        {% if not is_from_all %}
-        <h1>{{ warehouse.name }}</h1>
-        {% endif %}
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    {% if is_from_all %}
-                    <th>Warehouse Name</th>
-                    {% endif %}
-                    <th>Product Name</th>
-                    <th>Ostatok</th>
-                    {% if data %}
-                    {% for store in data.0.store_quantities.keys %}
-                    <th>{{ store }}</th>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="True" id="flexCheckDefault" name="isFromAll" {% if is_from_all %}checked{% endif %} />
+                    <label class="form-check-label" for="flexCheckDefault"> From all warehouses </label>
+                </div>
+            </form>
+
+            {% if not is_from_all %}
+            <h1>{{ warehouse.name }}</h1>
+            {% endif %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        {% if is_from_all %}
+                        <th>Warehouse Name</th>
+                        {% endif %}
+                        <th>Product Name</th>
+                        <th>Ostatok</th>
+                        {% if data %}
+                        {% for store in data.0.store_quantities.keys %}
+                        <th>{{ store }}</th>
+                        {% endfor %}
+                        <th>Left in Warehouse</th>
+                        <th>Shelf</th>
+                        <th>Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in data %}
+                    <tr>
+                        {% if is_from_all %}
+                        <td>{{ entry.warehouse_name }}</td>
+                        {% endif %}
+                        <td>{{ entry.product_name }}</td>
+                        <td>{{ entry.ostatok }}</td>
+                        {% for store in entry.store_quantities.keys %}
+                        <td>{{ entry.store_quantities|get_item:store }}</td>
+                        {% endfor %}
+                        <td>{{ entry.left_product_count_in_warehouse }}</td>
+                        <td>{{ entry.shelf }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary edit-product" data-product-id="{{ entry.product_id }}" data-current-shelf="{{ entry.shelf }}">Edit</button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="100%">No products found.</td>
+                    </tr>
                     {% endfor %}
-                    <th>Left in Warehouse</th>
-                    <th>Shelf</th>
-                    <th>Actions</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for entry in data %}
-                <tr>
-                    {% if is_from_all %}
-                    <td>{{ entry.warehouse_name }}</td>
-                    {% endif %}
-                    <td>{{ entry.product_name }}</td>
-                    <td>{{ entry.ostatok }}</td>
-                    {% for store in entry.store_quantities.keys %}
-                    <td>{{ entry.store_quantities|get_item:store }}</td>
-                    {% endfor %}
-                    <td>{{ entry.left_product_count_in_warehouse }}</td>
-                    <td>{{ entry.shelf }}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary edit-product" data-product-id="{{ entry.product_id }}" data-current-shelf="{{ entry.shelf }}">Edit</button>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="100%">No products found.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Modal -->
@@ -131,11 +162,11 @@
                 return cookieValue;
             }
             const csrftoken = getCookie('csrftoken');
-    
+        
             function showEditProductModal(productId, currentShelf) {
                 $('#productId').val(productId);
                 $('#newShelf').val(currentShelf);
-    
+        
                 $.ajax({
                     url: '{% url "get_stores" %}',
                     method: 'GET',
@@ -151,10 +182,10 @@
                         alert('Error fetching stores: ' + error);
                     }
                 });
-    
+        
                 $('#editProductModal').modal('show');
             }
-    
+        
             $('#editProductForm').submit(function (event) {
                 event.preventDefault();
                 const productId = $('#productId').val();
@@ -162,7 +193,7 @@
                 const storeId = $('#storeSelect').val();
                 const newShelf = $('#newShelf').val();
                 const newQuantity = $('#newQuantity').val();
-    
+        
                 $.ajax({
                     url: '{% url "edit_product_details" %}',
                     method: 'POST',
@@ -186,14 +217,33 @@
                     }
                 });
             });
-    
-            $('button.edit-product').click(function () {
-                const productId = $(this).data('product-id');
-                const currentShelf = $(this).data('current-shelf');
-                showEditProductModal(productId, currentShelf);
+        
+            // Handle store selection
+            $('.store-link').click(function (event) {
+                event.preventDefault();
+                const storeId = $(this).data('store-id');
+                $('.store-link').removeClass('active');
+                $(this).addClass('active');
+        
+                $.ajax({
+                    url: '{% url "store_detail" id=0 %}'.replace('0', storeId),
+                    method: 'GET',
+                    success: function (response) {
+                        const storeDetails = response.store_details;
+                        // Update the store details section with the fetched data
+                        let storeDetailsHtml = '<h2>' + storeDetails.name + '</h2>';
+                        storeDetailsHtml += '<p>Address: ' + storeDetails.address + '</p>';
+                        storeDetailsHtml += '<p>Phone: ' + storeDetails.phone + '</p>';
+                        storeDetailsHtml += '<p>Email: ' + storeDetails.email + '</p>';
+                        $('.store-details').html(storeDetailsHtml);
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error fetching store details: ' + error);
+                    }
+                });
             });
-        });
+        });        
     </script>
-    
+    {% endblock %}
 </body>
 </html>

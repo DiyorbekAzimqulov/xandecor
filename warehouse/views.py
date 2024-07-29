@@ -24,62 +24,28 @@ class WarehouseView(SuperuserRequiredMixin, View):
 class WareHouseStoreView(View):
     def get(self, request, *args, **kwargs):
         search_query = request.GET.get('prompt', '')
-        is_from_all = request.GET.get('isFromAll') == 'True'  # Check if the checkbox is selected
+        is_from_all = request.GET.get('isFromAll') == 'True'
 
-        # Prepare data to be displayed
-        data = []
-        warehouse = None
-
+        warehouse_products = []
         if is_from_all:
-            # Search across all warehouses
             warehouse_products = WareHouseProduct.objects.filter(
-                product__name__icontains=search_query, 
-                ostatok__gt=0, 
+                product__name__icontains=search_query,
+                ostatok__gt=0,
                 sold__gt=0
             )
-            warehouses = WareHouse.objects.all()
         else:
-            # Retrieve the specific warehouse
             warehouse = get_object_or_404(WareHouse, pk=kwargs.get("id"))
             warehouse_products = WareHouseProduct.objects.filter(
-                warehouse=warehouse, 
-                product__name__icontains=search_query, 
-                ostatok__gt=0, 
+                warehouse=warehouse,
+                product__name__icontains=search_query,
+                ostatok__gt=0,
                 sold__gt=0
             )
-            warehouses = [warehouse]
-        
-        for wh_product in warehouse_products:
-            product = wh_product.product
-            ostatok = wh_product.ostatok
-            shelf = wh_product.shelf
 
-            for warehouse in warehouses:
-                store_products = StoreProduct.objects.filter(
-                    product=product, 
-                    store__warehouse=warehouse
-                )
-                store_quantities = {
-                    store.name: store_products.filter(store=store).aggregate(quantity=Sum('quantity'))['quantity'] or 0
-                    for store in Store.objects.filter(warehouse=warehouse)
-                }
-
-                left_product_count_in_warehouse = ostatok - sum(store_quantities.values())
-
-                data.append({
-                    'warehouse_name': warehouse.name,
-                    'product_name': product.name,
-                    'ostatok': ostatok,
-                    'store_quantities': store_quantities,
-                    'left_product_count_in_warehouse': left_product_count_in_warehouse,
-                    'shelf': shelf,
-                    'product_id': product.id  # Assuming the product has an ID field
-                })
-        
+        stores = Store.objects.all()
         context = {
-            'data': data,
-            'warehouse': warehouse if not is_from_all else None,  # Pass warehouse object if not searching all
-            'active_page': 'wareHouse',
+            'warehouse_products': warehouse_products,
+            'stores': stores,
             'search_query': search_query,
             'is_from_all': is_from_all
         }
@@ -88,10 +54,14 @@ class WareHouseStoreView(View):
 class StoreDetailView(View):
     def get(self, request, *args, **kwargs):
         store = get_object_or_404(Store, pk=kwargs.get("id"))
+        store_products = StoreProduct.objects.filter(store=store)
+
         context = {
             "store": store,
+            "store_products": store_products,
         }
         return render(request, "warehouse/store_detail.html", context)
+
 
 @csrf_exempt
 def edit_product_details(request):
@@ -108,19 +78,12 @@ def edit_product_details(request):
     
     try:
         warehouse = WareHouse.objects.get(id=warehouse_id)
-        print(warehouse)
         product = StockProduct.objects.get(id=product_id)
-        print(product)
         warehouse_product = WareHouseProduct.objects.get(warehouse=warehouse, product=product)
-        print(warehouse_product)
         store = Store.objects.get(id=store_id)
-        print(store)
         store_product = StoreProduct.objects.get(store=store, product_id=product_id)
-        print(store_product)
         warehouse_product.shelf = new_shelf
-        print(warehouse_product.shelf)
         store_product.quantity = new_quantity
-        print(store_product.quantity)
         warehouse_product.save()
         store_product.save()
         
@@ -141,7 +104,7 @@ def get_stores(request):
 
 
 def discount_products(request):
-    events = DiscountEvent.objects.all().select_related("discount").prefetch_related("products")
+    events = DiscountEvent.objects.all().prefetch_related("products")
     context = {
         'events': events,
         'active_page': 'discount_products_list'
