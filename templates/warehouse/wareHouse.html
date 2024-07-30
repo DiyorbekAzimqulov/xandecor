@@ -10,6 +10,28 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="{% static 'css/warehouse.css' %}" />
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <style>
+        .store-list {
+            max-width: 200px;
+            font-size: small;
+            padding-right: 20px;
+        }
+        .store-list a {
+            display: block;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #000;
+        }
+        .store-list a:hover {
+            text-decoration: underline;
+        }
+        .store-list .active {
+            font-weight: bold;
+        }
+        .store-details {
+            flex-grow: 1;
+        }
+    </style>
 </head>
 <body>
     {% block content %}
@@ -150,11 +172,11 @@
                 return cookieValue;
             }
             const csrftoken = getCookie('csrftoken');
-    
+        
             function showEditProductModal(productId, currentShelf) {
                 $('#productId').val(productId);
                 $('#newShelf').val(currentShelf);
-    
+        
                 $.ajax({
                     url: '{% url "get_stores" %}',
                     method: 'GET',
@@ -170,10 +192,10 @@
                         alert('Error fetching stores: ' + error);
                     }
                 });
-    
+        
                 $('#editProductModal').modal('show');
             }
-    
+        
             $('#editProductForm').submit(function (event) {
                 event.preventDefault();
                 const productId = $('#productId').val();
@@ -181,7 +203,7 @@
                 const storeId = $('#storeSelect').val();
                 const newShelf = $('#newShelf').val();
                 const newQuantity = $('#newQuantity').val();
-    
+        
                 $.ajax({
                     url: '{% url "edit_product_details" %}',
                     method: 'POST',
@@ -205,11 +227,30 @@
                     }
                 });
             });
-    
-            $('button.edit-product').click(function () {
-                const productId = $(this).data('product-id');
-                const currentShelf = $(this).data('current-shelf');
-                showEditProductModal(productId, currentShelf);
+        
+            // Handle store selection
+            $('.store-link').click(function (event) {
+                event.preventDefault();
+                const storeId = $(this).data('store-id');
+                $('.store-link').removeClass('active');
+                $(this).addClass('active');
+        
+                $.ajax({
+                    url: '{% url "store_detail" id=0 %}'.replace('0', storeId),
+                    method: 'GET',
+                    success: function (response) {
+                        const storeDetails = response.store_details;
+                        // Update the store details section with the fetched data
+                        let storeDetailsHtml = '<h2>' + storeDetails.name + '</h2>';
+                        storeDetailsHtml += '<p>Address: ' + storeDetails.address + '</p>';
+                        storeDetailsHtml += '<p>Phone: ' + storeDetails.phone + '</p>';
+                        storeDetailsHtml += '<p>Email: ' + storeDetails.email + '</p>';
+                        $('.store-details').html(storeDetailsHtml);
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error fetching store details: ' + error);
+                    }
+                });
             });
     
             $('.store-detail-button').click(function () {
