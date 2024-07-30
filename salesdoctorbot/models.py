@@ -66,7 +66,7 @@ class WareHouseProduct(models.Model):
 class StoreProduct(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='products')
     product = models.ForeignKey(StockProduct, on_delete=models.CASCADE)
-    quantity = models.IntegerField(_("Quantity"))
+    quantity = models.IntegerField(_("Quantity"), default=0)
 
     class Meta:
         verbose_name = _("Store product")

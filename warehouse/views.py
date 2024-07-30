@@ -99,7 +99,9 @@ class StoreDetailView(View):
         }
         return render(request, "warehouse/store_detail.html", context)
     
-    
+import logging
+logger = logging.getLogger(__name__)
+
 @csrf_exempt
 def edit_product_details(request):
     warehouse_id = request.POST.get('warehouse_id')
@@ -108,37 +110,50 @@ def edit_product_details(request):
     new_shelf = request.POST.get('shelf')
     new_quantity = request.POST.get('quantity')
 
+    logger.info(f"Received request with warehouse_id={warehouse_id}, product_id={product_id}, store_id={store_id}, new_shelf={new_shelf}, new_quantity={new_quantity}")
+
     if not all([warehouse_id, product_id, store_id, new_shelf, new_quantity]):
         return JsonResponse({'success': False, 'error': 'Missing data'})
 
-    print(warehouse_id, product_id, store_id, new_shelf, new_quantity)
-    
+    try:
+        new_quantity = int(new_quantity)
+    except ValueError:
+        return JsonResponse({'success': False, 'error': 'Invalid quantity'})
+
     try:
         warehouse = WareHouse.objects.get(id=warehouse_id)
-        print(warehouse)
         product = StockProduct.objects.get(id=product_id)
-        print(product)
         warehouse_product = WareHouseProduct.objects.get(warehouse=warehouse, product=product)
-        print(warehouse_product)
         store = Store.objects.get(id=store_id)
-        print(store)
-        store_product = StoreProduct.objects.get(store=store, product_id=product_id)
-        print(store_product)
+
+        # Ensure we are unpacking the tuple correctly
+        store_product, created = StoreProduct.objects.get_or_create(store=store, product=product, defaults={'quantity': 0})
+
+        # Update the fields
         warehouse_product.shelf = new_shelf
-        print(warehouse_product.shelf)
         store_product.quantity = new_quantity
-        print(store_product.quantity)
+
+        # Save changes
         warehouse_product.save()
         store_product.save()
-        
 
         return JsonResponse({'success': True})
-    except StoreProduct.DoesNotExist:
-        return JsonResponse({'success': False, 'error': 'Store product not found'})
+    except WareHouse.DoesNotExist:
+        logger.error(f"Warehouse with id {warehouse_id} not found")
+        return JsonResponse({'success': False, 'error': 'Warehouse not found'})
+    except StockProduct.DoesNotExist:
+        logger.error(f"Product with id {product_id} not found")
+        return JsonResponse({'success': False, 'error': 'Product not found'})
     except WareHouseProduct.DoesNotExist:
+        logger.error(f"Warehouse product not found for warehouse {warehouse_id} and product {product_id}")
         return JsonResponse({'success': False, 'error': 'Warehouse product not found'})
+    except Store.DoesNotExist:
+        logger.error(f"Store with id {store_id} not found")
+        return JsonResponse({'success': False, 'error': 'Store not found'})
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        logger.error(f"Unexpected error: {str(e)}")
+        return JsonResponse({'success': False, 'error': 'Error updating product details'})
+
 
 def get_stores(request):
     stores = Store.objects.all()
