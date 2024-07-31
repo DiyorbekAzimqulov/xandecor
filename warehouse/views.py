@@ -19,7 +19,11 @@ class SuperuserRequiredMixin(AccessMixin):
 class WarehouseView(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         warehouses = WareHouse.objects.all().exclude(name="Основной склад")
-        return render(request, "general/warehouse_list.html", {"warehouses": warehouses})
+        context = {
+            'warehouses': warehouses,
+            'active_page': 'warehouse_page'
+        }
+        return render(request, "general/warehouse_list.html", context)
 
 class WareHouseStoreView(View):
     def get(self, request, *args, **kwargs):
@@ -170,3 +174,83 @@ def discount_products(request):
         'active_page': 'discount_products_list'
     }
     return render(request, 'warehouse/discounts.html', context)
+
+
+""" Stores part """
+
+
+class StoresView(SuperuserRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        warehouses = WareHouse.objects.all().exclude(name="Основной склад")
+        stores_dict = {}
+
+        for warehouse in warehouses:
+            stores_dict[warehouse.name] = Store.objects.filter(warehouse=warehouse)
+            
+        context = {
+            'stores_dict': stores_dict,
+            'active_page': 'stores_page'
+        }
+        return render(request, "store/stores.html", context=context)
+
+
+class StoreView(View):  
+    def get(self, request, *args, **kwargs):
+        search_query = request.GET.get('prompt', '')
+        
+        store = get_object_or_404(Store, pk=kwargs.get("id"))
+        store_products = StoreProduct.objects.filter(store=store, quantity__gt=0)
+        warehouse = store.warehouse
+        if search_query:
+            store_products = store_products.filter(product__name__icontains=search_query)
+
+        context = {
+            "warehouse": warehouse,
+            "store": store,
+            "store_products": store_products
+        }
+        return render(request, "store/Store.html", context)
+    
+class StoreWarehouseView(View):
+    def get(self, request, *args, **kwargs):
+        search_query = request.GET.get('name', '')
+        store = get_object_or_404(Store, pk=kwargs.get("id"))
+        warehouse = store.warehouse
+        
+        # Retrieve all warehouse products
+        warehouse_products = WareHouseProduct.objects.filter(warehouse=warehouse)
+        # Retrieve all store products
+        store_products = StoreProduct.objects.filter(store=store)
+        
+        # Create a dictionary for easy lookup of products by name
+        product_dict = {}
+        for wp in warehouse_products:
+            product_dict[wp.product.name] = {"warehouse_quantity": wp.ostatok, "store_quantity": 0}
+        for sp in store_products:
+            if sp.product.name in product_dict:
+                product_dict[sp.product.name]["store_quantity"] = sp.quantity
+            else:
+                product_dict[sp.product.name] = {"warehouse_quantity": 0, "store_quantity": sp.quantity}
+
+        # If a search query is present, filter products
+        if search_query:
+            product_dict = {name: data for name, data in product_dict.items() if search_query.lower() in name.lower()}
+
+        # Convert the dictionary back to a list for the template
+        products = [
+            {"name": name, "warehouse_quantity": data["warehouse_quantity"], "store_quantity": data["store_quantity"]}
+            for name, data in product_dict.items()
+        ]
+        
+        context = {
+            "store": store,
+            "warehouse": warehouse,
+            "products": products,
+            "search_query": search_query,  # Pass the search query back to the template
+        }
+        
+        return render(request, 'store/store_warehouse.html', context)
+
+
+def feedback(request):
+    return render(request, 'feedback.html')

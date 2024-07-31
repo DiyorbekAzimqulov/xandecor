@@ -18,77 +18,94 @@
     border-bottom: none;
     border-radius: 10px 10px 0 0;
     padding: 15px;
+    text-align: center;
   }
   .card-title {
     font-size: 18px;
     font-weight: bold;
-  }
-  .card-img-top {
-    border-radius: 10px 10px 0 0;
-    height: 200px;
-    object-fit: cover;
+    margin-bottom: 15px;
+    text-align: center;
   }
   .img-fluid {
     border-radius: 5px;
+    max-width: 60%;
+    height: auto;
   }
   .container {
     margin-top: 40px;
   }
   h1 {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     color: #333;
+    text-align: center;
   }
   .card-body {
     padding: 20px;
   }
-  .row {
+  .image-row {
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    justify-content: space-around;
+    gap: 20px;
+    margin-bottom: 10px;
   }
-  .col-md-4 {
-    flex: 0 0 auto;
-    width: 33.3333%;
+  .image-container {
+    flex: 1;
+    text-align: center;
+  }
+  .image-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .created-at {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+  }
+  .btn-back {
+    display: block;
+    width: 100px;
+    margin: 20px auto;
   }
 </style>
 {% endblock %}
 
 <!-- Content -->
 {% block content %}
-{% include "warehouse/_navbar_store.html" %}
+{% include "warehouse/_navbar.html" %}
 <div class="container mt-4">
   <h1>Discount Products</h1>
   {% for event in events %}
   <div class="card">
     <div class="card-header">
-      <h5>{{ event.created_at }}</h5>
+      Discount: {{ event.discount }}%
     </div>
     <div class="card-body">
-      <h5 class="card-title">Discount: {{ event.discount }}%</h5>
-      <div class="row">
-        {% for product in event.products.all %}
-        <div class="col-md-4">
-          <div class="card">
-            <img src="{{ product.image1.url }}" class="card-img-top" alt="{{ product.name }}">
-            <div class="card-body">
-              <h5 class="card-title">{{ product.name }}</h5>
-              <img src="{{ product.image2.url }}" class="img-fluid mb-2" alt="{{ product.name }}">
-              <p class="card-text">Discount: {{ event.discount }}%</p>
-            </div>
-          </div>
+      {% for product in event.products.all %}
+      <div class="card-title">{{ product.name }}</div>
+      <div class="image-row" style="display: flex;">
+        <div class="image-container">
+          <div class="image-title">Image 1</div>
+          <img src="{{ product.image1.url }}" class="img-fluid" alt="{{ product.name }} Image 1">
         </div>
-        {% empty %}
-        <p>No products found for this event.</p>
-        {% endfor %}
+        <div class="image-container">
+          <div class="image-title">Image 2</div>
+          <img src="{{ product.image2.url }}" class="img-fluid" alt="{{ product.name }} Image 2">
+        </div>
       </div>
+      <div class="created-at">
+        Created at: {{ event.created_at }}
+      </div>
+      {% endfor %}
     </div>
-    {% empty %}
-    <p>No discount events found.</p>
-    {% endfor %}
   </div>
-  <div class="mt-4">
-</div>
+  {% endfor %}
+  {% if not events %}
+  <div class="alert alert-info" role="alert">
+    No discount products found.
+  </div>
+  {% endif %}
+  
 </div>
 {% endblock %}
 

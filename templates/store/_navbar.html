@@ -1,0 +1,10 @@
+{% load static %}
+<div class="navbar">
+  <a href="{% url 'home' %}" class="navbar-brand"><i class="fas fa-cube"></i> Xandecor</a>
+  <div class="navbar-menu">
+    <a href="{% url 'discount_products_list' %}"
+      class="navbar-button {% if active_page == 'discount_products_list' %}active{% endif %}"
+      ><i class="fas fa-tags"></i></a>
+  </div>
+</div>
+

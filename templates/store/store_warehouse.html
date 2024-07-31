@@ -1,0 +1,112 @@
+{% extends "store/stores.html" %}
+{% load static %}
+
+<!-- Title -->
+{% block title %}Store & Warehouse{% endblock %}
+
+<!-- Style -->
+{% block style %}
+<style>
+  body {
+    background-color: #f7f7f7;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .container {
+    margin-top: 40px;
+  }
+  h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+  }
+  h2 i {
+    margin-right: 10px;
+    color: #17a2b8;
+  }
+  .input-group {
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+  .input-group-text {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+  }
+  .form-control {
+    border: none;
+    box-shadow: none;
+  }
+  .btn-outline-info {
+    border-color: #17a2b8;
+    color: #17a2b8;
+  }
+  .btn-outline-info:hover {
+    background-color: #17a2b8;
+    color: white;
+  }
+  .table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .table th, .table td {
+    vertical-align: middle;
+  }
+  .table th {
+    background-color: #f1f1f1;
+    font-weight: 600;
+  }
+  .table-bordered {
+    border: none;
+  }
+  .table-bordered th, .table-bordered td {
+    border: none;
+    border-bottom: 1px solid #e9ecef;
+  }
+</style>
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+{% include "store/_navbar.html" %}
+
+<div class="container mt-4">
+  <form method="get" action="{% url 'warehouse_store' store.id %}">
+    {% csrf_token %}
+    <div class="input-group mb-3 shadow-lg">
+      <span class="input-group-text">🔍</span>
+      <input
+        type="text"
+        class="form-control"
+        aria-label="Search by product name"
+        name="name"
+        value="{{ search_query }}"
+        placeholder="Product name" />
+      <button type="submit" class="btn btn-outline-info">Search</button>
+    </div>
+  </form>
+
+  <h2><i class="bi bi-house-door"></i> {{ store.name }} & <i class="bi bi-box-seam"></i> {{ warehouse.name }}</h2>
+  
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>📦 Product Name</th>
+        <th>🏢 Warehouse Quantity</th>
+        <th>🏬 Store Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in products %}
+        <tr>
+          <td>{{ product.name }}</td>
+          <td>{{ product.warehouse_quantity }}</td>
+          <td>{{ product.store_quantity }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

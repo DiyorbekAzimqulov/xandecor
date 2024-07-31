@@ -3,47 +3,45 @@
   class="navbar {% if active_page == 'sales_doctor' or active_page == 'ship_product' or active_page == 'redistribute_product' or active_page == 'forgotten_product' %}fixed-top{% endif %}">
   <a href="{% url 'home' %}" class="navbar-brand"><i class="fas fa-cube"></i> Xandecor</a>
   <div class="navbar-menu">
-    <a
-      href="{% url 'sales_doctor' %}"
+
+    <a href="{% url 'sales_doctor' %}"
       class="navbar-button {% if active_page == 'sales_doctor' %}active{% endif %}"
-      ><i class="fas fa-user-md"></i> Sales doctor</a
-    >
-    <a
-      href="{% url 'requested_order' %}"
+      ><i class="fas fa-user-md"></i> Sales doctor</a>
+
+    <a href="{% url 'requested_order' %}"
       class="navbar-button {% if active_page == 'requested_orders' %}active{% endif %}"
-      ><i class="fas fa-users"></i> Requested Orders</a
-    >
-    <a
-      href="{% url 'containers_list' %}"
+      ><i class="fas fa-users"></i> Requested Orders</a>
+
+    <a href="{% url 'containers_list' %}"
       class="navbar-button {% if active_page == 'containers_list' %}active{% endif %}"
-      ><i class="fas fa-box-open"></i> Containers</a
-    >
-    <a
-      href="{% url 'reviewers' %}"
+      ><i class="fas fa-box-open"></i> Containers</a>
+
+    <a href="{% url 'reviewers' %}"
       class="navbar-button {% if active_page == 'reviewers' %}active{% endif %}"
-      ><i class="fas fa-users"></i> Users</a
-    >
-    <a
-      href="{% url 'products_reviews' %}"
+      ><i class="fas fa-users"></i> Users</a>
+
+    <a href="{% url 'products_reviews' %}"
       class="navbar-button {% if active_page == 'products_reviews' %}active{% endif %}"
-      ><i class="fas fa-star"></i> Product Reviews</a
-    >
-    <a
-      href="{% url 'asked_users' %}"
+      ><i class="fas fa-star"></i> Product Reviews</a>
+
+    <a href="{% url 'asked_users' %}"
       class="navbar-button {% if active_page == 'asked_users' %}active{% endif %}"
       ><i class="fas fa-users"></i> Requests {% if asked_users_count > 0 %}
+
       <span class="badge">{{ asked_users_count }}</span>
       {% endif %}
     </a>
-    <a
-      href="{% url 'warehouse_list' %}"
-      class="navbar-button {% if active_page == 'warehouse_list' %}active{% endif %}"
-      ><i class="fas fa-warehouse"></i></a
-    >
-    <a
-      href="{% url 'discount_product' %}"
+    <a href="{% url 'warehouse_list' %}"
+      class="navbar-button {% if active_page == 'warehouse_page' %}active{% endif %}"
+      ><i class="fas fa-warehouse"></i></a>
+
+    <a href="{% url 'stores' %}"
+      class="navbar-button {% if active_page == 'stores_page' %}active{% endif %}"
+      ><i class="fas fa-store"></i> </a>
+      
+    <a href="{% url 'discount_product' %}"
       class="navbar-button {% if active_page == 'discount_product' %}active{% endif %}"
-      ><i class="fas fa-percent"></i> </a
-    >
+      ><i class="fas fa-percent"></i> </a>
+  
   </div>
 </div>
