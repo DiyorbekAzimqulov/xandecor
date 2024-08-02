@@ -80,6 +80,7 @@ class StoreProduct(models.Model):
         return f"{self.store.name} - {self.product.name}"
 
 class Client(models.Model):
+    warehouse = models.ForeignKey(WareHouse, on_delete=models.CASCADE)
     name = models.CharField(_("Name"), max_length=255)
     phone = models.CharField(_("Phone"), max_length=255, unique=True)
     enrollement_count = models.IntegerField(_("Enrollement count"), default=0)

@@ -14,23 +14,56 @@
 <body>
     {% block content %}
     {% include "warehouse/_navbar.html" %}
-    <div class="search_box" style="padding: 30px;">
-        <form method="get" action="{% url 'wareHouse' warehouse.id %}">
-            {% csrf_token %}
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">🔍</span>
-                <input type="text" class="form-control" placeholder="Product name" aria-label="Product name" aria-describedby="basic-addon1" name="prompt" value="{{ search_query }}" required />
-                <button type="submit" class="btn btn-outline-info">Search</button>
+    
+    <div class="container mt-4">    
+        <!-- Alert Container -->
+        <div id="alert-container" class="mb-4"></div>
+    
+        <!-- Your existing content -->
+        <div class="search_box" style="padding: 30px;">
+            <form method="get" action="{% url 'wareHouse' warehouse.uuid %}">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">🔍</span>
+                    <input type="text" class="form-control" placeholder="Product name" aria-label="Product name" aria-describedby="basic-addon1" name="prompt" value="{{ search_query }}" required />
+                    <button type="submit" class="btn btn-outline-info">Search</button>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="True" id="flexCheckDefault" name="isFromAll" {% if is_from_all %}checked{% endif %} />
+                    <label class="form-check-label" for="flexCheckDefault"> From all warehouses </label>
+                </div>
+            </form>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="clientModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="clientModalLabel">Add Client</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="clientForm">
+                            <div class="form-group">
+                                <label for="clientName">Name</label>
+                                <input type="text" class="form-control" id="clientName" name="name" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="clientPhone">Phone</label>
+                                <input type="text" class="form-control" id="clientPhone" name="phone" required />
+                            </div>
+                            <div id="clientAlert"></div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="True" id="flexCheckDefault" name="isFromAll" {% if is_from_all %}checked{% endif %} />
-                <label class="form-check-label" for="flexCheckDefault"> From all warehouses </label>
-            </div>
-        </form>
-    </div>
-
-    <div class="view-box">
-        <div class="container mt-4">
+        </div>
+        <!-- End Modal -->
+    
+        <div class="view-box">
             <div class="center-side" style="display: flex;">
                 {% if not is_from_all %}
                 <h1>{{ warehouse.name }}</h1>
@@ -39,191 +72,239 @@
                     <div class="sidebar">
                         {% for store in stores %}
                         <div class="store">
-                            <button class="store-detail-button" data-store-id="{{ store.id }}">{{ store.name }}</button>
+                            <button class="store-detail-button" data-store-id="{{ store.uuid }}">{{ store.name }}</button>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
+            <!-- Add client button right side of table -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#clientModal" style="margin-bottom: 10px;">
+               Add Client 
+            </button>
+
             <div id="store-details" style="display: none;">
                 <h2 id="store-name"></h2>
                 <p><strong>Warehouse:</strong> <span id="warehouse-name"></span></p>
             </div>
-            <table class="table table-striped" id="dataTable">
-                <thead>
-                    <tr>
-                        {% if is_from_all %}
-                        <th>Warehouse Name</th>
-                        {% endif %}
-                        <th>Product Name</th>
-                        <th>Ostatok</th>
-                        {% if data %}
-                        {% for store_name, store in data.0.store_quantities.items %}
-                        <th style="max-width: 10ch; overflow: hidden; text-overflow: ellipsis;">{{ store_name }}</th>
+            <div class="table-container", style="overflow-x: auto;">
+                <table class="table table-striped" id="dataTable">
+                    <thead>
+                        <tr>
+                            {% if is_from_all %}
+                            <th>Warehouse Name</th>
+                            {% endif %}
+                            <th>Product Name</th>
+                            <th>Ostatok</th>
+                            {% if data %}
+                            {% for store_name, store in data.0.store_quantities.items %}
+                            <th style="max-width: 10ch; overflow: hidden; text-overflow: ellipsis;">{{ store_name }}</th>
+                            {% endfor %}
+                            <th>Left in Warehouse</th>
+                            <th>Shelf</th>
+                            <th>Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in data %}
+                        <tr class="text-center" data-product="{{ entry.product_id }}">
+                            {% if is_from_all %}
+                            <td>{{ entry.warehouse_name }}</td>
+                            {% endif %}
+                            <td class="text-left">{{ entry.product_name }}</td>
+                            <td>{{ entry.ostatok }}</td>
+                            {% for store_name, quantity in entry.store_quantities.items %}
+                            <td>
+                                <div class="quantity-controls">
+                                    <button type="button" class="btn btn-outline-danger btn-sm decrement" data-store="{{ store_name }}" data-product="{{ entry.product_id }}">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="quantity" data-store="{{ store_name }}" data-product="{{ entry.product_id }}">{{ quantity }}</span>
+                                    <button type="button" class="btn btn-outline-success btn-sm increment" data-store="{{ store_name }}" data-product="{{ entry.product_id }}">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            {% endfor %}
+                            <td class="left-in-warehouse">{{ entry.left_product_count_in_warehouse }}</td>
+                            <td style="max-width: 10ch; overflow: hidden; text-overflow: ellipsis;">
+                                <input type="text" class="form-control shelf-input" value="{{ entry.shelf }}" data-product="{{ entry.product_id }}" />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary save" data-product="{{ entry.product_id }}">Save</button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="100%">No products found.</td>
+                        </tr>
                         {% endfor %}
-                        <th>Left in Warehouse</th>
-                        <th>Shelf</th>
-                        <th>Actions</th>
-                        {% endif %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for entry in data %}
-                    <tr>
-                        {% if is_from_all %}
-                        <td>{{ entry.warehouse_name }}</td>
-                        {% endif %}
-                        <td>{{ entry.product_name }}</td>
-                        <td>{{ entry.ostatok }}</td>
-                        {% for store in entry.store_quantities.keys %}
-                        <td>{{ entry.store_quantities|get_item:store }}</td>
-                        {% endfor %}
-                        <td>{{ entry.left_product_count_in_warehouse }}</td>
-                        <td>{{ entry.shelf }}</td>
-                        <td>
-                            <button class="btn btn-sm btn-primary edit-product" data-product-id="{{ entry.product_id }}" data-current-shelf="{{ entry.shelf }}">Edit</button>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="100%">No products found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editProductForm">
-                        <div class="mb-3">
-                            <label for="storeSelect" class="form-label">Select Store</label>
-                            <select id="storeSelect" class="form-select" required>
-                                <!-- Options will be populated by JavaScript -->
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="newShelf" class="form-label">New Shelf</label>
-                            <input type="text" id="newShelf" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="newQuantity" class="form-label">New Quantity</label>
-                            <input type="number" id="newQuantity" class="form-control" required>
-                        </div>
-                        <input type="hidden" id="productId">
-                        {% if warehouse %}
-                        <input type="hidden" id="warehouseId" value="{{ warehouse.id }}">
-                        {% else %}
-                        <input type="hidden" id="warehouseId" value="">
-                        {% endif %}
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </form>
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function () {
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-            const csrftoken = getCookie('csrftoken');
-    
-            function showEditProductModal(productId, currentShelf) {
-                $('#productId').val(productId);
-                $('#newShelf').val(currentShelf);
-    
-                $.ajax({
-                    url: '{% url "get_stores" %}',
-                    method: 'GET',
-                    success: function (response) {
-                        const stores = response.stores;
-                        let options = '<option value="">Select a store</option>';
-                        stores.forEach(store => {
-                            options += `<option value="${store.id}">${store.name}</option>`;
-                        });
-                        $('#storeSelect').html(options);
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Error fetching stores: ' + error);
-                    }
-                });
-    
-                $('#editProductModal').modal('show');
-            }
-    
-            $('#editProductForm').submit(function (event) {
-                event.preventDefault();
-                const productId = $('#productId').val();
-                const warehouseId = $('#warehouseId').val();
-                const storeId = $('#storeSelect').val();
-                const newShelf = $('#newShelf').val();
-                const newQuantity = $('#newQuantity').val();
-    
-                $.ajax({
-                    url: '{% url "edit_product_details" %}',
-                    method: 'POST',
-                    data: {
-                        warehouse_id: warehouseId,
-                        product_id: productId,
-                        store_id: storeId,
-                        shelf: newShelf,
-                        quantity: newQuantity,
-                        csrfmiddlewaretoken: csrftoken
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            location.reload();
-                        } else {
-                            alert('Error updating product details');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Error: ' + error);
-                    }
-                });
-            });
-    
-            $('button.edit-product').click(function () {
-                const productId = $(this).data('product-id');
-                const currentShelf = $(this).data('current-shelf');
-                showEditProductModal(productId, currentShelf);
-            });
-    
+            const baseUrl = '/warehouse/store/'; // base URL for store details
+        
             $('.store-detail-button').click(function () {
                 const storeId = $(this).data('store-id');
                 if (storeId) {
-                    const storeDetailUrl = "{% url 'store_detail' 0 %}".replace('0', storeId);
+                    const storeDetailUrl = baseUrl + storeId + '/';
                     window.location.href = storeDetailUrl;
                 } else {
                     alert('Store ID not found.');
                 }
             });
+        
+            // Increment and decrement buttons
+            $('.increment, .decrement').click(function () {
+                let span = $(this).siblings('.quantity');
+                let currentQuantity = parseInt(span.text(), 10);
+                let change = $(this).hasClass('increment') ? 1 : -1;
+                let newQuantity = currentQuantity + change;
+        
+                if (newQuantity >= 0) { // Prevent negative quantities
+                    span.text(newQuantity);
+                    // Update the 'Left in Warehouse' value
+                    updateLeftInWarehouse($(this).data('product'));
+                }
+            });
+        
+            function updateLeftInWarehouse(productId) {
+                let totalQuantity = 0;
+        
+                // Sum up quantities from all stores
+                $(`.quantity[data-product="${productId}"]`).each(function () {
+                    totalQuantity += parseInt($(this).text(), 10);
+                });
+        
+                // Find the row for the given product and update the 'Left in Warehouse'
+                $(`tr[data-product="${productId}"] .left-in-warehouse`).text(totalQuantity);
+            }
+        
+            // Save button
+            $('.save').click(function () {
+                let product_id = $(this).data('product');
+                let warehouse_id = '{{ warehouse.id }}';
+                let quantities = {};
+                let shelf = $(`.shelf-input[data-product="${product_id}"]`).val();
+        
+                // Collect all quantities for this product
+                $(`.quantity[data-product="${product_id}"]`).each(function () {
+                    let store_uuid = $(this).data('store');
+                    quantities[store_uuid] = parseInt($(this).text(), 10);
+                });
+        
+                // Send data to server via AJAX
+                $.ajax({
+                    url: '{% url "update_store_quantities" %}',  // Replace with your actual URL
+                    method: 'POST',
+                    data: {
+                        'product_id': product_id,
+                        'warehouse_id': warehouse_id,
+                        'quantities': JSON.stringify(quantities),
+                        'shelf': shelf,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        showAlert('Quantities and shelf updated successfully.', 'success');
+                    },
+                    error: function (xhr, status, error) {
+                        showAlert('Failed to update quantities: ' + error, 'danger');
+                    }
+                });
+            });
+        
+            function showAlert(message, type) {
+                const alertContainer = $('#alert-container');
+                alertContainer.html(`
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        ${message}
+                    </div>
+                `);
+                
+                // Auto-remove the alert after 3 seconds
+                setTimeout(() => {
+                    alertContainer.find('.alert').alert('close');
+                }, 3000); // 3000 milliseconds = 3 seconds
+            }
+
+            // Client form submission
+            // Handle client form submission
+            $('#clientForm').submit(function (event) {
+                event.preventDefault();
+                
+                let name = $('#clientName').val();
+                let phone = $('#clientPhone').val();
+                let warehouse_id = '{{ warehouse.id }}';  // Make sure this is the correct value
+        
+                $.ajax({
+                    url: '{% url "client_view" %}',  // Updated URL
+                    method: 'POST',
+                    data: {
+                        'action': 'check_client',
+                        'phone': phone,
+                        'warehouse': warehouse_id,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if (response.exists) {
+                            // If the phone number exists, confirm the enrollment count update
+                            if (confirm('Ushbu telefon raqamli mijoz mavjud. Mijozga bitta yulduzcha qo`shmoqchimisiz?')) {
+                                $.ajax({
+                                    url: '{% url "client_view" %}',  // Updated URL
+                                    method: 'POST',
+                                    data: {
+                                        'action': 'update_client_enrollment',
+                                        'phone': phone,
+                                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                                    },
+                                    success: function () {
+                                        showAlert('Enrollment count updated successfully.', 'success');
+                                        $('#clientModal').modal('hide');
+                                    },
+                                    error: function (xhr, status, error) {
+                                        showAlert('Failed to update enrollment count: ' + error, 'danger');
+                                    }
+                                });
+                            }
+                        } else {
+                            // If the phone number does not exist, create a new client
+                            $.ajax({
+                                url: '{% url "client_view" %}',  // Updated URL
+                                method: 'POST',
+                                data: {
+                                    'action': 'create_client',
+                                    'name': name,
+                                    'phone': phone,
+                                    'warehouse_id': warehouse_id,
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                                },
+                                success: function () {
+                                    showAlert('Client added successfully.', 'success');
+                                    $('#clientModal').modal('hide');
+                                },
+                                error: function (xhr, status, error) {
+                                    showAlert('Failed to add client: ' + error, 'danger');
+                                }
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        showAlert('Failed to check phone number: ' + error, 'danger');
+                    }
+                });
+            });
         });
     </script>
+    
     {% endblock %}
 </body>
 </html>

@@ -1,41 +1,25 @@
-/* CSS for the sidebar container */
-.sidebar {
-    width: auto;
-    background-color: #f0f0f0;
-    /* padding: 10px; */
-    height: 65px;
+
+.quantity-controls {
     display: flex;
-    flex-direction: column; 
-    /* Align items vertically */
-    overflow-y: auto; /* Enable vertical scrolling */
-    list-style: none;      /* Remove default list styling */
-    padding: 0;            /* Remove default padding */
-    margin: 0;  
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 }
 
-/* CSS for each store item */
-.store {
-    /* white-space: wrap; Prevent text from wrapping */
-    /* overflow: hidden; Hide overflowing text */
-    text-overflow: ellipsis; /* Display ellipsis for overflowed text */
-    padding: 5px; /* Add some padding for better appearance */
-    border-bottom: 1px solid #ddd; /* Add a separator between items */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-    max-width: 20%;
-    flex-wrap: wrap ;
-    /* max-width: 8ch; */
+.quantity-controls .btn {
+    font-size: 0.75rem; /* Smaller button text */
+    width: 2rem; /* Fixed width for buttons */
+    height: 2rem; /* Fixed height for buttons */
+    padding: 0; /* Remove padding */
+    border-radius: 50%; /* Circular buttons */
 }
 
-/* Optional: Add hover effect for better UX */
-.store:hover {
-    background-color: #e0e0e0; /* Change background color on hover */
-}
-.sidebar-container{
-    width: 100%;          /* Set the width of the container */
-    height: 100%;         /* Set the height of the container */
-    overflow-y: auto;      /*Enable vertical scrolling*/
-    border: 1px solid #ccc; /* Optional: Add a border */
-     padding: 10px;         /*Optional: Add padding */
+.quantity-controls .btn i {
+    font-size: 1rem; /* Adjust icon size */
 }
 
+.quantity-controls .quantity {
+    margin: 0 0.5rem; /* Space between buttons and quantity */
+    font-size: 1rem; /* Adjust quantity text size */
+    min-width: 2rem; /* Minimum width for quantity text */
+    text-align: center; /* Center align text */
+}
