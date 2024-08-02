@@ -15,7 +15,8 @@
     {% block content %}
     {% include "warehouse/_navbar.html" %}
     <div class="search_box" style="padding: 30px;">
-        <form action="{% if warehouse %}{% url active_page id=warehouse.id %}{% else %}#{% endif %}" method="get">
+        <form method="get" action="{% url 'wareHouse' warehouse.id %}">
+            {% csrf_token %}
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">🔍</span>
                 <input type="text" class="form-control" placeholder="Product name" aria-label="Product name" aria-describedby="basic-addon1" name="prompt" value="{{ search_query }}" required />

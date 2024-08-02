@@ -73,7 +73,7 @@
 {% include "store/_navbar.html" %}
 
 <div class="container mt-4">
-  <form method="get" action="{% url 'warehouse_store' store.id %}">
+  <form method="get" action="{% url 'warehouse_store' store.uuid %}">
     {% csrf_token %}
     <div class="input-group mb-3 shadow-lg">
       <span class="input-group-text">🔍</span>

@@ -33,7 +33,7 @@
                             <td>
                                 <div class="store-list">
                                     {% for store in stores %}
-                                    <a href="{% url 'main_store' store.id %}" class="d-block {% if store.id == store_id %}font-weight-bold{% endif %}">
+                                    <a href="{% url 'main_store' store.uuid %}" class="d-block {% if store.uuid == store_id %}font-weight-bold{% endif %}">
                                         {{ store.name }}
                                     </a>
                                     {% endfor %}

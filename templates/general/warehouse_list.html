@@ -45,7 +45,7 @@
         </thead>
         <tbody>
           {% for warehouse in warehouses %}
-          <tr class="clickable-row" onclick="window.location.href='{% url 'wareHouse' warehouse.id %}'">
+          <tr class="clickable-row" onclick="window.location.href='{% url 'wareHouse' warehouse.uuid %}'">
             <th scope="row">{{ forloop.counter }}</th>
             <td>{{ warehouse.name }}</td>
             <td>{{ warehouse.sd_id }}</td>

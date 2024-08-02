@@ -28,7 +28,7 @@
 {% block content %}
 {% include "store/_navbar.html" %}
 <div class="search_box" style="padding: 30px;">
-    <form method="get" action="{% url 'main_store' store.id %}">
+    <form method="get" action="{% url 'main_store' store.uuid %}">
         {% csrf_token %}
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">🔍</span>
@@ -44,8 +44,8 @@
         <h1>{{ store.name }}</h1>
         <div class="row mb-3" style="display: flex; justify-content: center;">
             <div class="icon-container">
-                <a href="{% url 'main_store' store.id %}" class="icon-button"><img src="https://img.icons8.com/?size=100&id=64655&format=png&color=000000" alt="Store"></a>
-                <a href="{% url 'warehouse_store' store.id %}" class="icon-button"><img src="https://img.icons8.com/?size=100&id=wk5lhtYtfgfe&format=png&color=000000" alt="Warehouse"></a>
+                <a href="{% url 'main_store' store.uuid %}" class="icon-button"><img src="https://img.icons8.com/?size=100&id=64655&format=png&color=000000" alt="Store"></a>
+                <a href="{% url 'warehouse_store' store.uuid %}" class="icon-button"><img src="https://img.icons8.com/?size=100&id=wk5lhtYtfgfe&format=png&color=000000" alt="Warehouse"></a>
                 <a href="{% url 'feedback' %}" class="icon-button"><img src="https://img.icons8.com/?size=100&id=YkjuvFOM0L0z&format=png&color=000000" alt="Feedback"></a>
             </div>
         </div>
@@ -56,7 +56,7 @@
                         <tr>
                             <th>Names</th>
                             <th>Quantity</th>
-                        </tr>
+                        </tr>   
                     </thead>
                     <tbody>
                         {% for product in store_products %}

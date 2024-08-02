@@ -1,9 +1,12 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+import uuid
+import random
 
 class WareHouse(models.Model):
     name = models.CharField(_("Name"), max_length=255)
     sd_id = models.CharField(_("SD ID"), max_length=255, unique=True)
+    uuid = models.UUIDField(_("UUID"), default=uuid.uuid4, editable=False, unique=True)    
 
     class Meta:
         verbose_name = _("WareHouse")
@@ -37,7 +40,7 @@ class Category(models.Model):
 class Store(models.Model):
     name = models.CharField(_("Name"), max_length=255)
     warehouse = models.ForeignKey(WareHouse, on_delete=models.CASCADE, related_name='stores')
-
+    uuid = models.UUIDField(_("UUID"), default=uuid.uuid4, editable=False, unique=True)
     class Meta:
         verbose_name = _("Store")
         verbose_name_plural = _("Stores")
@@ -75,3 +78,16 @@ class StoreProduct(models.Model):
 
     def __str__(self):
         return f"{self.store.name} - {self.product.name}"
+
+class Client(models.Model):
+    name = models.CharField(_("Name"), max_length=255)
+    phone = models.CharField(_("Phone"), max_length=255, unique=True)
+    enrollement_count = models.IntegerField(_("Enrollement count"), default=0)
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    
+    class Meta:
+        verbose_name = _("Client")
+        verbose_name_plural = _("Clients")
+    
+    def __str__(self):
+        return self.name

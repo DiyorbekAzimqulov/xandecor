@@ -44,7 +44,7 @@ class WareHouseStoreView(View):
             warehouses = WareHouse.objects.all()
         else:
             # Retrieve the specific warehouse
-            warehouse = get_object_or_404(WareHouse, pk=kwargs.get("id"))
+            warehouse = get_object_or_404(WareHouse, uuid=kwargs.get("uuid"))
             warehouse_products = WareHouseProduct.objects.filter(
                 warehouse=warehouse, 
                 product__name__icontains=search_query, 
@@ -198,7 +198,7 @@ class StoreView(View):
     def get(self, request, *args, **kwargs):
         search_query = request.GET.get('prompt', '')
         
-        store = get_object_or_404(Store, pk=kwargs.get("id"))
+        store = get_object_or_404(Store, uuid=kwargs.get("uuid"))
         store_products = StoreProduct.objects.filter(store=store, quantity__gt=0)
         warehouse = store.warehouse
         if search_query:
@@ -214,7 +214,7 @@ class StoreView(View):
 class StoreWarehouseView(View):
     def get(self, request, *args, **kwargs):
         search_query = request.GET.get('name', '')
-        store = get_object_or_404(Store, pk=kwargs.get("id"))
+        store = get_object_or_404(Store, uuid=kwargs.get("uuid"))
         warehouse = store.warehouse
         
         # Retrieve all warehouse products

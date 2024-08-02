@@ -78,7 +78,7 @@
   {% for event in events %}
   <div class="card">
     <div class="card-header">
-      Discount: {{ event.discount }}%
+      Discount: ${{ event.discount }} 
     </div>
     <div class="card-body">
       {% for product in event.products.all %}
