@@ -1,33 +1,110 @@
-<footer class="footer mt-auto py-3 bg-light">
+{% load static %}
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content {
+    flex: 1;
+  }
+
+  .footer {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 20px;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: auto; /* Push the footer to the bottom */
+  }
+
+  .footer a {
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .footer a:hover {
+    color: #3498db;
+    text-decoration: underline;
+  }
+
+  .footer img {
+    max-width: 120px;
+    transition: transform 0.3s ease;
+  }
+
+  .footer img:hover {
+    transform: scale(1.1);
+  }
+
+  .footer .social-icons {
+    margin: 20px 0;
+  }
+
+  .footer .social-icons a {
+    font-size: 30px;
+    margin: 0 15px;
+    color: #ecf0f1;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+
+  .footer .social-icons a:hover {
+    color: #3498db;
+    transform: scale(1.2);
+  }
+
+  .footer .brand-logo, .footer .social-icons {
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer .brand-logo {
+    margin-bottom: 20px;
+  }
+
+  .footer .social-icons {
+    margin-bottom: 20px;
+  }
+
+  .footer .created-text {
+    font-size: 14px;
+    text-align: center;
+    color: #bdc3c7;
+    margin-top: 20px;
+  }
+</style>
+
+<!-- Footer -->
+<footer class="footer">
   <div class="container">
-    <div class="row">
-      <div class="col-md-4">
-        <h5>About Us</h5>
-        <p>We are a company dedicated to providing the best container management solutions.</p>
+    <div class="row" style="display: flex; justify-content: space-between;">
+      <!-- Brand Logo -->
+      <div class="col-md-4 brand-logo" style="display: flex; justify-content: center;">
+        <a href="{% url 'home' %}">
+          <img src="{% static 'brands/xandecor-white.png' %}" alt="Brand Logo" class="img-fluid" />
+        </a>
       </div>
+      
+      <!-- Social Media Icons -->
       <div class="col-md-4">
-        <h5>Quick Links</h5>
-        <ul class="list-unstyled">
-          <li><a href="{% url 'home' %}">Home</a></li>
-          <li><a href="{% url 'about' %}">About</a></li>
-          <li><a href="{% url 'contact' %}">Contact</a></li>
-        </ul>
-      </div>
-      <div class="col-md-4">
-        <h5>Contact Us</h5>
-        <ul class="list-unstyled">
-          <li><i class="fas fa-envelope"></i> nodirbyte@gmail.com</li>
-          <li><i class="fas fa-phone"></i> +998 99 785 48 02</li>
-        </ul>
+        <div class="social-icons">
+          <a href="https://t.me/NodirByte" target="_blank" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
+          <a href="https://instagram.com/NodirByte" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="https://github.com/NodirByte" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        </div>
       </div>
     </div>
-    <div class="text-center mt-3">
-      <p>&copy; 2024 NodirByte. All Rights Reserved.</p>
+    <!-- Created By Text -->
+    <div class="created-text">
+      <p class="mb-0">Created by Nodirbek Abduraimov</p>
     </div>
   </div>
 </footer>
 
-<!-- External CSS -->
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+<!-- FontAwesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
