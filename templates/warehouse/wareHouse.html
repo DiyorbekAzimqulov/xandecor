@@ -12,39 +12,6 @@
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
     <link rel="icon" href="{% static 'brands/favicon.ico' %}" type="image/x-icon" />
 </head>
-{% block style %}
-<style>
-.quantity-controls {
-    display: flex;
-    align-items: center;
-}
-
-.quantity-controls .quantity {
-    margin: 0 0.3rem;
-    font-size: 0.8rem; /* Reduce font size for the quantity display */
-}
-
-.quantity-controls .btn {
-    font-size: 0.8rem; /* Smaller font size for the icons */
-    width: 1rem;     /* Reduce width */
-    height: 1rem;    /* Reduce height */
-    padding: 0;        /* No padding */
-    display: flex;     /* Flex display for centering */
-    align-items: center; /* Center align text inside the button */
-    justify-content: center; /* Center align text inside the button */
-}
-
-.quantity-controls .increment {
-    border-color: #28a745;
-    color: #28a745;
-}
-
-.quantity-controls .decrement {
-    border-color: #dc3545;
-    color: #dc3545;
-}
-</style>
-{% endblock %}
 <body>
     {% block content %}
     {% include "warehouse/_navbar.html" %}

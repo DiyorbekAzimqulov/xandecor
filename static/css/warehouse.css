@@ -1,0 +1,69 @@
+/* CSS for the sidebar container */
+.sidebar {
+    width: auto;
+    background-color: #f0f0f0;
+    /* padding: 10px; */
+    height: 65px;
+    display: flex;
+    flex-direction: column; 
+    /* Align items vertically */
+    overflow-y: auto; /* Enable vertical scrolling */
+    list-style: none;      /* Remove default list styling */
+    padding: 0;            /* Remove default padding */
+    margin: 0;  
+    flex-wrap: wrap;
+    /* Remove default margin */ 
+}
+
+.store {
+    /* white-space: wrap; Prevent text from wrapping */
+    /* overflow: hidden; Hide overflowing text */
+    text-overflow: ellipsis; /* Display ellipsis for overflowed text */
+    padding: 5px; /* Add some padding for better appearance */
+    border-bottom: 1px solid #ddd; /* Add a separator between items */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    max-width: 20%;
+    flex-wrap: wrap ;
+    /* max-width: 8ch; */
+}
+
+.store:hover {
+    background-color: #e0e0e0; /* Change background color on hover */
+}
+.sidebar-container{
+    width: 100%;          /* Set the width of the container */
+    height: 100%;         /* Set the height of the container */
+    overflow-y: auto;      /*Enable vertical scrolling*/
+    border: 1px solid #ccc; /* Optional: Add a border */
+     padding: 10px;     
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-controls .quantity {
+    margin: 0 0.3rem;
+    font-size: 0.8rem; /* Reduce font size for the quantity display */
+}
+
+.quantity-controls .btn {
+    font-size: 0.8rem; /* Smaller font size for the icons */
+    width: 1rem;     /* Reduce width */
+    height: 1rem;    /* Reduce height */
+    padding: 0;        /* No padding */
+    display: flex;     /* Flex display for centering */
+    align-items: center; /* Center align text inside the button */
+    justify-content: center; /* Center align text inside the button */
+}
+
+.quantity-controls .increment {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.quantity-controls .decrement {
+    border-color: #dc3545;
+    color: #dc3545;
+}
