@@ -32,18 +32,20 @@ class SalesDoctorView(SuperuserRequiredMixin, View):
     
     def get(self, request, *args, **kwargs):
         search_query = request.GET.get('name', '')
-        # token, user_id = auth_sales_doctor()
         context = {"status": False, "error": "Authentication failed"}
 
-        # if token and user_id:
+        # Fetch products with positive 'prixod' and 'ostatok' and filter by category
         warehouse_products = WareHouseProduct.objects.select_related('product', 'warehouse').filter(
             category__sd_id=CATEGORY_ID,
+            prixod__gt=0,
             ostatok__gt=0
-        ).distinct().order_by('product__name')  # Sort by product name
+        ).distinct().order_by('product__name')
 
+        # Filter by search query if present
         if search_query:
-            warehouse_products = warehouse_products.filter(product__name=search_query)
+            warehouse_products = warehouse_products.filter(product__name__icontains=search_query)
 
+        # Get all warehouse names
         warehouse_names = list(WareHouse.objects.values_list('name', flat=True))
 
         # Ensure 'Основной склад' is first in the list
@@ -51,20 +53,21 @@ class SalesDoctorView(SuperuserRequiredMixin, View):
             warehouse_names.remove("Основной склад")
             warehouse_names.insert(0, "Основной склад")
 
+        # Prepare product data for rendering
         product_data = {}
         for warehouse_product in warehouse_products:
-            if warehouse_product.product.name not in product_data:
-                product_data[warehouse_product.product.name] = {
+            product_name = warehouse_product.product.name
+            if product_name not in product_data:
+                product_data[product_name] = {
                     'total_prixod': 0,
                     'total_sold': 0,
                     'total_ostatok': 0,
                     'stores': {}
                 }
-                continue
-            product_data[warehouse_product.product.name]['total_prixod'] += warehouse_product.prixod
-            product_data[warehouse_product.product.name]['total_sold'] += warehouse_product.sold
-            product_data[warehouse_product.product.name]['total_ostatok'] += warehouse_product.ostatok
-            product_data[warehouse_product.product.name]['stores'][warehouse_product.warehouse.name] = {
+            product_data[product_name]['total_prixod'] += warehouse_product.prixod
+            product_data[product_name]['total_sold'] += warehouse_product.sold
+            product_data[product_name]['total_ostatok'] += warehouse_product.ostatok
+            product_data[product_name]['stores'][warehouse_product.warehouse.name] = {
                 'prixod': warehouse_product.prixod,
                 'sold': warehouse_product.sold,
                 'ostatok': warehouse_product.ostatok
