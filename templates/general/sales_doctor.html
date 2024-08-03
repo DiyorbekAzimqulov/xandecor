@@ -17,17 +17,29 @@
   }
   .grid {
     width: 100%;
-    max-width: 1300px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 10px; /* Adjust as necessary */
+    margin-right: 0;
+    padding-left: 80px; /* Adjust as necessary */
+    padding-right: 10px; /* Adjust as necessary */
   }
   .table-container {
     display: block;
     width: 100%;
     overflow-x: auto;
-    margin-left: 35px;
     -webkit-overflow-scrolling: touch;
   }
+
+  /* Example dynamic classes for warehouse columns */
+  .warehouse-cell-0 { background-color: #f8d7da; }
+  .warehouse-cell-1 { background-color: #d4edda; }
+  .warehouse-cell-2 { background-color: #d1ecf1; }
+  .warehouse-cell-3 { background-color: #fff3cd; }
+  .warehouse-cell-4 { background-color: #cce5ff; }
+  .warehouse-cell-5 { background-color: #f5c6cb; }
+  .warehouse-cell-6 { background-color: #f8d7da; }
+  .warehouse-cell-7 { background-color: #d4edda; }
+  .warehouse-cell-8 { background-color: #d1ecf1; }
+  .warehouse-cell-9 { background-color: #fff3cd; }
 </style>
 {% endblock %}
 
@@ -39,102 +51,89 @@
 <div class="grid mt-4">
   <h2 class="mb-1 text-center"><b>Sales Doctor</b></h2>
 
-  <div class="ml-5">{% include "_search.html" %}</div>
+  <div>{% include "_search.html" %}</div>
 
-  {% if product_data %} {% if status %}
-  <div class="table-container">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th rowspan="2"><small>№</small></th>
-          <th rowspan="2"><small>Name</small></th>
-          {% for warehouse in warehouse_names %} {% if warehouse == "Основной склад" %}
-          <th class="warehouse-cell-main" rowspan="2">
-            <small>{{ warehouse }} <i class="fas fa-warehouse"></i></small>
-          </th>
-          {% elif warehouse == "Secondary Warehouse 1" %}
-          <th class="warehouse-cell-secondary-1" colspan="3">
-            <small>{{ warehouse }} <i class="fas fa-warehouse"></i></small>
-          </th>
-          {% elif warehouse == "Secondary Warehouse 2" %}
-          <th class="warehouse-cell-secondary-2" colspan="3">
-            <small>{{ warehouse }} <i class="fas fa-warehouse"></i></small>
-          </th>
-          {% elif warehouse == "Secondary Warehouse 3" %}
-          <th class="warehouse-cell-secondary-3" colspan="3">
-            <small>{{ warehouse }} <i class="fas fa-warehouse"></i></small>
-          </th>
-          {% else %}
-          <th class="warehouse-cell-secondary" colspan="3">
-            <small>{{ warehouse }} <i class="fas fa-warehouse"></i></small>
-          </th>
-          {% endif %} {% endfor %}
-          <th rowspan="2">
-            <small>Total Otxod <i class="fas fa-trash-alt"></i></small>
-          </th>
-        </tr>
-        <tr>
-          {% for warehouse in warehouse_names %} {% if warehouse != "Основной склад" %}
-          <th class="warehouse-cell-secondary">
-            <small>Prixod <i class="fas fa-arrow-down symbol-cell prixod"></i></small>
-          </th>
-          <th class="warehouse-cell-secondary">
-            <small>Sold <i class="fas fa-arrow-up symbol-cell sold"></i></small>
-          </th>
-          <th class="warehouse-cell-secondary">
-            <small>Otxod <i class="fas fa-trash-alt symbol-cell ostatok"></i></small>
-          </th>
-          {% endif %} {% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for product_name, data in product_data.items %}
-        <tr class="{{ forloop.counter0|divisibleby:2|yesno:'row-even,row-odd' }}">
-          <td data-label="No."><small>{{ forloop.counter }}</small></td>
-          <td data-label="Product"><small>{{ product_name }}</small></td>
-          {% for warehouse in warehouse_names %}
-          <!-- with -->
-          {% with warehouse_data=data.stores|get_item:warehouse %}
-          <!-- checking warehouse -->
-          {% if warehouse_data %} {% if warehouse == "Основной склад" %}
-          <td class="warehouse-cell-main" data-label="Ostatok">
-            <small>{{ warehouse_data.ostatok }}</small>
-            <i class="fas fa-arrow-down symbol-cell prixod"></i>
-          </td>
-          {% else %}
-          <td class="warehouse-cell-secondary" data-label="Prixod">
-            <small>{{ warehouse_data.prixod }}</small>
-            <i class="fas fa-arrow-down symbol-cell prixod"></i>
-          </td>
-          <td class="warehouse-cell-secondary" data-label="Sold">
-            <small>{{ warehouse_data.sold }}</small>
-            <i class="fas fa-arrow-up symbol-cell sold"></i>
-          </td>
-          <td class="warehouse-cell-secondary" data-label="Ostatok">
-            <small>{{ warehouse_data.ostatok }}</small>
-            <i class="fas fa-trash-alt symbol-cell ostatok"></i>
-          </td>
-          {% endif %} {% else %}
-          <td class="warehouse-cell-secondary" data-label="Ostatok"><small>0</small></td>
-          {% if warehouse != "Основной склад" %}
-          <td class="warehouse-cell-secondary" data-label="Prixod"><small>0</small></td>
-          <td class="warehouse-cell-secondary" data-label="Sold"><small>0</small></td>
-          {% endif %} {% endif %} {% endwith %} {% endfor %}
-          <td data-label="Total Ostatok">
-            <small>{{ data.total_ostatok }}</small>
-            <i class="fas fa-trash-alt symbol-cell ostatok"></i>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+  {% if product_data %}
+    {% if status %}
+      <div class="table-fluid table-container">
+        <table class="table-responsive table table-bordered table-hover table-striped">
+          <thead>
+            <tr>
+              <th rowspan="2"><small>№</small></th>
+              <th rowspan="2"><small>Name</small></th>
+              {% for warehouse in warehouse_names %}
+                <th class="warehouse-cell-{{ forloop.counter0 }}" {% if warehouse == "Основной склад" %} rowspan="2" {% else %} colspan="3" {% endif %}>
+                  <small>{{ warehouse }} <i class="fas fa-warehouse"></i></small>
+                </th>
+              {% endfor %}
+              <th rowspan="2">
+                <small>Total Otxod <i class="fas fa-trash-alt"></i></small>
+              </th>
+            </tr>
+            <tr>
+              {% for warehouse in warehouse_names %}
+                {% if warehouse != "Основной склад" %}
+                  <th class="warehouse-cell-{{ forloop.counter0 }}">
+                    <small>Prixod <i class="fas fa-arrow-down symbol-cell prixod"></i></small>
+                  </th>
+                  <th class="warehouse-cell-{{ forloop.counter0 }}">
+                    <small>Sold <i class="fas fa-arrow-up symbol-cell sold"></i></small>
+                  </th>
+                  <th class="warehouse-cell-{{ forloop.counter0 }}">
+                    <small>Otxod <i class="fas fa-trash-alt symbol-cell ostatok"></i></small>
+                  </th>
+                {% endif %}
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for product_name, data in product_data.items %}
+              <tr class="{{ forloop.counter0|divisibleby:2|yesno:'row-even,row-odd' }}">
+                <td data-label="No."><small>{{ forloop.counter }}</small></td>
+                <td data-label="Product"><small>{{ product_name }}</small></td>
+                {% for warehouse in warehouse_names %}
+                  {% with warehouse_data=data.stores|get_item:warehouse %}
+                    {% if warehouse_data %}
+                      <td class="warehouse-cell-{{ forloop.counter0 }}" data-label="{% if warehouse == 'Основной склад' %}Ostatok{% else %}Prixod{% endif %}">
+                        <small>{{ warehouse_data.ostatok }}</small>
+                        <i class="fas fa-arrow-down symbol-cell prixod"></i>
+                      </td>
+                      {% if warehouse != "Основной склад" %}
+                        <td class="warehouse-cell-{{ forloop.counter0 }}" data-label="Sold">
+                          <small>{{ warehouse_data.sold }}</small>
+                          <i class="fas fa-arrow-up symbol-cell sold"></i>
+                        </td>
+                        <td class="warehouse-cell-{{ forloop.counter0 }}" data-label="Ostatok">
+                          <small>{{ warehouse_data.ostatok }}</small>
+                          <i class="fas fa-trash-alt symbol-cell ostatok"></i>
+                        </td>
+                      {% endif %}
+                    {% else %}
+                      <td class="warehouse-cell-{{ forloop.counter0 }}" data-label="Ostatok"><small>0</small></td>
+                      {% if warehouse != "Основной склад" %}
+                        <td class="warehouse-cell-{{ forloop.counter0 }}" data-label="Prixod"><small>0</small></td>
+                        <td class="warehouse-cell-{{ forloop.counter0 }}" data-label="Sold"><small>0</small></td>
+                      {% endif %}
+                    {% endif %}
+                  {% endwith %}
+                {% endfor %}
+                <td data-label="Total Ostatok">
+                  <small>{{ data.total_ostatok }}</small>
+                  <i class="fas fa-trash-alt symbol-cell ostatok"></i>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-center">{{ error }}</p>
+    {% endif %}
   {% else %}
-  <p class="text-center">{{ error }}</p>
+    <div class="alert alert-warning shadow-lg mx-5" role="alert">No data available</div>
+  {% endif %}
 </div>
-{% endif %} {% else %}
-<div class="alert alert-warning shadow-lg mx-5" role="alert">No data available</div>
-{% endif %} {% endblock %}
+{% endblock %}
 
 <!-- Script -->
 {% block script %}
