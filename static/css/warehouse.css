@@ -1,25 +1,27 @@
-
+/* CSS */
 .quantity-controls {
     display: flex;
     align-items: center;
-    justify-content: center;
-}
-
-.quantity-controls .btn {
-    font-size: 0.75rem; /* Smaller button text */
-    width: 2rem; /* Fixed width for buttons */
-    height: 2rem; /* Fixed height for buttons */
-    padding: 0; /* Remove padding */
-    border-radius: 50%; /* Circular buttons */
-}
-
-.quantity-controls .btn i {
-    font-size: 1rem; /* Adjust icon size */
 }
 
 .quantity-controls .quantity {
-    margin: 0 0.5rem; /* Space between buttons and quantity */
-    font-size: 1rem; /* Adjust quantity text size */
-    min-width: 2rem; /* Minimum width for quantity text */
-    text-align: center; /* Center align text */
+    margin: 0 0.5rem;
+    font-size: 1rem;
+} 
+
+.quantity-controls .btn {
+    font-size: 1rem;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+}
+
+.quantity-controls .increment {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.quantity-controls .decrement {
+    border-color: #dc3545;
+    color: #dc3545;
 }
