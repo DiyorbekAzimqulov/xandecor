@@ -92,3 +92,18 @@ class Client(models.Model):
     
     def __str__(self):
         return self.name
+    
+class Feedback(models.Model):
+    warehouse = models.ForeignKey(WareHouse, on_delete=models.CASCADE)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    text = models.TextField()
+    is_store = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = _("Feedback")
+        verbose_name_plural = _("Feedbacks")
+        
+    def __str__(self):
+        return self.text
+    

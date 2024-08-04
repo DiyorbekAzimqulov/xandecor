@@ -1,79 +1,179 @@
 {% extends "store/stores.html" %}
 {% load static %}
 
-<!-- Title -->
 {% block title %}Store{% endblock %}
+
 {% block style %}
 <style>
-    /* Example custom styling */
-.table th, .table td {
-    text-align: center;
-}
-
-@media (max-width: 767px) {
-    .btn-outline-primary,
-    .btn-outline-secondary {
-        display: block;
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    
     .table th, .table td {
-        font-size: 12px;
+        text-align: center;
     }
-}
 
+    .feedback-form {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .feedback-form h5 {
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    .feedback-form textarea {
+        resize: none;
+        min-height: 100px;
+    }
+
+    .feedback-form button {
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .store-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .store-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .store-header img {
+        max-width: 100px;
+        margin: 0 15px;
+    }
+
+    .search_box {
+        margin-bottom: 30px;
+    }
+
+    .search_box .input-group {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .products-table {
+        margin-top: 30px;
+    }
+
+    .feedback-message {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    .feedback-message.text-success {
+        color: #28a745;
+    }
+
+    .feedback-message.text-danger {
+        color: #dc3545;
+    }
+
+    @media (max-width: 767px) {
+        .feedback-form {
+            padding: 15px;
+        }
+
+        .store-header h1 {
+            font-size: 2rem;
+        }
+
+        .store-header img {
+            max-width: 80px;
+        }
+    }
 </style>
 {% endblock %}
+
 {% block content %}
 {% include "store/_navbar.html" %}
-<div class="search_box" style="padding: 30px;">
-    <form method="get" action="{% url 'main_store' store.uuid %}">
-        {% csrf_token %}
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">🔍</span>
-            <input type="text" class="form-control" placeholder="Product name" aria-label="Product name" aria-describedby="basic-addon1" name="prompt" value="{{ search_query }}" required />
-            <button type="submit" class="btn btn-outline-info">Search</button>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="True" id="flexCheckDefault" name="isFromAll" {% if is_from_all %}checked{% endif %} />
-            <label class="form-check-label" for="flexCheckDefault"> From warehouses </label>
-        </div>
-    </form>
-    <div class="container mt-4">
-        <h1>{{ store.name }}</h1>
-        <div class="row mb-3" style="display: flex; justify-content: center;">
-            <div class="icon-container">
-                <a href="{% url 'main_store' store.uuid %}" class="icon-button"><img src="https://img.icons8.com/?size=100&id=64655&format=png&color=000000" alt="Store"></a>
-                <a href="{% url 'warehouse_store' store.uuid %}" class="icon-button"><img src="https://img.icons8.com/?size=100&id=wk5lhtYtfgfe&format=png&color=000000" alt="Warehouse"></a>
-                <a href="{% url 'feedback' %}" class="icon-button"><img src="https://img.icons8.com/?size=100&id=YkjuvFOM0L0z&format=png&color=000000" alt="Feedback"></a>
+
+<div class="container mt-4">
+    <!-- Search Form -->
+    <div class="search_box">
+        <form method="get" action="{% url 'main_store' store.uuid %}">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">🔍</span>
+                <input type="text" class="form-control" placeholder="Search for products" aria-label="Product name" aria-describedby="basic-addon1" name="prompt" value="{{ search_query }}" required />
+                <button type="submit" class="btn btn-outline-info">Search</button>
             </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Artikul</th>
-                            <th>Vitrina</th>
-                        </tr>   
-                    </thead>
-                    <tbody>
-                        {% for product in store_products %}
-                            <tr>
-                                <td>{{ product.product.name }}</td>
-                                <td>{{ product.quantity }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        </form>
+    </div>
+
+    <!-- Store Header -->
+    <div class="store-header">
+        <h1 class=" text-center">{{ store.name }}</h1>
+        <div class="d-flex justify-content-center mb-3">
+            <a href="{% url 'main_store' store.uuid %}" class="mx-2"><img src="https://img.icons8.com/?size=100&id=64655&format=png&color=000000" alt="Store"></a>
+            <a href="{% url 'warehouse_store' store.uuid %}" class="mx-2"><img src="https://img.icons8.com/?size=100&id=wk5lhtYtfgfe&format=png&color=000000" alt="Warehouse"></a>
         </div>
     </div>
-    
+    {% if messages %}
+    <div class="container mt-4">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Feedback Form -->
+<div class="row">
+    <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+        <div class="feedback-form">
+            <form id="feedbackForm" method="post" action="{% url 'feedback' %}">
+                {% csrf_token %}
+                <input type="hidden" name="store_uuid" id="storeUuid" value="{{ store.uuid }}" />
+                <div class="mb-3">
+                    <textarea class="form-control" placeholder="Sizning izohingiz bu yerga" aria-label="Feedback" name="feedback" id="feedbackInput" rows="4" required></textarea>
+                </div>
+                <hidden name="from_who" value="store">
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">Yuborish</button>
+                </div>
+                <div id="feedbackMessage" class="feedback-message mt-3"></div>
+            </form>
+        </div>
+    </div>
 </div>
 
 
+    <!-- Products Table -->
+    <div class="row products-table">
+        <div class="col">
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Artikul</th>
+                        <th>Vitrina</th>
+                    </tr>   
+                </thead>
+                <tbody>
+                    {% for product in store_products %}
+                        <tr>
+                            <td>{{ product.product.name }}</td>
+                            <td class="text-center">
+                                {{ product.quantity }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
+{% endblock %}
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/js/bootstrap.min.js"></script>
 
 {% endblock %}
