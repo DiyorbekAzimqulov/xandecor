@@ -2,13 +2,16 @@ import json
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import AccessMixin
 from django.shortcuts import redirect
-from salesdoctorbot.models import Client, StockProduct, WareHouse, WareHouseProduct, StoreProduct, Store
+from salesdoctorbot.models import Client, Feedback, StockProduct, WareHouse, WareHouseProduct, StoreProduct, Store
 from django.views import View
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from orm_app.models import DiscountEvent
 from django.utils.decorators import method_decorator
+from django.urls import reverse
+from django.contrib import messages
+
 
 
 class SuperuserRequiredMixin(AccessMixin):
@@ -221,10 +224,31 @@ class StoreWarehouseView(View):
         return render(request, 'store/store_warehouse.html', context)
 
 
-def feedback(request):
-    return render(request, 'feedback.html')
+class FeedbackView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
-
+    def post(self, request, *args, **kwargs):
+        feedback = request.POST.get('feedback')
+        store_uuid = request.POST.get('store_uuid')
+        from_who = request.POST.get('from_who')
+        if from_who == 'store':
+            from_who = True
+        else:
+            from_who = False
+        store = get_object_or_404(Store, uuid=store_uuid)
+        warehouse = store.warehouse
+        feedback = Feedback.objects.create(store=store, warehouse=warehouse, text=feedback, is_store=from_who)
+        
+        try:
+            # Process feedback here (e.g., save to database)
+            messages.success(request, 'Xabar muvaffaqiyatli yuborildi.')
+        except Exception as e:
+            messages.error(request, 'Xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.')
+        
+        return redirect(reverse('main_store', kwargs={'uuid': store_uuid}))
+    
 class ClientView(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):

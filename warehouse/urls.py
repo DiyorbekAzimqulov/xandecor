@@ -7,7 +7,7 @@ from .views import (
     StoresView,
     StoreView,
     StoreWarehouseView,
-    feedback,
+    FeedbackView,
     update_store_quantities,
     ClientView
 )
@@ -21,6 +21,6 @@ urlpatterns = [
     path('discount-products-list/', discount_products, name='discount_products_list'),
     path('main_store/<uuid:uuid>/', StoreView.as_view(), name='main_store'),
     path('warehouse_store/<uuid:uuid>/', StoreWarehouseView.as_view(), name='warehouse_store'),
-    path('feedback/', feedback, name='feedback'),
+    path('feedback/', FeedbackView.as_view(), name='feedback'),
     path('client/', ClientView.as_view(), name='client_view'),
 ]
