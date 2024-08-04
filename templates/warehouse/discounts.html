@@ -82,7 +82,14 @@
     </div>
     <div class="card-body">
       {% for product in event.products.all %}
-      <div class="card-title">{{ product.name }}</div>
+      <div class="row title-container">
+        <div class="col">
+          <p class="product-name">{{ product.name }}</p>
+        </div>
+        <div class="col text-right">
+          <p class="report-count">Left Report {{ event.report_count }} times</p>
+        </div>
+      </div>      
       <div class="image-row" style="display: flex;">
         <div class="image-container">
           <div class="image-title">Image 1</div>
@@ -93,8 +100,8 @@
           <img src="{{ product.image2.url }}" class="img-fluid" alt="{{ product.name }} Image 2">
         </div>
       </div>
-      <div class="created-at">
-        Created at: {{ event.created_at }}
+      <div class="created-at text-right">
+        {{ event.created_at }}
       </div>
       {% endfor %}
     </div>
