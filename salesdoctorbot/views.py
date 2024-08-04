@@ -178,14 +178,19 @@ class ForgottenShipment(SuperuserRequiredMixin, View):
 
 class DiscountProductView(SuperuserRequiredMixin, View):
     def get(self, request, *args, **kwargs):
+        search_query = request.GET.get('name', '')
         products = Product.objects.all().order_by('name')
         groups = TelegramGroup.objects.all()
         events = DiscountEvent.objects.all().order_by('-created_at')
+        if search_query:
+            products = products.filter(name__icontains=search_query)
         context = {
-            "products": products, 
+            "active_page": 'discount_product',
+            "search_query": search_query,
+            "products": products,  
             "groups": groups, 
-            "events": events
-            }
+            "events": events,
+        }
         return render(request, "general/discount_products.html", context)
 
     def post(self, request, *args, **kwargs):

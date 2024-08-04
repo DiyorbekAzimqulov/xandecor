@@ -82,11 +82,11 @@
 <div class="container">
   <div class="form-container">
     <h1><b>Discount</b></h1>
-
+    {% include "_search.html" %}
     <form method="post">
       {% csrf_token %}
       <div class="form-group">
-        <label for="products">Select Products</label>
+        <label for="products">Select Products</label>   
         <select id="products" name="products" multiple class="form-control">
           {% for product in products %}
           <option value="{{ product.id }}">{{ product.name }}</option>

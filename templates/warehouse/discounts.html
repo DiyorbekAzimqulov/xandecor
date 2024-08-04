@@ -12,6 +12,7 @@
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     margin-bottom: 30px;
+    padding-bottom: 0;
   }
   .card-header {
     background-color: #f8f9fa;
@@ -80,23 +81,21 @@
     <div class="card-header">
       Discount: ${{ event.discount }} 
     </div>
-    <div class="card-body">
+    <div class="card-body text-center">
       {% for product in event.products.all %}
       <div class="row title-container">
         <div class="col">
           <p class="product-name">{{ product.name }}</p>
         </div>
         <div class="col text-right">
-          <p class="report-count">Left Report {{ event.report_count }} times</p>
+          <p class="report-count">{{ event.report_count }} times</p>
         </div>
       </div>      
       <div class="image-row" style="display: flex;">
         <div class="image-container">
-          <div class="image-title">Image 1</div>
           <img src="{{ product.image1.url }}" class="img-fluid" alt="{{ product.name }} Image 1">
         </div>
         <div class="image-container">
-          <div class="image-title">Image 2</div>
           <img src="{{ product.image2.url }}" class="img-fluid" alt="{{ product.name }} Image 2">
         </div>
       </div>
@@ -104,6 +103,7 @@
         {{ event.created_at }}
       </div>
       {% endfor %}
+      <br>
     </div>
   </div>
   {% endfor %}
@@ -112,7 +112,6 @@
     No discount products found.
   </div>
   {% endif %}
-  
 </div>
 {% endblock %}
 

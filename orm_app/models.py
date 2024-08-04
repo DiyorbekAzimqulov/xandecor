@@ -146,7 +146,7 @@ class TelegramGroup(models.Model):
 
 class DiscountEvent(models.Model):
     products = models.ManyToManyField(Product)
-    discount = models.IntegerField()
+    discount = models.TextField()
     group = models.ManyToManyField(TelegramGroup)
     report_count = models.IntegerField(default=60)
     created_at = models.DateTimeField(auto_now_add=True)
