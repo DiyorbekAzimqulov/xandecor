@@ -36,15 +36,15 @@ def send_telegram_message(chat_id, text):
     
     return "Message sent successfully"
 
-def send_telegram_photo(chat_id, photo_url, caption):
-    """Sends a photo to the specified Telegram chat."""
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
-    params = {
+
+def send_telegram_media_group(chat_id, media):
+    """Sends a group of media to the specified Telegram chat."""
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMediaGroup"
+    data = {
         'chat_id': chat_id,
-        'photo': photo_url,
-        'caption': caption,
+        'media': media,
     }
-    response = requests.post(url, data=params)
+    response = requests.post(url, json=data)
     return response.status_code
 
 def daily_shipping_report() -> str:
@@ -81,7 +81,7 @@ def daily_discount_event() -> str:
     discount_events = DiscountEvent.objects.all()
     for event in discount_events:
         products = list(event.products.all())
-        groups = list(event.group.all().select_related('group_id'))
+        groups = list(event.group.all())  # Removed select_related('group_id')
         discount = event.discount
         
         for product in products:
@@ -91,16 +91,15 @@ def daily_discount_event() -> str:
 
             for group in groups:
                 group_id = group.group_id
-                
-                # Send first image
-                status_code1 = send_telegram_photo(group_id, photo1_url, "")
-                if status_code1 != 200:
-                    return f"Error sending first photo to group {group.name}"
-                
-                # Send second image
-                status_code2 = send_telegram_photo(group_id, photo2_url, message)
-                if status_code2 != 200:
-                    return f"Error sending second photo to group {group.name}"
+
+                # Send media group with two photos
+                media = [
+                    {"type": "photo", "media": photo1_url},
+                    {"type": "photo", "media": photo2_url, "caption": message}
+                ]
+                status_code = send_telegram_media_group(group_id, media)
+                if status_code != 200:
+                    return f"Error sending media group to group {group.name}"
         
         # Subtract 1 from report_count and save the event
         event.report_count -= 1

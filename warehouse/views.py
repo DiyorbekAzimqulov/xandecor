@@ -281,7 +281,6 @@ class ClientView(View):
         warehouse_id = request.POST.get('warehouse_id')
         name = request.POST.get('name')
         phone = request.POST.get('phone')
-        print('\n', warehouse_id, name, phone, '\n')
         
         warehouse = get_object_or_404(WareHouse, id=warehouse_id)
         
