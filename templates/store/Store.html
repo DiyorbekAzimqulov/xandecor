@@ -124,25 +124,24 @@
     {% endif %}
 
     <!-- Feedback Form -->
-<div class="row">
-    <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-        <div class="feedback-form">
-            <form id="feedbackForm" method="post" action="{% url 'feedback' %}">
-                {% csrf_token %}
-                <input type="hidden" name="store_uuid" id="storeUuid" value="{{ store.uuid }}" />
-                <div class="mb-3">
-                    <textarea class="form-control" placeholder="Sizning izohingiz bu yerga" aria-label="Feedback" name="feedback" id="feedbackInput" rows="4" required></textarea>
-                </div>
-                <hidden name="from_who" value="store">
-                <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary">Yuborish</button>
-                </div>
-                <div id="feedbackMessage" class="feedback-message mt-3"></div>
-            </form>
+    <div class="row">
+        <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+            <div class="feedback-form">
+                <form id="feedbackForm" method="post" action="{% url 'feedback' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="store_uuid" id="storeUuid" value="{{ store.uuid }}" />
+                    <div class="mb-3">
+                        <textarea class="form-control" placeholder="Sizning izohingiz bu yerga" aria-label="Feedback" name="feedback" id="feedbackInput" rows="4" required></textarea>
+                    </div>
+                    <hidden name="from_who" value="store">
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Yuborish</button>
+                    </div>
+                    <div id="feedbackMessage" class="feedback-message mt-3"></div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-
 
     <!-- Products Table -->
     <div class="row products-table">
@@ -150,6 +149,7 @@
             <table class="table table-striped table-bordered">
                 <thead class="thead-dark">
                     <tr>
+                        <th>No</th>
                         <th>Artikul</th>
                         <th>Vitrina</th>
                     </tr>   
@@ -157,10 +157,9 @@
                 <tbody>
                     {% for product in store_products %}
                         <tr>
+                            <td scope="row" style="width: 10px; text-align: center;">{{ forloop.counter }}</td>
                             <td>{{ product.product.name }}</td>
-                            <td class="text-center">
-                                {{ product.quantity }}
-                            </td>
+                            <td class="text-center">{{ product.quantity }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

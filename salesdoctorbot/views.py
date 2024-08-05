@@ -37,8 +37,8 @@ class SalesDoctorView(SuperuserRequiredMixin, View):
         # Fetch products with positive 'prixod' and 'ostatok' and filter by category
         warehouse_products = WareHouseProduct.objects.select_related('product', 'warehouse').filter(
             category__sd_id=CATEGORY_ID,
-            prixod__gt=0,
-            ostatok__gt=0
+            # prixod__gt=0,
+            # ostatok__gt=0
         ).distinct().order_by('product__name')
 
         # Filter by search query if present

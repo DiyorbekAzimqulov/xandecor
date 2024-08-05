@@ -93,6 +93,7 @@
   <table class="table table-bordered">
     <thead>
       <tr>
+        <th style="width: 10px; text-align: center;">#</th>
         <th>Tavar</th>
         <th>🏢 Sklad</th>
         <th>🏬 Vitrina</th>
@@ -101,6 +102,7 @@
     <tbody>
       {% for product in products %}
         <tr>
+          <td scope="row" style="width: 10px; text-align: center;">{{ forloop.counter }}</td>
           <td>{{ product.name }}</td>
           <td>{{ product.warehouse_quantity }}</td>
           <td>{{ product.store_quantity }}</td>

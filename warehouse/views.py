@@ -44,8 +44,8 @@ class WareHouseStoreView(View):
             warehouse_products = WareHouseProduct.objects.filter(
                 warehouse=warehouse,
                 product__name__icontains=search_query,
-                ostatok__gt=0,
-                sold__gt=0
+                # ostatok__gt=0,
+                # sold__gt=0
             )
             for wh_product in warehouse_products:
                 product = wh_product.product

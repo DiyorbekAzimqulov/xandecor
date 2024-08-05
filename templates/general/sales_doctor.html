@@ -95,7 +95,7 @@
                   {% with warehouse_data=data.stores|get_item:warehouse %}
                     {% if warehouse_data %}
                       <td class="warehouse-cell-{{ forloop.counter0 }}" data-label="{% if warehouse == 'Основной склад' %}Ostatok{% else %}Prixod{% endif %}">
-                        <small>{{ warehouse_data.ostatok }}</small>
+                        <small>{{ warehouse_data.prixod }}</small>
                         <i class="fas fa-arrow-down symbol-cell prixod"></i>
                       </td>
                       {% if warehouse != "Основной склад" %}

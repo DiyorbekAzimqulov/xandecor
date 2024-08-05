@@ -85,7 +85,7 @@ def daily_discount_event() -> str:
         discount = event.discount
         
         for product in products:
-            message = f"🏷\nOboi: {product.name}\🏷Skidka: {discount}%"
+            message = f"🏷\nOboi: {product.name}\n🏷Skidka: ${discount}"
             photo1_url = product.image1.url
             photo2_url = product.image2.url
 
