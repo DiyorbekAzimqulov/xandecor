@@ -40,7 +40,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="clientModalLabel">Add Client</h5>
+                        <h5 class="modal-title" id="clientModalLabel">Client qo'shish</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -81,7 +81,7 @@
             </div>
             <!-- Add client button right side of table -->
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#clientModal" style="margin-bottom: 10px;">
-               Add Client 
+               Client qo'shish
             </button>
 
             <div id="store-details" style="display: none;">
@@ -94,9 +94,9 @@
                     <thead>
                         <tr>
                             {% if is_from_all %}
-                            <th>Warehouse Name</th>
+                            <th>Sklad nomi</th>
                             {% endif %}
-                            <th>Product Name</th>
+                            <th>Artikul nomi</th>
                             <th>Ostatok</th>
                             {% if data %}
                             {% for store_name, store in data.0.store_quantities.items %}
@@ -140,7 +140,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="100%">No products found.</td>
+                            <td colspan="100%">Artikul topilmadi!!!</td>
                         </tr>
                         {% endfor %}
                     </tbody>
