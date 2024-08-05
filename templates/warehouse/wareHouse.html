@@ -22,8 +22,8 @@
     
         <!-- Your existing content -->
         <div class="search_box" style="padding: 30px;">
-            <form method="get" action="{% url 'wareHouse' warehouse.uuid %}">
-                {% csrf_token %}
+            <form method="get" action="{% if is_from_all %}{% url 'wareHouse_all' %}{% else %}{% url 'wareHouse' warehouse.uuid %}{% endif %}">
+                <input type="hidden" name="last_warehouse_uuid" value="{{ last_warehouse_uuid }}">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">🔍</span>
                     <input type="text" class="form-control" placeholder="Product name" aria-label="Product name" aria-describedby="basic-addon1" name="prompt" value="{{ search_query }}" required />
@@ -33,7 +33,7 @@
                     <input class="form-check-input" type="checkbox" value="True" id="flexCheckDefault" name="isFromAll" {% if is_from_all %}checked{% endif %} />
                     <label class="form-check-label" for="flexCheckDefault"> Barchasidan qidirish! </label>
                 </div>
-            </form>
+            </form>            
         </div>
         <!-- Modal -->
         <div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="clientModalLabel" aria-hidden="true">

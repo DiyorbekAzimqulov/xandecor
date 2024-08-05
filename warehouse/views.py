@@ -10,8 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from orm_app.models import DiscountEvent
 from django.utils.decorators import method_decorator
 from django.urls import reverse
-from django.contrib import messages
-
+from django.contrib import messages 
 
 
 class SuperuserRequiredMixin(AccessMixin):
@@ -34,39 +33,26 @@ class WarehouseView(SuperuserRequiredMixin, View):
 class WareHouseStoreView(View):
     def get(self, request, *args, **kwargs):
         search_query = request.GET.get('prompt', '')
-        is_from_all = request.GET.get('isFromAll') == 'True'  # Check if the checkbox is selected
-
-        # Prepare data to be displayed
-        data = []
-        warehouse = None
-
-        if is_from_all:
-            # Search across all warehouses
-            warehouse_products = WareHouseProduct.objects.filter(
-                product__name__icontains=search_query, 
-                ostatok__gt=0, 
-                sold__gt=0
-            )
-            warehouses = WareHouse.objects.all()
-        else:
-            warehouse = get_object_or_404(WareHouse, uuid=kwargs.get("uuid"))
-            
-            warehouse_products = WareHouseProduct.objects.filter(
-                warehouse=warehouse, 
-                product__name__icontains=search_query, 
-                ostatok__gt=0, 
-                sold__gt=0
-            )
-            warehouses = [warehouse]
+        is_from_all = request.GET.get('isFromAll') == 'True'
+        last_warehouse_uuid = request.GET.get('last_warehouse_uuid', '')
         
-        for wh_product in warehouse_products:
-            product = wh_product.product
-            ostatok = wh_product.ostatok
-            shelf = wh_product.shelf
-
-            for warehouse in warehouses:
+        data = []
+        stores = []
+        warehouses = WareHouse.objects.all() if is_from_all else [get_object_or_404(WareHouse, uuid=kwargs.get("uuid") or last_warehouse_uuid)]
+        
+        for warehouse in warehouses:
+            warehouse_products = WareHouseProduct.objects.filter(
+                warehouse=warehouse,
+                product__name__icontains=search_query,
+                ostatok__gt=0,
+                sold__gt=0
+            )
+            for wh_product in warehouse_products:
+                product = wh_product.product
+                ostatok = wh_product.ostatok
+                shelf = wh_product.shelf
                 store_products = StoreProduct.objects.filter(
-                    product=product, 
+                    product=product,
                     store__warehouse=warehouse
                 )
                 store_quantities = {
@@ -74,10 +60,8 @@ class WareHouseStoreView(View):
                     for store in Store.objects.filter(warehouse=warehouse)
                 }
                 
-                stores = Store.objects.filter(warehouse=warehouse)
-
                 left_product_count_in_warehouse = ostatok - sum(store_quantities.values())
-
+                
                 data.append({
                     'warehouse_name': warehouse.name,
                     'product_name': product.name,
@@ -85,16 +69,18 @@ class WareHouseStoreView(View):
                     'store_quantities': store_quantities,
                     'left_product_count_in_warehouse': left_product_count_in_warehouse,
                     'shelf': shelf,
-                    'product_id': product.id  # Assuming the product has an ID field
+                    'product_id': product.id
                 })
+                stores = Store.objects.filter(warehouse=warehouse)
         
         context = {
             'stores': stores,
             'data': data,
-            'warehouse': warehouse if not is_from_all else None,  # Pass warehouse object if not searching all
+            'warehouse': warehouses[0] if not is_from_all else None,
             'active_page': 'wareHouse',
             'search_query': search_query,
-            'is_from_all': is_from_all
+            'is_from_all': is_from_all,
+            'last_warehouse_uuid': warehouses[0].uuid if not is_from_all else last_warehouse_uuid
         }
         return render(request, 'warehouse/wareHouse.html', context)
 
