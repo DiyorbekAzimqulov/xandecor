@@ -56,9 +56,7 @@ def daily_shipping_report() -> str:
         warehouses = list(WareHouse.objects.all())
         for warehouse in warehouses:
             order_ids = list(WareHouseProduct.objects.filter(warehouse=warehouse).values_list('product__sd_id', flat=True))
-            print("Updating Products ...")
             update_sold_ostatok_stock(token, user_id, warehouse.sd_id, order_ids)
-            print("Products Updated")
         
         shipping_db = ship_db_data()
         _, report = ship_products(shipping_db)
