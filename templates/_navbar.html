@@ -31,14 +31,6 @@
       <span class="badge">{{ asked_users_count }}</span>
       {% endif %}
     </a>
-    <a href="{% url 'warehouse_list' %}"
-      class="navbar-button {% if active_page == 'warehouse_page' %}active{% endif %}"
-      ><i class="fas fa-warehouse"></i></a>
-
-    <a href="{% url 'warehouse_stores' %}"
-      class="navbar-button {% if active_page == 'stores_page' %}active{% endif %}"
-      ><i class="fas fa-store"></i> </a>
-      
     <a href="{% url 'discount_product' %}"
       class="navbar-button {% if active_page == 'discount_product' %}active{% endif %}"
       ><i class="fas fa-percent"></i> </a>

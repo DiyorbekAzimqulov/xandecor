@@ -67,3 +67,20 @@
     border-color: #dc3545;
     color: #dc3545;
 }
+
+.table-responsive {
+    max-height: 70vh; /* Set a maximum height for the table's container relative to viewport height */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.thead-sticky th {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    background-color: #f8f9fa; /* Light background to distinguish header */
+    border-bottom: 2px solid #dee2e6; /* Border for visual separation */
+    padding: 0.75rem; /* Adjust padding to reduce height */
+    line-height: 1.2; /* Decrease line height to reduce height */
+    font-weight: bold; /* Make text bold for clarity */
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1); /* Light shadow for separation */
+}

@@ -1,7 +1,7 @@
 <!-- Sidebar -->
-<nav class="d-none d-md-block navbar vh-100 position-fixed">
-  <div class="position-sticky">
-    <ul class="nav flex-column">
+<nav class="d-none d-md-block navbar vh-100 position-fixed text-center">
+  <div class="position-sticky" style="text-align: center">
+    <ul class="nav flex-column justify-content-center">
       <li>
         <a class="navbar-brand" href="{% url 'ship_product' %}"
           ><i class="fa fa-truck" aria-hidden="true"></i
@@ -15,6 +15,17 @@
       <li>
         <a class="navbar-brand" href="{% url 'forgotten_product' %}"
           ><i class="fa fa-archive" aria-hidden="true"></i
+        ></a>
+      </li>
+      <hr style="width: 100%; margin: 0 auto; border: 1px solid #fff" />
+      <li>
+        <a class="navbar-brand" href="{% url 'warehouse_list' %}"
+          ><i class="fa fa-warehouse" aria-hidden="true"></i
+        ></a>
+      </li>
+      <li>
+        <a class="navbar-brand" href="{% url 'warehouse_stores' %}"
+          ><i class="fa fa-store" aria-hidden="true"></i
         ></a>
       </li>
     </ul>
