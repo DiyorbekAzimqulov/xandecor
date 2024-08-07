@@ -91,7 +91,6 @@ def update_store_quantities(request):
         product_id = request.POST.get('product_id')
         warehouse_id = request.POST.get('warehouse_id')
         quantities = json.loads(request.POST.get('quantities', '{}'))
-        print('\n', product_id, warehouse_id, quantities ,'\n')
         try:
             warehouse = WareHouse.objects.get(id=warehouse_id)
         except WareHouse.DoesNotExist:
