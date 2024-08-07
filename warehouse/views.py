@@ -216,23 +216,20 @@ class FeedbackView(View):
 
     def post(self, request, *args, **kwargs):
         feedback = request.POST.get('feedback')
-        store_uuid = request.POST.get('store_uuid')
         from_who = request.POST.get('from_who')
         if from_who == 'store':
-            from_who = True
-        else:
-            from_who = False
-        store = get_object_or_404(Store, uuid=store_uuid)
-        warehouse = store.warehouse
-        feedback = Feedback.objects.create(store=store, warehouse=warehouse, text=feedback, is_store=from_who)
-        
-        try:
-            # Process feedback here (e.g., save to database)
+            store_uuid = request.POST.get('store_uuid')
+            store = get_object_or_404(Store, uuid=store_uuid)
+            warehouse = store.warehouse
+            feedback = Feedback.objects.create(store=store, warehouse=warehouse, text=feedback, is_store=True)
             messages.success(request, 'Xabar muvaffaqiyatli yuborildi.')
-        except Exception as e:
-            messages.error(request, 'Xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.')
-        
-        return redirect(reverse('main_store', kwargs={'uuid': store_uuid}))
+            return redirect(reverse('main_store', kwargs={'uuid': store_uuid}))
+        else:
+            warehouse_id = request.POST.get('warehouse_id')
+            warehouse = get_object_or_404(WareHouse, id=warehouse_id)
+            feedback = Feedback.objects.create(warehouse=warehouse, text=feedback, is_store=False)
+            messages.success(request, 'Xabar muvaffaqiyatli yuborildi.')
+            return redirect(reverse('wareHouse', kwargs={'uuid': warehouse.uuid}))
     
 class ClientView(View):
     @method_decorator(csrf_exempt)

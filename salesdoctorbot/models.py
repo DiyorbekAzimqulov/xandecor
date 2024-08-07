@@ -94,8 +94,8 @@ class Client(models.Model):
         return self.name
     
 class Feedback(models.Model):
-    warehouse = models.ForeignKey(WareHouse, on_delete=models.CASCADE)
-    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    warehouse = models.ForeignKey(WareHouse, on_delete=models.CASCADE, null=True, blank=True)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, null=True, blank=True)
     text = models.TextField()
     is_store = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
