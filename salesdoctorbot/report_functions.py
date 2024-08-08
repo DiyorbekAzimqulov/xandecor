@@ -12,7 +12,9 @@ SALE_PERCENTAGE_THRESHOLD = 10
 
 
 def ship_db_data() -> dict:
-    warehouses = WareHouse.objects.all()
+    # Filter only the required warehouses
+    warehouse_names = ["Склад-VS (O'RIKZOR)", "Склад-VS (Jomiy)", "Склад-VS (QO'YLIQ)", "Склад-VS (BEKTOP)"]
+    warehouses = WareHouse.objects.filter(name__in=warehouse_names)
     products = StockProduct.objects.all()
     warehouse_products = WareHouseProduct.objects.select_related('warehouse', 'product').all()
     
@@ -116,25 +118,23 @@ def redistribute_data() -> dict:
         distribute_db[product_name] = []
 
         # Add subwarehouse data
-        subwarehouse_products = WareHouseProduct.objects.filter(product=main_product.product, ostatok__gt=0).exclude(warehouse=main_warehouse)
+        subwarehouse_products = WareHouseProduct.objects.filter(
+            product=main_product.product, ostatok__gt=0
+        ).exclude(warehouse=main_warehouse)
+
+        # Filter only the required subwarehouses
+        valid_subwarehouses = ["Склад-VS (O'RIKZOR)", "Склад-VS (Jomiy)", "Склад-VS (QO'YLIQ)", "Склад-VS (BEKTOP)"]
         for sub_product in subwarehouse_products:
-            if sub_product.warehouse.name in [
-                "Основной склад",
-                "Склад-VS (JIZZAX)",
-                "Склад-VS (QO'QON)",
-                "Склад-VS (SAMARQAND)",
-                "Склад-VS (BUXORO)"
-            ]:
-                continue
-            subwarehouse_data = {
-                "name": sub_product.warehouse.name,
-                "is_main": False,
-                "remained_units": sub_product.ostatok,
-                "sold_units": sub_product.sold,
-                "initial_units": sub_product.prixod,
-                "sale_percentage": (sub_product.sold / sub_product.prixod) * 100 if sub_product.prixod > 0 else 0
-            }
-            distribute_db[product_name].append(subwarehouse_data)
+            if sub_product.warehouse.name in valid_subwarehouses:
+                subwarehouse_data = {
+                    "name": sub_product.warehouse.name,
+                    "is_main": False,
+                    "remained_units": sub_product.ostatok,
+                    "sold_units": sub_product.sold,
+                    "initial_units": sub_product.prixod,
+                    "sale_percentage": (sub_product.sold / sub_product.prixod) * 100 if sub_product.prixod > 0 else 0
+                }
+                distribute_db[product_name].append(subwarehouse_data)
 
     return distribute_db
 
