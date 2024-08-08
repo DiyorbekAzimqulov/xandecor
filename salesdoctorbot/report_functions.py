@@ -13,8 +13,7 @@ SALE_PERCENTAGE_THRESHOLD = 10
 
 def ship_db_data() -> dict:
     # Filter only the required warehouses
-    warehouse_names = ["Склад-VS (O'RIKZOR)", "Склад-VS (Jomiy)", "Склад-VS (QO'YLIQ)", "Склад-VS (BEKTOP)"]
-    warehouses = WareHouse.objects.filter(name__in=warehouse_names)
+    warehouses = WareHouse.objects.all()
     products = StockProduct.objects.all()
     warehouse_products = WareHouseProduct.objects.select_related('warehouse', 'product').all()
     
