@@ -48,7 +48,7 @@ def start():
         # Schedule shipping report for the next day
         scheduler.add_job(
             daily_shipping_report,
-            trigger=CronTrigger(hour=20, minute=30),  # Runs daily at 20:00 PM
+            trigger=CronTrigger(hour=21, minute=5),  # Runs daily at 21:05 PM
             id="Daily Shipping Report 2 for the next day",
             max_instances=1,
             replace_existing=True,
@@ -57,7 +57,7 @@ def start():
         # Schedule the daily redistribute report
         scheduler.add_job(
             daily_redistribute_report,
-            trigger=CronTrigger(hour=20, minute=5),  # Runs daily at 20:05 PM
+            trigger=CronTrigger(hour=21, minute=10),  # Runs daily at 21:10 PM
             id="Daily Redistribute Report 2 for the next day",
             max_instances=1,
             replace_existing=True,
@@ -66,7 +66,7 @@ def start():
         # Schedule the daily forgotten shipments report
         scheduler.add_job(
             daily_forgotten_shipments,
-            trigger=CronTrigger(hour=20, minute=10),  # Runs daily at 20:10 PM
+            trigger=CronTrigger(hour=21, minute=15),  # Runs daily at 21:15 PM
             id="Daily Forgotten Shipments 2 for the next day",
             max_instances=1,
             replace_existing=True,
